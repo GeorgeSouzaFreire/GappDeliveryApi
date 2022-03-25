@@ -29,10 +29,14 @@ app.use('/App/V1/Endereco', enderecoRotas)
 app.use('/App/V1/UsuarioEndereco', usuarioEnderecoRotas)
 
 // Rota Inicial / endpoint 
-//app.get('/', (req, res) =>{  
+app.get('/', (req, res) =>{  
     // mostrar req
-//    res.json({message: 'Oi Express!'})
-//})
+    res.json({message: 'Oi Express!'})
+})
+app.get('/Atualizacao', (req, res) =>{  
+    // mostrar req
+    res.json({message: 'Oi Atualizacao!'})
+})
 
 // Entregar uma porta
 const DB_USER = process.env.DB_USER
