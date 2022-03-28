@@ -82,7 +82,7 @@ router.post('/PostUsuario/', async (req, res) => {
 
         res.status(201).json({ 
             success: true, 
-            message: "Pronto, agora você pode aproveitar todo conteúdo disponível, seu dados foram registrado com sucesso!",
+            message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
             data: usuarioCreate,
         })
 
@@ -96,13 +96,32 @@ router.post('/PostUsuario/', async (req, res) => {
 
 
 // GET Usuario - Leitura de dados
-router.get('/GetUsuario/:email', async (req, res) => {
+router.get('/GetUsuario/:email/:senha', async (req, res) => {
+
+    const email = req.params.email;
+    const senha = req.params.senha;
+
+    console.log(req.params)
 
     try {
 
-        const usuario = await Usuario.find()
+        if(!email && !senha){
+            const usuario = await Usuario.findOne({ email: email, senha: senha})
 
-        res.status(200).json(usuario)
+            res.status(200).json({
+                success: true,
+                message: 'Parâmetro de Email e Senha',
+                data: usuario,
+            })
+        }else{
+            const usuario = await Usuario.findOne({ email: email })
+
+            res.status(200).json({
+                success: true,
+                message: 'Parâmetro de Email',
+                data: usuario,
+            })
+        }     
 
     } catch (error) {
         res.status(500).json({ error: error })
@@ -147,7 +166,7 @@ router.get('/ValidacaoUsuarioPorEmail/:email', async (req, res) => {
         } else {
             res.status(200).json({
                 success: true,
-                message: 'Usuário registrado',
+                message: 'Ops, O Email informado já foi registrado!',
                 data: usuario,
             })
         }
