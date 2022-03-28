@@ -110,18 +110,20 @@ router.get('/ValidacaoUsuarioPorEmail/:email', async (req, res) => {
         const usuario = await Usuario.findOne({ email: email })
 
         if (!usuario) {
-            res.status(422).json({ 
-                success: false, 
+            res.status(422).json({
+                success: false,
                 message: 'O usuário não foi encontrado!',
-                data: [], 
+                data: [],
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Usuário registrado',
+                data: usuario,
             })
         }
 
-        res.status(200).json({ 
-            success: true, 
-            message: 'Usuário registrado',
-            data: usuario,
-        })
+
 
     } catch (error) {
         res.status(500).json({ error: error })
