@@ -9,6 +9,7 @@ const Usuario  = mongoose.model('Usuario', {
     sobrenome: String,
     telefone : String,
     email: String,
+    senha: String,
     facebookDd: Number,
     googleId: Number,
     idUsuarioEndereco: Number,

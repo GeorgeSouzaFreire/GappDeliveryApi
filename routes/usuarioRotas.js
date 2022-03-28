@@ -18,6 +18,7 @@ router.post('/PostUsuario/', async (req, res) => {
         sobrenome,
         telefone,
         email,
+        senha,
         facebookId,
         googleId,
         idUsuarioEndereco,
@@ -36,6 +37,10 @@ router.post('/PostUsuario/', async (req, res) => {
 
     if (!String(telefone).trim()) {
         errors.telefone = ['O telefone é obrigatório'];
+    }
+    
+    if (!String(senha).trim()) {
+        errors.senha = ['Sua senha é fundamental, Anote para não esquecer.'];
     }
 
     if (!String(email).trim()) {
@@ -57,6 +62,7 @@ router.post('/PostUsuario/', async (req, res) => {
         sobrenome,
         telefone,
         email,
+        senha,
         facebookId,
         googleId,
         idUsuarioEndereco,
@@ -76,7 +82,7 @@ router.post('/PostUsuario/', async (req, res) => {
 
         res.status(201).json({ 
             success: true, 
-            message: "Dados registrado com sucesso!",
+            message: "Pronto, agora você pode aproveitar todo conteúdo disponível, seu dados foram registrado com sucesso!",
             data: usuarioCreate,
         })
 
