@@ -111,15 +111,15 @@ router.get('/ValidacaoUsuarioPorEmail/:email', async (req, res) => {
 
         if (!usuario) {
             res.status(422).json({ 
-                sucesso: false, 
+                success: false, 
                 message: 'O usuário não foi encontrado!',
                 data: [], 
             })
         }
 
         res.status(200).json({ 
-            sucesso: true, 
-            mensagem: 'Usuário registrado',
+            success: true, 
+            message: 'Usuário registrado',
             data: usuario,
         })
 
