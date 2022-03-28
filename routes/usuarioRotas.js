@@ -7,7 +7,7 @@ const Usuario = require('../models/Usuario')
 
 
 // Create - POST Usuario
-router.post('/CadastroUsuario/', async (req, res) => {
+router.post('/PostUsuario/', async (req, res) => {
 
     // req.body   
     const { id,
@@ -46,7 +46,7 @@ router.post('/CadastroUsuario/', async (req, res) => {
 
     if (Object.keys(errors).length) {
         res.status(422).json({ error: errors })
-    }
+    }else{
 
     const usuario = {
         id,
@@ -72,13 +72,36 @@ router.post('/CadastroUsuario/', async (req, res) => {
     try {
 
         // Criando dados
-        await Usuario.create(usuario)
+        const usuarioCreate = await Usuario.create(usuario)
 
-        res.status(201).json({ sucesso: true, message: "Pessoa inserida com sucesso" })
+        res.status(201).json({ 
+            success: true, 
+            message: "Dados registrado com sucesso!",
+            data: usuarioCreate,
+        })
 
     } catch (error) {
-        res.status(500).json({ sucesso: false, error: error })
+        res.status(500).json({ success: false, error: error })
     }
+
+}
+
+})
+
+
+// GET Usuario - Leitura de dados
+router.get('/GetUsuario/:email', async (req, res) => {
+
+    try {
+
+        const usuario = await Usuario.find()
+
+        res.status(200).json(usuario)
+
+    } catch (error) {
+        res.status(500).json({ error: error })
+    }
+
 
 })
 
