@@ -10,7 +10,8 @@ const Usuario = require('../models/Usuario')
 router.post('/PostUsuario/', async (req, res) => {
 
     // req.body   
-    const { id,
+    const { 
+        id,
         guid,
         idEmpresa,
         idEstabelecimento,
@@ -25,9 +26,11 @@ router.post('/PostUsuario/', async (req, res) => {
         web,
         adminEmpresa,
         adminMaster,
+        aceitaReceberInfo,
         ativo,
         dataCriacao,
-        dataAtualizacao } = req.body
+        dataAtualizacao 
+    } = req.body
 
     const errors = {};
 
@@ -69,6 +72,7 @@ router.post('/PostUsuario/', async (req, res) => {
         web,
         adminEmpresa,
         adminMaster,
+        aceitaReceberInfo,
         ativo,
         dataCriacao,
         dataAtualizacao
@@ -105,7 +109,7 @@ router.get('/GetUsuario/:email/:senha', async (req, res) => {
 
     try {
 
-        if(!email && !senha){
+        if(email != '' & senha != ''){
             const usuario = await Usuario.findOne({ email: email, senha: senha})
 
             res.status(200).json({

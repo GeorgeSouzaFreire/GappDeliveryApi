@@ -1,13 +1,12 @@
 const mongoose = require('mongoose')
 
 const Usuario  = mongoose.model('Usuario', {
-    id: Number,
+    id: String,
     guid: String,
     idEmpresa: Number,
     idEstabelecimento: Number,
     nome: String,
-    sobrenome: String,
-    telefone : String,
+    telefone: String,
     email: String,
     senha: String,
     facebookDd: Number,
@@ -16,6 +15,7 @@ const Usuario  = mongoose.model('Usuario', {
     web: Boolean,
     adminEmpresa: Boolean,
     adminMaster: Boolean,
+    aceitaReceberInfo: Boolean,
     ativo: Boolean,
     dataCriacao: String,
     dataAtualizacao: String,       

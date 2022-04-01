@@ -22,11 +22,23 @@ app.use(express.json())
 const usuarioRotas         = require('./routes/usuarioRotas')
 const enderecoRotas        = require('./routes/enderecoRotas')
 const usuarioEnderecoRotas = require('./routes/usuarioEnderecoRotas')
+const empresaRotas         = require('./routes/empresaRotas')
+const empresaEnderecoRotas = require('./routes/empresaEnderecoRotas')
+const empresaDesignerRotas = require('./routes/empresaDesignerRotas')
 
 //app.use('/person', personRoutes)
+// Rota Usuario
 app.use('/App/V1/Usuario', usuarioRotas)
+app.use('/App/V1/Usuario', usuarioEnderecoRotas)
+
+// Rota Endereco
 app.use('/App/V1/Endereco', enderecoRotas)
-app.use('/App/V1/UsuarioEndereco', usuarioEnderecoRotas)
+
+// Rota Empresa
+app.use('/App/V1/Empresa', empresaRotas)
+app.use('/App/V1/Empresa', empresaEnderecoRotas)
+app.use('/App/V1/Empresa', empresaDesignerRotas)
+
 
 // Rota Inicial / endpoint 
 /*app.get('/Atualizacao', (req, res) =>{  
