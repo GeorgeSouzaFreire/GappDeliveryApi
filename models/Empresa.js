@@ -6,7 +6,7 @@ const Empresa  = mongoose.model('Empresa', {
     nome: String,
     nomeFantasia: String,
     cnpj: String,
-    cep: String,
+    endereco: Object,
     telefoneFixo: String,
     celular: String,
     email: String,     

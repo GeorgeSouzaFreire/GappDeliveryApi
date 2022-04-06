@@ -25,20 +25,32 @@ const usuarioEnderecoRotas = require('./routes/usuarioEnderecoRotas')
 const empresaRotas         = require('./routes/empresaRotas')
 const empresaEnderecoRotas = require('./routes/empresaEnderecoRotas')
 const empresaDesignerRotas = require('./routes/empresaDesignerRotas')
+const estabelecimentoRotas = require('./routes/estabelecimentoRotas')
+const categoriaEstabelecimentoRotas = require('./routes/categoriaEstabelecimentoRotas')
+const categoriaProdutoRotas         = require('./routes/categoriaProdutoRotas')
+
 
 //app.use('/person', personRoutes)
 // Rota Usuario
-app.use('/App/V1/Usuario', usuarioRotas)
-app.use('/App/V1/Usuario', usuarioEnderecoRotas)
+app.use('/Web/V1/Usuario', usuarioRotas)
+app.use('/Web/V1/Usuario', usuarioEnderecoRotas)
 
 // Rota Endereco
-app.use('/App/V1/Endereco', enderecoRotas)
+app.use('/Web/V1/Endereco', enderecoRotas)
 
 // Rota Empresa
-app.use('/App/V1/Empresa', empresaRotas)
-app.use('/App/V1/Empresa', empresaEnderecoRotas)
-app.use('/App/V1/Empresa', empresaDesignerRotas)
+app.use('/Web/V1/Empresa', empresaRotas)
+app.use('/Web/V1/Empresa', empresaEnderecoRotas)
+app.use('/Web/V1/Empresa', empresaDesignerRotas)
 
+// Estabelecimento
+app.use('/Web/V1/Estabelecimento', estabelecimentoRotas)
+
+// Rota Categoria
+app.use('/Web/V1/Categoria', categoriaEstabelecimentoRotas)
+
+// Rota Produto
+app.use('/Web/V1/Produto', categoriaProdutoRotas)
 
 // Rota Inicial / endpoint 
 /*app.get('/Atualizacao', (req, res) =>{  

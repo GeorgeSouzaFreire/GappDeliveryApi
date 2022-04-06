@@ -4,7 +4,8 @@ const { response } = require('express')
 const { get } = require('express/lib/response')
 const { Int32 } = require('mongodb')
 const Empresa = require('../models/Empresa')
-
+const Endereco = require('../models/Endereco')
+const EmpresaEndereco = require('../models/EmpresaEndereco')
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostEmpresa/', async (req, res) => {
@@ -16,7 +17,7 @@ router.post('/PostEmpresa/', async (req, res) => {
         nome,
         nomeFantasia,
         cnpj,
-        cep,
+        endereco,
         telefoneFixo,
         celular,
         email
@@ -32,23 +33,41 @@ router.post('/PostEmpresa/', async (req, res) => {
         res.status(422).json({ error: errors })
     } else {
 
-        const empresa = {
-            id,
-            guid,
-            nome,
-            nomeFantasia,
-            cnpj,
-            cep,
-            telefoneFixo,
-            celular,
-            email            
-        }
-
-        // Create
         try {
 
-            // Criando dados
+            const empresa = {
+                id,
+                guid,
+                nome,
+                nomeFantasia,
+                cnpj,
+                endereco,
+                telefoneFixo,
+                celular,
+                email
+            }
+
+            console.log('Json {} de Empresa', empresa)
+
+            // Criando a Empresa
             const empresaCreate = await Empresa.create(empresa)
+
+            const enredeco = empresa.endereco;
+
+            console.log('Json {} de Endereço', enredeco)
+
+            // Criando a Endereço
+            const enderecoCreate = await Endereco.create(enredeco)
+
+            const empresaEnredeco = {
+                idEmpresa: empresaCreate._id,
+                idEndereco: enderecoCreate._id
+            };
+
+            console.log('Json {} de Relacionamento Empresa * Endereço', empresaEnredeco)
+
+            // Criando a EmpresaEndereco
+            await EmpresaEndereco.create(empresaEnredeco)
 
             res.status(201).json({
                 success: true,
