@@ -25,6 +25,7 @@ const usuarioEnderecoRotas = require('./routes/usuarioEnderecoRotas')
 const empresaRotas         = require('./routes/empresaRotas')
 const empresaEnderecoRotas = require('./routes/empresaEnderecoRotas')
 const empresaDesignerRotas = require('./routes/empresaDesignerRotas')
+const estabelecimentoRotas = require('./routes/estabelecimentoRotas')
 const categoriaEstabelecimentoRotas = require('./routes/categoriaEstabelecimentoRotas')
 const categoriaProdutoRotas         = require('./routes/categoriaProdutoRotas')
 
