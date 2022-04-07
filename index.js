@@ -34,29 +34,17 @@ const categoriaProdutoRotas         = require('./routes/categoriaProdutoRotas')
 // Rota Usuario
 app.use('/Web/V1/Usuario', usuarioRotas)
 app.use('/Web/V1/Usuario', usuarioEnderecoRotas)
-
-// Rota Endereco
 app.use('/Web/V1/Endereco', enderecoRotas)
-
-// Rota Empresa
 app.use('/Web/V1/Empresa', empresaRotas)
 app.use('/Web/V1/Empresa', empresaEnderecoRotas)
 app.use('/Web/V1/Empresa', empresaDesignerRotas)
-
-// Estabelecimento
 app.use('/Web/V1/Estabelecimento', estabelecimentoRotas)
-
-// Rota Categoria
 app.use('/Web/V1/Categoria', categoriaEstabelecimentoRotas)
-
-// Rota Produto
 app.use('/Web/V1/Produto', categoriaProdutoRotas)
-
-// Rota Inicial / endpoint 
-/*app.get('/Atualizacao', (req, res) =>{  
+app.get('/', (req, res) =>{  
     // mostrar req
-    res.json({message: 'Oi Atualizacao!'})
-})*/
+    res.json({message: 'Bem Vindo ao GappDelivery!'})
+})
 
 // Entregar uma porta
 const DB_USER = process.env.DB_USER
