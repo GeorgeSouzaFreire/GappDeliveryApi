@@ -12,7 +12,7 @@ const HorarioEstabelecimento = require('../models/HorarioEstabelecimento')
 const Horario = require('../models/Horario')
 
 // Post - Criação de uma Nova Empresa
-router.post('/PostEstabelecimento/', async (req, res) => {
+/*router.post('/PostEstabelecimento/', async (req, res) => {
 
     // req.body   
     const {
@@ -130,7 +130,7 @@ router.post('/PostEstabelecimento/', async (req, res) => {
 
     }
 
-})
+})*/
 
 // GetEstabelecimentoPorIdEmpresa por IdEmpresa
 router.get('/GetEstabelecimentoPorIdEmpresa/:IdEmpresa', async (req, res) => {
