@@ -76,25 +76,25 @@ router.post('/PostEstabelecimento/', async (req, res) => {
             // Criando o Estabelecimento            
             const estabelecimentoCreate = await Estabelecimento.create(estabelecimento)
             console.log('Json {} de Estabelicimento', estabelecimentoCreate)
-            /*************/
+            //--------------------------/
 
             // Criando o Empresa x Estabelecimento
             const empresaEstabelecimento = { idEstabelecimento: estabelecimentoCreate._id, idEmpresa: empresa._id };
             const empresaEstabelecimentoCreate = await EmpresaEstabelecimento.create(empresaEstabelecimento)
             console.log('Json {} de Relacionamento Empresa x Estabelicimento', empresaEstabelecimentoCreate)
-            /*************/
+            //--------------------------/
 
             // Criando a Endereço
             const enredeco = estabelecimento.endereco;
             const enderecoCreate = await Endereco.create(enredeco)
             console.log('Json {} de Endereço', enderecoCreate)
-            /*************/
+            //--------------------------/
 
             // Criando a EstabelecimentoEndereco
             const estabelecimentoEnredeco = { idEstabelecimento: estabelecimentoCreate._id, idEndereco: enderecoCreate._id };
             const estabelecimentoEnderecoCreate = await EstabelecimentoEndereco.create(estabelecimentoEnredeco)
             console.log('Json {} de Relacionamento Estabelecimento * Endereço', estabelecimentoEnderecoCreate)
-            /*************/
+            //--------------------------/
 
             // Criando a Horario   
             const horarios = estabelecimento.horario;
@@ -116,7 +116,7 @@ router.post('/PostEstabelecimento/', async (req, res) => {
                 }
 
             });
-            /*************/
+            //----/
 
             res.status(201).json({
                 success: true,
