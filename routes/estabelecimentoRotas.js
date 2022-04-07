@@ -8,7 +8,7 @@ const Estabelecimento = require('../models/Estabelecimento')
 const Endereco = require('../models/Endereco')
 const EstabelecimentoEndereco = require('../models/EstabelecimentoEndereco')
 const EmpresaEstabelecimento = require('../models/EmpresaEstabelecimento')
-const HorarioEstabelecimento = require('../models/HorarioEstabelecimento')
+//const HorarioEstabelecimento = require('../models/HorarioEstabelecimento')
 const Horario = require('../models/Horario')
 
 // Post - Criação de uma Nova Empresa
