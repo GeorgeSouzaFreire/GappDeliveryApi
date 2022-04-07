@@ -7,7 +7,7 @@ const Horario  = mongoose.model('Horario', {
     horarioInicio: String,
     horarioTermino: String,
     intervaloInicio: String,
-    intervaloTermino: String        
+    intervaloTermino: String,   
 })
 
 module.exports = Horario
