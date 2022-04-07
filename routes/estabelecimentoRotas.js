@@ -245,7 +245,7 @@ router.patch('/:idEstabelecimento', async (req, res) => {
         } else {
             res.status(200).json({
                 success: true,
-                message: 'Foram atualizado(s) ' + updatedEstabelecimento.length + ' resultado(s) cadastrado!',
+                message: 'Foram atualizado(s) ' + estabelecimento.length + ' resultado(s) cadastrado!',
                 data: estabelecimento,
             })
         }
