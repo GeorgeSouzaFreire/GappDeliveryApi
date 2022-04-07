@@ -38,7 +38,7 @@ app.use('/Web/V1/Endereco', enderecoRotas)
 app.use('/Web/V1/Empresa', empresaRotas)
 app.use('/Web/V1/Empresa', empresaEnderecoRotas)
 app.use('/Web/V1/Empresa', empresaDesignerRotas)
-//app.use('/Web/V1/Estabelecimento', estabelecimentoRotas)
+app.use('/Web/V1/Estabelecimento', estabelecimentoRotas)
 app.use('/Web/V1/Categoria', categoriaEstabelecimentoRotas)
 app.use('/Web/V1/Produto', categoriaProdutoRotas)
 app.get('/', (req, res) =>{  
