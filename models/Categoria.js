@@ -5,6 +5,7 @@ const Categoria = mongoose.model('Categoria', {
     guid: String,
     idEmpresa: Number,
     idEstabelecimento: String,
+    ordem: Number,
     nome: String,
     ativo: Boolean,
     dataCriacao: String,

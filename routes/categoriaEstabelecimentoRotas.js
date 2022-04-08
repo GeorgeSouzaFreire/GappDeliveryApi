@@ -16,6 +16,7 @@ router.post('/PostCategoria/', async (req, res) => {
         guid,
         idEmpresa,
         idEstabelecimento,
+        ordem,
         nome,
         ativo,
         dataCriacao,
@@ -39,6 +40,7 @@ router.post('/PostCategoria/', async (req, res) => {
                 guid,
                 idEmpresa,
                 idEstabelecimento,
+                ordem,
                 nome,
                 ativo,
                 dataCriacao,
@@ -79,15 +81,59 @@ router.post('/PostCategoria/', async (req, res) => {
                     data: categoriaCreate,
                 })
 
-                
+
 
             }
 
 
         } catch (error) {
-            res.status(500).json({ success: false, error: error })
+            res.status(500).json({
+                success: false,
+                message: "Não foi possível criar a categoria.",
+                error: error
+            })
         }
 
+    }
+
+})
+
+// GetCategoria por IdEstabelecimento
+router.get('/GetCategoriaPorIdEstabelecimento/:IdEstabelecimento', async (req, res) => {
+
+    //console.log(req)
+
+    // extrair o dado da requisição, pela url = req.params
+    const id = req.params.IdEstabelecimento
+
+    try {
+
+        const categoria = await Categoria.find({ idEstabelecimento: id })
+
+        console.log(categoria)
+
+        if (categoria == null) {
+            res.status(422).json({
+                success: false,
+                message: 'O Estabelecimento não foi encontrado!',
+                data: [],
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontrado ' + categoria.length + ' resultado(s) cadastrado!',
+                data: categoria,
+            })
+        }
+
+
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a categoria.',
+            error: error
+        })
     }
 
 })
