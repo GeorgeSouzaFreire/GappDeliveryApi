@@ -156,7 +156,7 @@ router.get('/GetEstabelecimentoPorIdEmpresa/:IdEmpresa', async (req, res) => {
 
     try {
 
-        const estabelecimento = await Estabelecimento.find({ id: Number.parseInt(id) })
+        const estabelecimento = await Estabelecimento.find({ idEmpresa: Number.parseInt(id) })
 
         console.log(estabelecimento)
 
