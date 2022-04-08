@@ -71,10 +71,11 @@ router.post('/PostEstabelecimento/', async (req, res) => {
         try {
 
             // Buscando Empresa 
-            const empresa = await Empresa.findOne({ id: idEmpresa })
+            const empresa = await Empresa.findOne({ id: Number.parseInt(idEmpresa) })
 
-            if (!empresa) {
-
+           
+            if (empresa != null) {
+                
                 // Criando o Estabelecimento            
                 const estabelecimentoCreate = await Estabelecimento.create(estabelecimento)
                 console.log('Json {} de Estabelicimento', estabelecimentoCreate)
