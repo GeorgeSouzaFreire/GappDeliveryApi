@@ -73,59 +73,72 @@ router.post('/PostEstabelecimento/', async (req, res) => {
             // Buscando Empresa 
             const empresa = await Empresa.findOne({ id: idEmpresa })
 
-            // Criando o Estabelecimento            
-            const estabelecimentoCreate = await Estabelecimento.create(estabelecimento)
-            console.log('Json {} de Estabelicimento', estabelecimentoCreate)
-            //--------------------------/
+            if (!empresa) {
 
-            // Criando o Empresa x Estabelecimento
-            const empresaEstabelecimento = { idEstabelecimento: estabelecimentoCreate._id, idEmpresa: empresa._id };
-            const empresaEstabelecimentoCreate = await EmpresaEstabelecimento.create(empresaEstabelecimento)
-            console.log('Json {} de Relacionamento Empresa x Estabelicimento', empresaEstabelecimentoCreate)
-            //--------------------------/
+                // Criando o Estabelecimento            
+                const estabelecimentoCreate = await Estabelecimento.create(estabelecimento)
+                console.log('Json {} de Estabelicimento', estabelecimentoCreate)
+                //--------------------------/
 
-            // Criando a Endereço
-            const enredeco = estabelecimento.endereco;
-            const enderecoCreate = await Endereco.create(enredeco)
-            console.log('Json {} de Endereço', enderecoCreate)
-            //--------------------------/
+                // Criando o Empresa x Estabelecimento
+                const empresaEstabelecimento = { idEstabelecimento: estabelecimentoCreate._id, idEmpresa: empresa._id };
+                const empresaEstabelecimentoCreate = await EmpresaEstabelecimento.create(empresaEstabelecimento)
+                console.log('Json {} de Relacionamento Empresa x Estabelicimento', empresaEstabelecimentoCreate)
+                //--------------------------/
 
-            // Criando a EstabelecimentoEndereco
-            const estabelecimentoEnredeco = { idEstabelecimento: estabelecimentoCreate._id, idEndereco: enderecoCreate._id };
-            const estabelecimentoEnderecoCreate = await EstabelecimentoEndereco.create(estabelecimentoEnredeco)
-            console.log('Json {} de Relacionamento Estabelecimento * Endereço', estabelecimentoEnderecoCreate)
-            //--------------------------/
+                // Criando a Endereço
+                const enredeco = estabelecimento.endereco;
+                const enderecoCreate = await Endereco.create(enredeco)
+                console.log('Json {} de Endereço', enderecoCreate)
+                //--------------------------/
 
-            // Criando a Horario   
-            const horarios = estabelecimento.horario;
+                // Criando a EstabelecimentoEndereco
+                const estabelecimentoEnredeco = { idEstabelecimento: estabelecimentoCreate._id, idEndereco: enderecoCreate._id };
+                const estabelecimentoEnderecoCreate = await EstabelecimentoEndereco.create(estabelecimentoEnredeco)
+                console.log('Json {} de Relacionamento Estabelecimento * Endereço', estabelecimentoEnderecoCreate)
+                //--------------------------/
 
-            horarios.forEach(async (horario) => {
+                // Criando a Horario   
+                const horarios = estabelecimento.horario;
 
-                try {
-                    console.log('Json {} de Horario', horario)
+                horarios.forEach(async (horario) => {
 
-                    const horarioCreate = await Horario.create(horario)
+                    try {
+                        console.log('Json {} de Horario', horario)
 
-                    // Criando a HorarioEstabelecimento
-                    const horarioEstabelecimento = { idEstabelecimento: estabelecimentoCreate._id, idHorario: horarioCreate._id };
-                    const estabelecimentoEnderecoCreate = await HorarioEstabelecimento.create(horarioEstabelecimento)
-                    console.log('Json {} de Relacionamento Horario * Estabelecimento', estabelecimentoEnderecoCreate)
+                        const horarioCreate = await Horario.create(horario)
 
-                } catch (error) {
-                    console.log('Array Horario', error);
-                }
+                        // Criando a HorarioEstabelecimento
+                        const horarioEstabelecimento = { idEstabelecimento: estabelecimentoCreate._id, idHorario: horarioCreate._id };
+                        const estabelecimentoEnderecoCreate = await HorarioEstabelecimento.create(horarioEstabelecimento)
+                        console.log('Json {} de Relacionamento Horario * Estabelecimento', estabelecimentoEnderecoCreate)
 
-            });
-            //----/
+                    } catch (error) {
+                        console.log('Array Horario', error);
+                    }
 
-            res.status(201).json({
-                success: true,
-                message: "Estabelecimento criada com sucesso!",
-                data: estabelecimentoCreate,
-            })
+                });
+                //----/
+
+                res.status(200).json({
+                    success: true,
+                    message: "Estabelecimento criada com sucesso!",
+                    data: estabelecimentoCreate,
+                })
+            } else {
+                res.status(201).json({
+                    success: false,
+                    message: "Estabelecimento não está registrado!",
+                    data: [],
+                })
+            }
 
         } catch (error) {
-            res.status(500).json({ success: false, error: error })
+            res.status(500).json({ 
+                success: false, 
+                message: "Não foi possivel registrar o Estabelecimento!",
+                error: error 
+            })
         }
 
     }
