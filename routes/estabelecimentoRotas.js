@@ -147,12 +147,12 @@ router.post('/PostEstabelecimento/', async (req, res) => {
 })
 
 // GetEstabelecimentoPorIdEmpresa por IdEmpresa
-router.get('/GetEstabelecimentoPorIdEmpresa/:IdEmpresa', async (req, res) => {
+router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
 
     //console.log(req)
 
     // extrair o dado da requisição, pela url = req.params
-    const id = req.params.IdEmpresa
+    const id = req.query.IdEmpresa
 
     try {
 
