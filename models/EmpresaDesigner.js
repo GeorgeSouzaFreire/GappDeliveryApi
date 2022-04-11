@@ -1,12 +1,19 @@
 const mongoose = require('mongoose')
 
-const EmpresaDesigner  = mongoose.model('EmpresaDesigner', {
-    id: String,
+const EmpresaDesigner = mongoose.model('EmpresaDesigner', {
+    id: Number,
     guid: String,
-    logo: String,
-    corPrimaria: String,
-    corSecundaria: String,
-    idEmpresa: String,  
+    idEmpresa: Number,
+    logoLoginPrincipal: String,
+    corBotaoLogin: String,
+    corBotaoSemCadastro: String,
+    corFundoLogin: String,
+    imagemFundoLogin: String,
+    isImagemFundoLogin: Boolean,
+    corToolbar: String,
+    corBotaoAcao: String,
+    corPrimariaFundoProduto: String,
+    corSecundariaFundoProduto: String,
 })
 
 module.exports = EmpresaDesigner

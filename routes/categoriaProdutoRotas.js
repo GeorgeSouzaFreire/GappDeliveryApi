@@ -6,8 +6,9 @@ const { Int32 } = require('mongodb')
 const Categoria = require('../models/Categoria')
 const Produto = require('../models/Produto')
 const CategoriaProduto = require('../models/CategoriaProduto')
+const Imagem = require('../models/Imagem')
 
-// Post - Criação de uma Nova Empresa
+// Post - Criação de uma Novo Produto
 router.post('/PostProduto/', async (req, res) => {
 
     // req.body   
@@ -35,7 +36,15 @@ router.post('/PostProduto/', async (req, res) => {
     const errors = {};
 
     if (!String(nome).trim()) {
-        errors.nome = ['O nome é obrigatório'];
+        errors.nome = ['Nome é obrigatório'];
+    }
+
+    if (!String(precoAtual).trim()) {
+        errors.precoAtual = ['Preço é obrigatório'];
+    }
+
+    if (!String(descricao).trim()) {
+        errors.descricao = ['Descrição é obrigatório'];
     }
 
     if (Object.keys(errors).length) {
@@ -93,9 +102,32 @@ router.post('/PostProduto/', async (req, res) => {
                 console.log('Json {} de Relacionamento Categoria * Produto', categoriaProdutoCreate)
                 //***********/
 
+                if (imagem != null && imagem != '') {
+                    //let base64 = data.toString('base64');
+                    //console.log(base64.substr(0, 200));
+                    //Buffer.from(string[, encoding])
+                    let burger = new Buffer.from(imagem, 'base64');
+
+                    const imagemBuffer = {
+                        guid: produtoCreate.guid,
+                        nome: produtoCreate.nome,
+                        imagem: burger,
+                    };
+
+                    // Criando a Imagem Produto
+                    const imagemProdutoCreate = await Imagem.create(imagemBuffer)
+                    console.log('Json {} de Imagem Produto', imagemProdutoCreate)
+                    //***********/
+
+                    var thumb = new Buffer.from(imagemProdutoCreate.imagem).toString('base64');
+                    produtoCreate.imagem = thumb;
+                }
+
+                
+
                 res.status(201).json({
                     success: true,
-                    message: "Produto criada com sucesso!",
+                    message: "Produto cadastrado com sucesso!",
                     data: produtoCreate,
                 })
 
@@ -104,10 +136,124 @@ router.post('/PostProduto/', async (req, res) => {
             }
 
 
-        } catch (error) {            
+        } catch (error) {
             res.status(500).json({ success: false, error: error })
         }
 
+    }
+
+})
+
+// GetCategoria por IdEstabelecimento
+router.get('/GetProdutoPorIdCategoria', async (req, res) => {
+
+    // extrair o dado da requisição, pela url = req.params
+    const categoriaId = req.query.IdCategoria
+    const ativo = req.query.Ativo
+
+    try {
+
+        const produto = await Produto.find({ idCategoria: categoriaId, ativo: ativo })
+
+        console.log(produto)
+        console.log(ativo)
+
+        if (produto == null) {
+            res.status(422).json({
+                success: false,
+                message: 'O Estabelecimento não foi encontrado!',
+                data: [],
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontrado ' + produto.length + ' resultado(s) ' + (ativo == true ? 'Ativo' : 'Desativo') + ' cadastrado!',
+                data: produto,
+            })
+        }
+
+
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a categoria.',
+            error: error
+        })
+    }
+
+})
+
+// Update - Desativar Produto (PUT, PATCH)
+router.patch('/DesativarProduto', async (req, res) => {
+
+    const produtoId = req.query.IdProduto
+
+    const {
+        id,
+        guid,
+        idCategoria,
+        precoAntigo,
+        precoAtual,
+        promocao,
+        desconto,
+        nome,
+        parcela,
+        descricao,
+        imagem,
+        isExibeDesconto,
+        isExibePromocao,
+        isExibePrecoAntigo,
+        isExibeParcela,
+        ativo,
+        dataCriacao,
+        dataAtualizacao
+    } = req.body
+
+    const produto = {
+        id,
+        guid,
+        idCategoria,
+        precoAntigo,
+        precoAtual,
+        promocao,
+        desconto,
+        nome,
+        parcela,
+        descricao,
+        imagem,
+        isExibeDesconto,
+        isExibePromocao,
+        isExibePrecoAntigo,
+        isExibeParcela,
+        ativo,
+        dataCriacao,
+        dataAtualizacao
+    }
+
+    try {
+
+        const updatedProduto = await Produto.updateOne({ _id: produtoId }, produto)
+
+        console.log(updatedProduto)
+
+        if (updatedProduto.matchedCount === 0) {
+            res.status(422).json({ message: 'O Produto não foi encontrado!' })
+            return
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Produto desativado com sucesso!',
+            data: produto,
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a produto.',
+            error: error
+        })
     }
 
 })

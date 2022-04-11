@@ -123,7 +123,7 @@ router.post('/PostEstabelecimento/', async (req, res) => {
 
                 res.status(200).json({
                     success: true,
-                    message: "Estabelecimento criada com sucesso!",
+                    message: "Estabelecimento cadastrado com sucesso!",
                     data: estabelecimentoCreate,
                 })
             } else {

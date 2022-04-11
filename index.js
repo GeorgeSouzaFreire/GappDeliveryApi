@@ -41,6 +41,7 @@ app.use('/Web/V1/Empresa', empresaDesignerRotas)
 app.use('/Web/V1/Estabelecimento', estabelecimentoRotas)
 app.use('/Web/V1/Categoria', categoriaEstabelecimentoRotas)
 app.use('/Web/V1/Produto', categoriaProdutoRotas)
+
 app.get('/', (req, res) =>{  
     // mostrar req
     res.json({message: 'Bem Vindo ao GappDelivery!'})

@@ -12,20 +12,23 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
     const {
         id,
         guid,
-        logo,
-        corPrimaria,
-        corSecundaria,
-        idEmpresa
+        idEmpresa,
+        logoLoginPrincipal,
+        corBotaoLogin,
+        corBotaoSemCadastro,
+        corFundoLogin,
+        imagemFundoLogin,
+        isImagemFundoLogin,
+        corToolbar,
+        corBotaoAcao,
+        corPrimariaFundoProduto,
+        corSecundariaFundoProduto
     } = req.body
 
     const errors = {};
 
     if (!String(idEmpresa).trim()) {
-        errors.nome = ['O IdEmpresa é obrigatório'];
-    }
-
-    if (!String(idEndereco).trim()) {
-        errors.nome = ['O IdEndereco é obrigatório'];
+        errors.idEmpresa = ['O IdEmpresa é obrigatório'];
     }
 
     if (Object.keys(errors).length) {
@@ -35,10 +38,17 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
         const empresaDesigner = {
             id,
             guid,
-            logo,
-            corPrimaria,
-            corSecundaria,
-            idEmpresa
+            idEmpresa,
+            logoLoginPrincipal,
+            corBotaoLogin,
+            corBotaoSemCadastro,
+            corFundoLogin,
+            imagemFundoLogin,
+            isImagemFundoLogin,
+            corToolbar,
+            corBotaoAcao,
+            corPrimariaFundoProduto,
+            corSecundariaFundoProduto
         }
 
         // Create
@@ -47,14 +57,18 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
             // Criando dados
             const empresaDesignerCreate = await EmpresaDesigner.create(empresaDesigner)
 
-            res.status(201).json({
+            res.status(200).json({
                 success: true,
-                message: "Relacionamento Empresa x Endereço criada com sucesso!",
+                message: "Designer empresa registrado!",
                 data: empresaDesignerCreate,
             })
 
         } catch (error) {
-            res.status(500).json({ success: false, error: error })
+            res.status(500).json({
+                success: false,
+                message: "Não foi possível registrar designer empresa.",
+                error: error
+            })
         }
 
     }

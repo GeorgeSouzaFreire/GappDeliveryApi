@@ -7,7 +7,7 @@ const Categoria = require('../models/Categoria')
 const CategoriaEstabelecimento = require('../models/CategoriaEstabelecimento')
 const Estabelecimento = require('../models/Estabelecimento')
 
-// Post - Criação de uma Nova Empresa
+// Post - Criação de uma Nova Categoria
 router.post('/PostCategoria/', async (req, res) => {
 
     // req.body   
@@ -77,7 +77,7 @@ router.post('/PostCategoria/', async (req, res) => {
 
                 res.status(201).json({
                     success: true,
-                    message: "Categoria criada com sucesso!",
+                    message: "Categoria cadastrada com sucesso!",
                     data: categoriaCreate,
                 })
 
@@ -99,18 +99,18 @@ router.post('/PostCategoria/', async (req, res) => {
 })
 
 // GetCategoria por IdEstabelecimento
-router.get('/GetCategoriaPorIdEstabelecimento/:IdEstabelecimento', async (req, res) => {
-
-    //console.log(req)
+router.get('/GetCategoriaPorIdEstabelecimento', async (req, res) => {
 
     // extrair o dado da requisição, pela url = req.params
-    const id = req.params.IdEstabelecimento
+    const estabelecimentoId = req.query.IdEstabelecimento
+    const ativo = req.query.Ativo
 
     try {
 
-        const categoria = await Categoria.find({ idEstabelecimento: id })
+        const categoria = await Categoria.find({ idEstabelecimento: estabelecimentoId, ativo: ativo }).sort({ ordem: 1 })
 
         console.log(categoria)
+        console.log(ativo)
 
         if (categoria == null) {
             res.status(422).json({
@@ -121,12 +121,68 @@ router.get('/GetCategoriaPorIdEstabelecimento/:IdEstabelecimento', async (req, r
         } else {
             res.status(200).json({
                 success: true,
-                message: 'Foram encontrado ' + categoria.length + ' resultado(s) cadastrado!',
+                message: 'Foram encontrado ' + categoria.length + ' resultado(s) ' + (ativo == true ? 'Ativo' : 'Desativo') + ' cadastrado!',
                 data: categoria,
             })
         }
 
 
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a categoria.',
+            error: error
+        })
+    }
+
+})
+
+// Update - Desativar Categoria (PUT, PATCH)
+router.patch('/DesativarCategoria', async (req, res) => {
+
+    const estabelecimentoId = req.query.IdEstabelecimento
+
+    const {
+        id,
+        guid,
+        idEmpresa,
+        idEstabelecimento,
+        ordem,
+        nome,
+        ativo,
+        dataCriacao,
+        dataAtualizacao,
+    } = req.body
+
+    const categoria = {
+        id,
+        guid,
+        idEmpresa,
+        idEstabelecimento,
+        ordem,
+        nome,
+        ativo,
+        dataCriacao,
+        dataAtualizacao,
+    }
+
+    try {
+
+        const updatedCategoria = await Categoria.updateOne({ _id: estabelecimentoId }, categoria)
+
+        console.log(updatedCategoria)
+
+        if (updatedCategoria.matchedCount === 0) {
+            res.status(422).json({ message: 'A Categoria não foi encontrado!' })
+            return
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Categoria desativada!',
+            data: categoria,
+        })
 
     } catch (error) {
         res.status(500).json({
