@@ -149,11 +149,11 @@ router.get('/GetProdutoPorIdCategoria', async (req, res) => {
 
     // extrair o dado da requisição, pela url = req.params
     const categoriaId = req.query.IdCategoria
-    const ativo = req.query.Ativo
+    const ativo       = req.query.Ativo
 
     try {
 
-        const produto = await Produto.find({ idCategoria: categoriaId, ativo: ativo })
+        const produto = await Produto.find({ idCategoria: categoriaId})
 
         console.log(produto)
         console.log(ativo)
@@ -167,7 +167,7 @@ router.get('/GetProdutoPorIdCategoria', async (req, res) => {
         } else {
             res.status(200).json({
                 success: true,
-                message: 'Foram encontrado ' + produto.length + ' resultado(s) ' + (ativo == true ? 'Ativo' : 'Desativo') + ' cadastrado!',
+                message: 'Foram encontrado ' + produto.length + ' resultado(s) ' + (ativo == true ? 'Ativo' : 'Inativo') + ' cadastrado!',
                 data: produto,
             })
         }

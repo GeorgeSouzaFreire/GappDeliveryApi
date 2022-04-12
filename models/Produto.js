@@ -16,7 +16,7 @@ const Produto = mongoose.model('Produto', {
     isExibePromocao: Boolean,
     isExibePrecoAntigo: Boolean,   
     isExibeParcela: Boolean,
-    ativo: String,   
+    ativo: Boolean,   
     dataCriacao: String,
     dataAtualizacao: String,          
 })
