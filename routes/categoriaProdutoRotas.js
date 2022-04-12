@@ -153,7 +153,7 @@ router.get('/GetProdutoPorIdCategoria', async (req, res) => {
 
     try {
 
-        const produto = await Produto.find({ idCategoria: categoriaId})
+        const produto = await Produto.find({ idCategoria: categoriaId, ativo: ativo })
 
         console.log(produto)
         console.log(ativo)
