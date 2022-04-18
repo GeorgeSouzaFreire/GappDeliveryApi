@@ -32,6 +32,8 @@ const categoriaProdutoRotas         = require('./routes/categoriaProdutoRotas')
 
 //app.use('/person', personRoutes)
 // Rota Usuario
+app.use('/App/V1/Usuario', usuarioRotas)
+app.use('/App/V1/Usuario', usuarioEnderecoRotas)
 app.use('/Web/V1/Usuario', usuarioRotas)
 app.use('/Web/V1/Usuario', usuarioEnderecoRotas)
 app.use('/Web/V1/Endereco', enderecoRotas)
@@ -42,7 +44,7 @@ app.use('/Web/V1/Estabelecimento', estabelecimentoRotas)
 app.use('/Web/V1/Categoria', categoriaEstabelecimentoRotas)
 app.use('/Web/V1/Produto', categoriaProdutoRotas)
 
-app.get('/', (req, res) =>{  
+app.get('/Dashboard', (req, res) =>{  
     // mostrar req
     res.json({message: 'Bem Vindo ao GappDelivery!'})
 })

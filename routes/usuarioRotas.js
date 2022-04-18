@@ -100,25 +100,36 @@ router.post('/PostUsuario/', async (req, res) => {
 
 
 // GET Usuario - Leitura de dados
-router.get('/GetUsuario/:email/:senha', async (req, res) => {
+router.get('/GetUsuario', async (req, res) => {
 
-    const email = req.params.email;
-    const senha = req.params.senha;
+    const emailId = req.query.Email;
+    const senhaId = req.query.Senha;
 
-    console.log(req.params)
+    console.log(emailId)
+    console.log(senhaId)
 
     try {
 
-        if(email != '' & senha != ''){
-            const usuario = await Usuario.findOne({ email: email, senha: senha})
+        if(emailId != '' & senhaId != ''){
+            const usuario = await Usuario.findOne({ email: emailId, senha: senhaId})
 
-            res.status(200).json({
-                success: true,
-                message: 'Parâmetro de Email e Senha',
-                data: usuario,
-            })
+            if(usuario != null){
+                res.status(200).json({
+                    success: true,
+                    message: 'Usuário encontrado com sucesso!',
+                    data: usuario,
+                })
+            }else{
+                res.status(201).json({
+                    success: true,
+                    message: 'Não foi possivel localizar Usuário.',
+                    data: usuario,
+                })
+            }
+
+           
         }else{
-            const usuario = await Usuario.findOne({ email: email })
+            const usuario = await Usuario.findOne({ email: emailId })
 
             res.status(200).json({
                 success: true,
@@ -128,6 +139,7 @@ router.get('/GetUsuario/:email/:senha', async (req, res) => {
         }     
 
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: error })
     }
 
