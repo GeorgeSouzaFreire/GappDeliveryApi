@@ -4,6 +4,7 @@ const { response } = require('express')
 const { get } = require('express/lib/response')
 const { Int32 } = require('mongodb')
 const Categoria = require('../models/Categoria')
+const Produto = require('../models/Produto')
 const CategoriaEstabelecimento = require('../models/CategoriaEstabelecimento')
 const Estabelecimento = require('../models/Estabelecimento')
 

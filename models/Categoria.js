@@ -9,7 +9,8 @@ const Categoria = mongoose.model('Categoria', {
     nome: String,
     ativo: Boolean,
     dataCriacao: String,
-    dataAtualizacao: String,         
+    dataAtualizacao: String, 
+    produto:[],        
 })
 
 module.exports = Categoria

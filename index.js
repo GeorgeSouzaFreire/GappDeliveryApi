@@ -34,6 +34,7 @@ const categoriaProdutoRotas         = require('./routes/categoriaProdutoRotas')
 // Rota Usuario
 app.use('/App/V1/Usuario', usuarioRotas)
 app.use('/App/V1/Usuario', usuarioEnderecoRotas)
+app.use('/App/V1/CategoriaProduto', categoriaProdutoRotas)
 app.use('/Web/V1/Usuario', usuarioRotas)
 app.use('/Web/V1/Usuario', usuarioEnderecoRotas)
 app.use('/Web/V1/Endereco', enderecoRotas)

@@ -123,7 +123,7 @@ router.post('/PostProduto/', async (req, res) => {
                     produtoCreate.imagem = thumb;
                 }
 
-                
+
 
                 res.status(201).json({
                     success: true,
@@ -145,11 +145,71 @@ router.post('/PostProduto/', async (req, res) => {
 })
 
 // GetCategoria por IdEstabelecimento
+router.get('/GetCategoriaProduto', async (req, res) => {
+
+    // extrair o dado da requisição, pela url = req.params
+    const estabelecimentoId = req.query.IdEstabelecimento
+    const ativo = req.query.Ativo
+
+    try {
+
+        const categorias = await Categoria.find({ idEstabelecimento: estabelecimentoId, ativo: ativo }).sort({ ordem: 1 })
+
+        //console.log(categorias)
+        //console.log(ativo)
+
+        if (categorias == null) {
+            res.status(422).json({
+                success: false,
+                message: 'Estabelecimento não possui categoria ou não foi localizado, Tente novamente ou selecione outro estabelecimento.',
+                data: [],
+            })
+        } else {
+
+            var categoriasAux = await Promise.all(categorias.map(async (categoria) => {
+
+                const produto = await Produto.find({ idCategoria: { $in: categoria._id }, ativo: ativo })
+
+                categoria.produto = produto
+
+                return categoria;
+            }));
+
+            if (categoriasAux == null) {
+                res.status(422).json({
+                    success: false,
+                    message: 'O Estabelecimento não foi encontrado!',
+                    data: categoriasAux,
+                })
+            } else {
+
+                res.status(200).json({
+                    success: true,
+                    message: 'Foram encontrado ' + categoriasAux.length + ' resultado(s) ' + (ativo == true ? 'Ativo' : 'Inativo') + ' cadastrado!',
+                    data: categoriasAux,
+                })
+            }
+
+        }
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a categoria.',
+            error: error
+        })
+    }
+
+})
+
+// GetCategoria por IdEstabelecimento
 router.get('/GetProdutoPorIdCategoria', async (req, res) => {
 
     // extrair o dado da requisição, pela url = req.params
     const categoriaId = req.query.IdCategoria
-    const ativo       = req.query.Ativo
+    const ativo = req.query.Ativo
 
     try {
 
