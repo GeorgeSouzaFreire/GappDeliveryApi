@@ -153,12 +153,12 @@ router.get('/GetCategoriaProduto', async (req, res) => {
 
     try {
 
-        const categorias = await Categoria.find({ idEstabelecimento: estabelecimentoId, ativo: ativo }).sort({ ordem: 1 })
+        const categoriasFind = await Categoria.find({ idEstabelecimento: estabelecimentoId, ativo: ativo }).sort({ ordem: 1 })
 
         //console.log(categorias)
         //console.log(ativo)
 
-        if (categorias == null) {
+        if (categoriasFind == null) {
             res.status(422).json({
                 success: false,
                 message: 'Estabelecimento não possui categoria ou não foi localizado, Tente novamente ou selecione outro estabelecimento.',
@@ -166,7 +166,7 @@ router.get('/GetCategoriaProduto', async (req, res) => {
             })
         } else {
 
-            var categoriasAux = await Promise.all(categorias.map(async (categoria) => {
+            var lista = await Promise.all(categoriasFind.map(async (categoria) => {
 
                 const produto = await Produto.find({ idCategoria: { $in: categoria._id }, ativo: ativo })
 
@@ -175,18 +175,18 @@ router.get('/GetCategoriaProduto', async (req, res) => {
                 return categoria;
             }));
 
-            if (categoriasAux == null) {
+            if (lista == null) {
                 res.status(422).json({
                     success: false,
                     message: 'O Estabelecimento não foi encontrado!',
-                    data: categoriasAux,
+                    data: {},
                 })
             } else {
 
                 res.status(200).json({
                     success: true,
-                    message: 'Foram encontrado ' + categoriasAux.length + ' resultado(s) ' + (ativo == true ? 'Ativo' : 'Inativo') + ' cadastrado!',
-                    data: categoriasAux,
+                    message: 'Foram encontrado ' + lista.length + ' resultado(s) ' + (ativo == true ? 'Ativo' : 'Inativo') + ' cadastrado!',
+                    data: {lista},
                 })
             }
 
