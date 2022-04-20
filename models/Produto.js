@@ -11,7 +11,7 @@ const Produto = mongoose.model('Produto', {
     nome: String,
     parcela: String,
     descricao: String,   
-    imagem: String,
+    imagem: Object,
     isExibeDesconto: Boolean,   
     isExibePromocao: Boolean,
     isExibePrecoAntigo: Boolean,   

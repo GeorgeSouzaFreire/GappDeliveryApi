@@ -102,25 +102,48 @@ router.post('/PostProduto/', async (req, res) => {
                 console.log('Json {} de Relacionamento Categoria * Produto', categoriaProdutoCreate)
                 //***********/
 
-                if (imagem != null && imagem != '') {
-                    //let base64 = data.toString('base64');
-                    //console.log(base64.substr(0, 200));
-                    //Buffer.from(string[, encoding])
-                    let burger = new Buffer.from(imagem, 'base64');
+                if (imagem != null && imagem.length != 0) {
 
-                    const imagemBuffer = {
-                        guid: produtoCreate.guid,
-                        nome: produtoCreate.nome,
-                        imagem: burger,
-                    };
 
-                    // Criando a Imagem Produto
-                    const imagemProdutoCreate = await Imagem.create(imagemBuffer)
-                    console.log('Json {} de Imagem Produto', imagemProdutoCreate)
-                    //***********/
+                    imagem.forEach(async (imagem) => {
 
-                    var thumb = new Buffer.from(imagemProdutoCreate.imagem).toString('base64');
-                    produtoCreate.imagem = thumb;
+                        try {
+                            console.log('Json {} de Imagem', imagem)
+
+                            let burger = new Buffer.from(imagem.imagem, 'base64');
+
+                            const imagemBuffer = {
+                                guid: produtoCreate._id,
+                                nome: produtoCreate.nome,
+                                imagem: burger,
+                            };
+
+                            // Criando a Imagem Produto
+                            const imagemProdutoCreate = await Imagem.create(imagemBuffer)
+                            console.log('Json {} de Imagem Produto', imagemProdutoCreate)
+                            //***********/
+
+                            //var thumb = new Buffer.from(imagemProdutoCreate.imagem).toString('base64');
+                            produtoCreate.imagem = {
+                                guid: produtoCreate._id,
+                                nome: produtoCreate.nome,                                
+                            };
+
+                            const updatedPerson = await Produto.updateOne({ _id: produtoCreate._id }, produtoCreate)
+
+                            console.log(updatedPerson)
+
+                            if (updatedPerson.matchedCount === 0) {
+                                console.log('Produto.updateOne', 'Update realizado com sucesso!');
+                            }
+
+                        } catch (error) {
+                            console.log('Array Imagens', error);
+                        }
+
+                    });
+
+
                 }
 
 
@@ -171,7 +194,7 @@ router.get('/GetCategoriaProduto', async (req, res) => {
                 const produto = await Produto.find({ idCategoria: { $in: categoria._id }, ativo: ativo })
 
                 categoria.produto = produto
-
+               
                 return categoria;
             }));
 
@@ -186,7 +209,7 @@ router.get('/GetCategoriaProduto', async (req, res) => {
                 res.status(200).json({
                     success: true,
                     message: 'Foram encontrado ' + lista.length + ' resultado(s) ' + (ativo == true ? 'Ativo' : 'Inativo') + ' cadastrado!',
-                    data: {lista},
+                    data: { lista },
                 })
             }
 
