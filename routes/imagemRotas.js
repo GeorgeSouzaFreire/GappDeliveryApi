@@ -73,7 +73,7 @@ router.get('/GetImagemPorIdProduto', async (req, res) => {
                 })
             } else {
 
-                lista.forEach(imagem => {
+                lista.forEach((imagem) => {
                     imagem.base64 = new Buffer.from(imagem.imagem).toString('base64');
                     imagem.imagem = null
                 });
