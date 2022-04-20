@@ -28,13 +28,14 @@ const empresaDesignerRotas = require('./routes/empresaDesignerRotas')
 const estabelecimentoRotas = require('./routes/estabelecimentoRotas')
 const categoriaEstabelecimentoRotas = require('./routes/categoriaEstabelecimentoRotas')
 const categoriaProdutoRotas         = require('./routes/categoriaProdutoRotas')
-
+const imagemRotas                   = require('./routes/imagemRotas')
 
 //app.use('/person', personRoutes)
 // Rota Usuario
 app.use('/App/V1/Usuario', usuarioRotas)
 app.use('/App/V1/Usuario', usuarioEnderecoRotas)
 app.use('/App/V1/CategoriaProduto', categoriaProdutoRotas)
+app.use('/App/V1/Imagem', imagemRotas)
 app.use('/Web/V1/Usuario', usuarioRotas)
 app.use('/Web/V1/Usuario', usuarioEnderecoRotas)
 app.use('/Web/V1/Endereco', enderecoRotas)

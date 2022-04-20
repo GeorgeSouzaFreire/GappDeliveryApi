@@ -126,7 +126,7 @@ router.post('/PostProduto/', async (req, res) => {
                             //var thumb = new Buffer.from(imagemProdutoCreate.imagem).toString('base64');
                             produtoCreate.imagem = {
                                 guid: produtoCreate._id,
-                                nome: produtoCreate.nome,                                
+                                nome: produtoCreate.nome,
                             };
 
                             const updatedPerson = await Produto.updateOne({ _id: produtoCreate._id }, produtoCreate)
@@ -178,9 +178,6 @@ router.get('/GetCategoriaProduto', async (req, res) => {
 
         const categoriasFind = await Categoria.find({ idEstabelecimento: estabelecimentoId, ativo: ativo }).sort({ ordem: 1 })
 
-        //console.log(categorias)
-        //console.log(ativo)
-
         if (categoriasFind == null) {
             res.status(422).json({
                 success: false,
@@ -194,7 +191,7 @@ router.get('/GetCategoriaProduto', async (req, res) => {
                 const produto = await Produto.find({ idCategoria: { $in: categoria._id }, ativo: ativo })
 
                 categoria.produto = produto
-               
+
                 return categoria;
             }));
 
