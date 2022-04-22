@@ -235,9 +235,6 @@ router.get('/GetProdutoPorIdCategoria', async (req, res) => {
 
         const produto = await Produto.find({ idCategoria: categoriaId, ativo: ativo })
 
-        console.log(produto)
-        console.log(ativo)
-
         if (produto == null) {
             res.status(422).json({
                 success: false,

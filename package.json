@@ -11,11 +11,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
     "aws-sdk": "^2.1119.0",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "mongoose": "^6.2.8",
     "multer": "^1.4.4",
+=======
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "mongoose": "^6.2.8",
+>>>>>>> e5bdbc9844b22ea8cc951d7ecf66f4f8ebca35ca
     "nodemon": "^2.0.15"
   }
 }
