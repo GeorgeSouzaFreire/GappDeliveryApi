@@ -5,7 +5,7 @@ const { get } = require('express/lib/response')
 const EmpresaDesigner = require('../models/EmpresaDesigner')
 
 
-// Post - Criação de uma Nova Empresa
+// Post - Criação de uma EmpresaDesigner
 router.post('/PostEmpresaDesigner/', async (req, res) => {
 
     // req.body   
@@ -13,7 +13,7 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
         id,
         guid,
         idEmpresa,
-        logoLoginPrincipal,
+        imagemLogoLogin,
         corBotaoLogin,
         corBotaoSemCadastro,
         corFundoLogin,
@@ -39,7 +39,7 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
             id,
             guid,
             idEmpresa,
-            logoLoginPrincipal,
+            imagemLogoLogin,
             corBotaoLogin,
             corBotaoSemCadastro,
             corFundoLogin,

@@ -8,9 +8,10 @@ const app = express()
 
 
 // forma de ler JSON / middlewares
-
+app.use(express.json({ limit: '50mb' }))
 app.use(
     express.urlencoded({
+        limit: '50mb',
         extended: true,
     }),
 )
@@ -29,6 +30,7 @@ const estabelecimentoRotas = require('./routes/estabelecimentoRotas')
 const categoriaEstabelecimentoRotas = require('./routes/categoriaEstabelecimentoRotas')
 const categoriaProdutoRotas         = require('./routes/categoriaProdutoRotas')
 const imagemRotas                   = require('./routes/imagemRotas')
+const pedidoRotas                   = require('./routes/pedidoRotas')
 
 //app.use('/person', personRoutes)
 // Rota Usuario
@@ -36,6 +38,9 @@ app.use('/App/V1/Usuario', usuarioRotas)
 app.use('/App/V1/Usuario', usuarioEnderecoRotas)
 app.use('/App/V1/CategoriaProduto', categoriaProdutoRotas)
 app.use('/App/V1/Imagem', imagemRotas)
+app.use('/App/V1/Empresa', empresaRotas)
+app.use('/App/V1/Pedido', pedidoRotas)
+
 app.use('/Web/V1/Usuario', usuarioRotas)
 app.use('/Web/V1/Usuario', usuarioEnderecoRotas)
 app.use('/Web/V1/Endereco', enderecoRotas)

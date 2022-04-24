@@ -10,15 +10,16 @@ const Produto = mongoose.model('Produto', {
     desconto: String,
     nome: String,
     parcela: String,
-    descricao: String,   
-    imagem: Object,
-    isExibeDesconto: Boolean,   
+    descricao: String,
+    imagemPrimaria: Object,
+    imagemSecundaria: Object,
+    isExibeDesconto: Boolean,
     isExibePromocao: Boolean,
-    isExibePrecoAntigo: Boolean,   
+    isExibePrecoAntigo: Boolean,
     isExibeParcela: Boolean,
-    ativo: Boolean,   
+    ativo: Boolean,
     dataCriacao: String,
-    dataAtualizacao: String,          
+    dataAtualizacao: String,
 })
 
 module.exports = Produto

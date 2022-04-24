@@ -6,6 +6,8 @@ const { Int32 } = require('mongodb')
 const Empresa = require('../models/Empresa')
 const Endereco = require('../models/Endereco')
 const EmpresaEndereco = require('../models/EmpresaEndereco')
+const Designer = require('../models/EmpresaDesigner')
+const EmpresaDesigner = require('../models/EmpresaDesigner')
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostEmpresa/', async (req, res) => {
@@ -86,8 +88,6 @@ router.post('/PostEmpresa/', async (req, res) => {
 // Validação por Email
 router.get('/ValidacaoEmpresaPorId/:Id', async (req, res) => {
 
-    //console.log(req)
-
     // extrair o dado da requisição, pela ulr = req.params
     const id = req.params.Id
 
@@ -117,6 +117,53 @@ router.get('/ValidacaoEmpresaPorId/:Id', async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ error: error })
+    }
+
+})
+
+// Get Empresa
+router.get('/GetEmpresaApp', async (req, res) => {
+
+    const empresaId = req.query.IdEmpresa
+
+    try {
+
+        const empresaFindOne = await Empresa.findOne({ id: Number.parseInt(empresaId) })
+
+        if (empresaFindOne == null) {
+            res.status(422).json({
+                success: false,
+                message: 'O Empresa não foi encontrado!',
+                data: [],
+            })
+        } else {
+
+            const empresaDesigner = await EmpresaDesigner.findOne({ idEmpresa: Number.parseInt(empresaFindOne.id) })
+            
+            empresaFindOne.designer = empresaDesigner
+
+            const empresaEndereco = await EmpresaEndereco.findOne({ idEmpresa: empresaFindOne._id })
+            
+            const endereco = await Endereco.findOne({ _id: empresaEndereco.idEndereco})
+
+            empresaFindOne.endereco = endereco
+
+            res.status(200).json({
+                success: true,
+                message: 'Empresa encontrada com sucesso!',
+                data: empresaFindOne,
+            })
+        }
+
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a Empresa.',
+            error: error
+        })      
     }
 
 })
