@@ -10,8 +10,7 @@ const Empresa  = mongoose.model('Empresa', {
     telefoneFixo: String,
     celular: String,
     email: String,     
-    designer: Object,
-    endereco: Object
+    designer: Object,    
 })
 
 module.exports = Empresa
