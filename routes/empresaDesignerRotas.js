@@ -75,4 +75,42 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
 
 })
 
+// GetEmpresaDesigner por IdEmpresa
+router.get('/GetEmpresaDesigner', async (req, res) => {
+
+    // extrair o dado da requisição, pela url = req.params
+    const empresaId = req.query.IdEmpresa
+    
+    try {
+
+        const empresaDesignerFind = await EmpresaDesigner.find({ idEmpresa: Number.parseInt(empresaId)})
+
+        if (empresaDesignerFind == null) {
+            res.status(422).json({
+                success: false,
+                message: 'Empresa Designer não foi encontrado!',
+                data: [],
+            })
+        } else {
+
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontrado ' + empresaDesignerFind.length + ' resultado!',
+                data: empresaDesignerFind,
+            })
+
+        }
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a EmpresaDesigner.',
+            error: error
+        })
+    }
+
+})
+
 module.exports = router
