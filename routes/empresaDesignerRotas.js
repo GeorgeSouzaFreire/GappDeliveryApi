@@ -51,17 +51,46 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
             corSecundariaFundoProduto
         }
 
-        // Create
+        // Create or Update
         try {
 
-            // Criando dados
-            const empresaDesignerCreate = await EmpresaDesigner.create(empresaDesigner)
+            const empresaDesignerFind = await EmpresaDesigner.findOne({ idEmpresa: Number.parseInt(idEmpresa) })
 
-            res.status(200).json({
-                success: true,
-                message: "Designer empresa registrado!",
-                data: empresaDesignerCreate,
-            })
+            if (empresaDesignerFind == null) {
+               
+                // Criando dados
+                const empresaDesignerCreate = await EmpresaDesigner.create(empresaDesigner)
+
+                res.status(200).json({
+                    success: true,
+                    message: "Designer empresa registrado!",
+                    data: empresaDesignerCreate,
+                })
+
+            } else {
+                //console.log('--------Passou---------> ', empresaDesignerFind)
+                const updatedEmpresaDesigner = await EmpresaDesigner.findOneAndUpdate({ _id: empresaDesignerFind._id }, empresaDesigner)
+
+                console.log(updatedEmpresaDesigner)
+
+                if (updatedEmpresaDesigner.matchedCount === 0) {
+                    res.status(422).json({
+                        success: true,
+                        message: 'A Empresa Designer não foi encontrado!',
+                        data: {}
+                    })
+                    return
+                }
+
+                res.status(200).json({
+                    success: true,
+                    message: 'Empresa Designer atualizado!',
+                    data: updatedEmpresaDesigner,
+                })
+
+            }
+
+
 
         } catch (error) {
             res.status(500).json({
@@ -80,10 +109,10 @@ router.get('/GetEmpresaDesigner', async (req, res) => {
 
     // extrair o dado da requisição, pela url = req.params
     const empresaId = req.query.IdEmpresa
-    
+
     try {
 
-        const empresaDesignerFind = await EmpresaDesigner.find({ idEmpresa: Number.parseInt(empresaId)})
+        const empresaDesignerFind = await EmpresaDesigner.find({ idEmpresa: Number.parseInt(empresaId) })
 
         if (empresaDesignerFind == null) {
             res.status(422).json({
