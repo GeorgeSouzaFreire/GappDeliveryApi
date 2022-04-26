@@ -68,7 +68,7 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
                 })
 
             } else {
-                //console.log('--------Passou---------> ', empresaDesignerFind)
+                
                 const updatedEmpresaDesigner = await EmpresaDesigner.findOneAndUpdate({ _id: empresaDesignerFind._id }, empresaDesigner)
 
                 console.log(updatedEmpresaDesigner)
