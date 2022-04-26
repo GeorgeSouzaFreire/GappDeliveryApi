@@ -62,7 +62,7 @@ const DB_USER = process.env.DB_USER
 const DB_PASSWORD = encodeURIComponent(process.env.DB_PASSWORD)
 
 mongoose.connect(
-    `mongodb+srv://${DB_USER}:${DB_PASSWORD}@apicluster.dxszc.mongodb.net/GappDeliveryApiDatabase?retryWrites=true&w=majority`
+    `mongodb+srv://api_rest:api_rest@apicluster.dxszc.mongodb.net/GappDeliveryApiDatabase?retryWrites=true&w=majority`
 )
 .then(() =>{
     console.log('Conectamos ao MongoDB')
