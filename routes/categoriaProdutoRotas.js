@@ -3,7 +3,6 @@ const router = require('express').Router()
 const { response } = require('express')
 const { get } = require('express/lib/response')
 const { Int32 } = require('mongodb')
-const multer = require('multer')
 const AWS = require('aws-sdk');
 const Categoria = require('../models/Categoria')
 const Produto = require('../models/Produto')
