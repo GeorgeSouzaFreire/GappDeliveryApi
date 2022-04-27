@@ -18,6 +18,7 @@ router.post('/PostPedido/', async (req, res) => {
         quantidade,
         formaPagamento,
         statusPedido,
+        idStatusPedido,
         ativo,
         dataCriacao,
         dataAtualizacao,
@@ -26,18 +27,22 @@ router.post('/PostPedido/', async (req, res) => {
     const errors = {};
 
     if (!String(idEmpresa).trim()) {
-        errors.nome = ['O IdEmpresa é obrigatório'];
+        errors.idEmpresa = ['O IdEmpresa é obrigatório'];
     }
 
-    if (!String(idEndereco).trim()) {
-        errors.nome = ['O IdEndereco é obrigatório'];
+    if (!String(idUsuario).trim()) {
+        errors.idUsuario = ['O IdUsuario é obrigatório'];
+    }
+
+    if (!String(endereco).trim()) {
+        errors.endereco = ['O Endereço é obrigatório'];
     }
 
     if (Object.keys(errors).length) {
         res.status(422).json({ error: errors })
     } else {
 
-        const empresaEndereco = {
+        const pedido = {
             guid,
             idEmpresa,
             idUsuario,
@@ -46,6 +51,7 @@ router.post('/PostPedido/', async (req, res) => {
             quantidade,
             formaPagamento,
             statusPedido,
+            idStatusPedido,
             ativo,
             dataCriacao,
             dataAtualizacao,
@@ -54,57 +60,70 @@ router.post('/PostPedido/', async (req, res) => {
         // Create
         try {
 
+            const pedidoFindOne = await Pedido.findOne({_id: idStatusPedido})
+
+            if(pedidoFindOne == null){
+
+
+                
+            }
+
             // Criando dados
-            const empresaEnderecoCreate = await EmpresaEndereco.create(empresaEndereco)
+            const pedidoCreate = await Pedido.create(pedido)
 
             res.status(201).json({
                 success: true,
-                message: "Relacionamento Empresa x Endereço criada com sucesso!",
-                data: empresaEnderecoCreate,
+                message: "Pedido criada com sucesso!",
+                data: pedidoCreate,
             })
 
         } catch (error) {
-            res.status(500).json({ success: false, error: error })
+            res.status(500).json({ 
+                success: false, 
+                error: error,
+                data: {},
+            })
         }
 
     }
 
 })
 
-// GetImagem por IdProduto
-router.get('/GetImagemPorIdProduto', async (req, res) => {
+// Get Pedido App
+router.get('/GetPedidoApp', async (req, res) => {
 
-    // extrair o dado da requisição, pela url = req.params
-    const guid = req.query.GUID
-    const ordemId = req.query.Ordem
+    const empresaId = req.query.IdEmpresa 
+    const usuarioId = req.query.IdUsuario
 
     try {
 
-        Imagem.find({ guid: { $in: guid }, ordem: ordemId }).exec(function (err, lista) {
-            if (err) {
-                res.status(422).json({
-                    success: false,
-                    message: 'Não há imagem(s) cadastrada(s) para esse Produto.' + err,
-                    data: [],
-                })
-            } else {
-
-                lista.forEach((imagem) => {
-                    imagem.base64 = new Buffer.from(imagem.imagem).toString('base64');
-                    imagem.imagem = null
-                });
-                res.status(200).json({
-                    success: true,
-                    message: 'Foram encontrado ' + lista.length + ' imagen(s)!',
-                    data: { lista },
-                })
-            }
+        const pedidoFindOne = await Pedido.findOne({ 
+            idEmpresa: Number.parseInt(empresaId), 
+            idUsuario: usuarioId 
         })
 
+        if (pedidoFindOne == null) {
+            res.status(422).json({
+                success: false,
+                message: 'Pedido não encontrado!',
+                data: [],
+            })
+        } else {
+
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontrado ' + pedidoFindOne.length + ' resultado!',
+                data: pedidoFindOne,
+            })
+
+        }
+
+
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             success: false,
-            message: 'Não foi possível buscar as imagens.',
+            message: 'Não foi possível realizar a buscar do Pedido.',
             error: error
         })
     }

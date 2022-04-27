@@ -9,6 +9,7 @@ const Pedido = mongoose.model('Pedido', {
     quantidade: Object,
     formaPagamento: Object,
     statusPedido: String,
+    idStatusPedido: Number,
     ativo: String,
     dataCriacao: String,
     dataAtualizacao: String
