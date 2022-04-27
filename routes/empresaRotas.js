@@ -13,8 +13,8 @@ const EmpresaDesigner = require('../models/EmpresaDesigner')
 router.post('/PostEmpresa/', async (req, res) => {
 
     // req.body   
-    const {
-        id,
+    const {        
+        idEmpresa,
         guid,
         nome,
         nomeFantasia,
@@ -37,8 +37,8 @@ router.post('/PostEmpresa/', async (req, res) => {
 
         try {
 
-            const empresa = {
-                id,
+            const empresa = {                
+                idEmpresa,
                 guid,
                 nome,
                 nomeFantasia,
@@ -128,7 +128,7 @@ router.get('/GetEmpresaApp', async (req, res) => {
 
     try {
 
-        const empresaFindOne = await Empresa.findOne({ id: Number.parseInt(empresaId) })
+        const empresaFindOne = await Empresa.findOne({ idEmpresa: Number.parseInt(empresaId) })
 
         if (empresaFindOne == null) {
             res.status(422).json({
