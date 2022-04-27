@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const Empresa  = mongoose.model('Empresa', {
-    id: Number,
+    idEmpresa: Number,
     guid: String,
     nome: String,
     nomeFantasia: String,
