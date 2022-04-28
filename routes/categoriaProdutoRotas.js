@@ -164,7 +164,7 @@ router.post('/PostProduto/', async (req, res) => {
                 if (imagemSecundaria != null && imagemSecundaria.length != 0) {
 
                     imagemSecundaria.forEach(async (imagem) => {
-
+                        console.log(imagem);
                         try {
                             console.log('Json {} de Imagem', imagem)
 
@@ -178,6 +178,8 @@ router.post('/PostProduto/', async (req, res) => {
                                 ContentType: 'image/jpeg',
 
                             };
+
+                            console.log(params);
 
                             s3Bucket.upload(params, async function (err, data) {
                                 if (err) {
@@ -195,19 +197,19 @@ router.post('/PostProduto/', async (req, res) => {
 
                                     // Criando a Imagem Produto
                                     const imagemProdutoCreate = await Imagem.create(imagemBuffer)
+                                    console.log(imagemProdutoCreate)
+                                    //console.log('Json {} de Imagem Produto', imagemProdutoCreate)
 
-                                    console.log('Json {} de Imagem Produto', imagemProdutoCreate)
+                                    //produtoCreate.imagemSecundaria = imagemProdutoCreate
 
-                                    produtoCreate.imagemSecundaria = imagemProdutoCreate
+                                    //const updatedPerson = await Produto.updateOne({ _id: produtoCreate._id }, produtoCreate)
 
-                                    const updatedPerson = await Produto.updateOne({ _id: produtoCreate._id }, produtoCreate)
+                                    //console.log(updatedPerson)
 
-                                    console.log(updatedPerson)
-
-                                    if (updatedPerson.matchedCount === 0) {
-                                        console.log('Produto.updateOne', 'Update realizado com sucesso!');
-                                    }
-                                    imagem.url = data.Location
+                                   // if (updatedPerson.matchedCount === 0) {
+                                    //    console.log('Produto.updateOne', 'Update realizado com sucesso!');
+                                    //}
+                                    //imagem.url = data.Location
 
                                 }
                             });
