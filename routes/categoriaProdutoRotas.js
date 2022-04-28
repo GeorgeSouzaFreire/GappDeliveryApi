@@ -89,8 +89,8 @@ router.post('/PostProduto/', async (req, res) => {
             // Buscando o Categoria
             const categoria = await Categoria.findOne({ _id: idCategoria })
             //***********/
-            if(logAtivo)
-            console.log('Json {} de Categoria', categoria);
+            if (logAtivo)
+                console.log('Json {} de Categoria', categoria);
 
             if (categoria == null) {
 
@@ -105,8 +105,8 @@ router.post('/PostProduto/', async (req, res) => {
                 // Criando a Categoria
                 const produtoCreate = await Produto.create(produto)
 
-                if(logAtivo)
-                console.log('Json {} de Produto', produtoCreate)
+                if (logAtivo)
+                    console.log('Json {} de Produto', produtoCreate)
                 //***********/
 
                 // Criando a Categoria * Produto
@@ -116,17 +116,19 @@ router.post('/PostProduto/', async (req, res) => {
                 };
                 const categoriaProdutoCreate = await CategoriaProduto.create(categoriaProduto)
 
-                if(logAtivo)
-                console.log('Json {} de Relacionamento Categoria * Produto', categoriaProdutoCreate)
+                if (logAtivo)
+                    console.log('Json {} de Relacionamento Categoria * Produto', categoriaProdutoCreate)
                 //***********/
 
-                if (imagemPrimaria != null && imagemPrimaria != '') {
+                const constImagemPrimaria = imagemPrimaria
 
-                    let buffer = new Buffer.from(imagemPrimaria.imagem, 'base64');
+                if (constImagemPrimaria != null && constImagemPrimaria != '') {
+
+                    let buffer = new Buffer.from(constImagemPrimaria.imagem, 'base64');
 
                     const params = {
                         Bucket: process.env.AWS_BUCKET_NAME,
-                        Key: produtoCreate._id + '_ID_' + imagemPrimaria.ordem,
+                        Key: produtoCreate._id + '_ID_' + constImagemPrimaria.ordem,
                         Body: buffer,
                         ContentEncoding: 'base64',
                         ContentType: 'image/jpeg',
@@ -143,85 +145,95 @@ router.post('/PostProduto/', async (req, res) => {
                             const imagemBuffer = {
                                 guid: produtoCreate._id,
                                 nome: produtoCreate.nome,
-                                imagem: buffer,
+                                imagem: null,
                                 url: data.Location
                             };
 
                             // Criando a Imagem Produto
-                            const imagemProdutoCreate = await Imagem.create(imagemBuffer)
+                            const imagemCreate = await Imagem.create(imagemBuffer)
 
-                            produtoCreate.imagemPrimaria = imagemProdutoCreate
+                            if (logAtivo)
+                                console.log('Criação da Imagem realizada com sucesso!', imagemCreate);
 
-                            const updatedPerson = await Produto.updateOne({ _id: produtoCreate._id }, produtoCreate)
+                            const updatedProduto = await Produto.updateOne({ _id: produtoCreate._id }, { imagemPrimaria: imagemBuffer })
 
-                            if (updatedPerson.matchedCount === 0) {
+                            if (updatedProduto.matchedCount === 0) {
 
-                                if(logAtivo)
-                                console.log('Produto.updateOne', 'Update realizado com sucesso!');
+                                if (logAtivo)
+                                    console.log('Update realizado com sucesso!', updatedProduto);
                             }
-                            imagemPrimaria.imagem.url = data.Location
 
                         }
                     });
 
                 }
 
-                const arraySecundario = imagemSecundaria
+                if (imagemSecundaria != null && imagemSecundaria.length != 0) {
 
-                if (arraySecundario != null && arraySecundario.length != 0) {
+                    const allAsyncResults = []
 
-                    arraySecundario.forEach(async (imagem, index) => {
+                    const imagemBuffers = new Promise((resolve, reject) => {
 
-                        try {
-                            if(logAtivo)
-                            console.log('Json {} de Imagem', imagem)
+                        imagemSecundaria.forEach(async function (imagem, index, array) {
 
-                            let buffer = new Buffer.from(imagem.imagem, 'base64');
+                            try {
+                                if (logAtivo)
+                                    console.log('Json {} de Imagem', imagem)
 
-                            const params = {
-                                Bucket: process.env.AWS_BUCKET_NAME,
-                                Key: produtoCreate._id + '_ID_' + imagem.ordem,
-                                Body: buffer,
-                                ContentEncoding: 'base64',
-                                ContentType: 'image/jpeg',
+                                let buffer = new Buffer.from(imagem.imagem, 'base64');
 
-                            };
+                                const params = {
+                                    Bucket: process.env.AWS_BUCKET_NAME,
+                                    Key: produtoCreate._id + '_ID_' + imagem.ordem,
+                                    Body: buffer,
+                                    ContentEncoding: 'base64',
+                                    ContentType: 'image/jpeg',
 
-                            s3Bucket.upload(params, async function (err, data) {
-                                if (err) {
-                                    console.log(err);
-                                    console.log('Error uploading data: ', data);
-                                } else {
-                                    console.log('successfully uploaded the image!');
+                                };
 
-                                    const imagemBuffer = {
-                                        guid: produtoCreate._id,
-                                        nome: produtoCreate.nome,
-                                        imagem: buffer,
-                                        url: data.Location
-                                    };
+                                s3Bucket.upload(params, function (err, data) {
+                                    if (err) {
+                                        console.log(err);
+                                        console.log('Error uploading data: ', data);
+                                    } else {
+                                        console.log('successfully uploaded the image!');
 
-                                    // Criando a Imagem Produto
-                                    await Imagem.create(imagemBuffer)
-                                    
-                                    imagemSecundaria[index] = imagemBuffer 
-                                    
-                                    console.log('imagemSecundaria[index]', imagemSecundaria[index]);
-                                }
-                            });
+                                        const imagemBuffer = {
+                                            guid: produtoCreate._id,
+                                            nome: produtoCreate.nome,
+                                            imagem: null,
+                                            url: data.Location
+                                        };
 
+                                        allAsyncResults.push(imagemBuffer)
 
-                        } catch (error) {
-                            console.log('Array Imagens', error);
-                        }
+                                        if (index === array.length - 1) resolve();
+                                    }
+                                });
+
+                                //imagemBuffers.push(imagemBuffer);
+                                //console.log(imagemBuffers)
+                                // Criando a Imagem Produto
+                                await Imagem.create(allAsyncResults[index])
+
+                            } catch (error) {
+                                console.log('Array Imagens', error);
+                            }
+
+                        });
+
+                    });
+
+                    imagemBuffers.then(async () => {
+                        console.log('------------------> Está zerado essa porra', allAsyncResults.length)
+
+                        const updatedProdutoUpdateOne = await Produto.updateOne({ _id: produtoCreate._id }, { imagemSecundaria: allAsyncResults })
+
+                        if (logAtivo)
+                            console.log(updatedProdutoUpdateOne)
                     });
 
                 }
-
-                const updatedPerson = await Produto.updateOne({ _id: produtoCreate._id }, { imagemSecundaria: arraySecundario })
-                
-                if(logAtivo)
-                console.log(updatedPerson)
 
                 res.status(201).json({
                     success: true,
