@@ -138,7 +138,7 @@ router.get('/GetEmpresaApp', async (req, res) => {
             })
         } else {
 
-            const empresaDesigner = await EmpresaDesigner.findOne({ idEmpresa: Number.parseInt(empresaFindOne.id) })
+            const empresaDesigner = await EmpresaDesigner.findOne({ idEmpresa: Number.parseInt(empresaFindOne.idEmpresa) })
             
             empresaFindOne.designer = empresaDesigner
 
