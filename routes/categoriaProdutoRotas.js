@@ -16,6 +16,8 @@ var s3Bucket = new AWS.S3({
     secretAccessKey: process.env.AWS_ACCESS_KEY_SECRET       // secretAccessKey is also store in .env file
 })
 
+const logAtivo = false;
+
 // Post - Criação de uma Novo Produto
 router.post('/PostProduto/', async (req, res) => {
 
@@ -87,7 +89,9 @@ router.post('/PostProduto/', async (req, res) => {
             // Buscando o Categoria
             const categoria = await Categoria.findOne({ _id: idCategoria })
             //***********/
+            if(logAtivo)
             console.log('Json {} de Categoria', categoria);
+
             if (categoria == null) {
 
                 res.status(404).json({
@@ -100,6 +104,8 @@ router.post('/PostProduto/', async (req, res) => {
 
                 // Criando a Categoria
                 const produtoCreate = await Produto.create(produto)
+
+                if(logAtivo)
                 console.log('Json {} de Produto', produtoCreate)
                 //***********/
 
@@ -109,6 +115,8 @@ router.post('/PostProduto/', async (req, res) => {
                     idProduto: produtoCreate._id
                 };
                 const categoriaProdutoCreate = await CategoriaProduto.create(categoriaProduto)
+
+                if(logAtivo)
                 console.log('Json {} de Relacionamento Categoria * Produto', categoriaProdutoCreate)
                 //***********/
 
@@ -142,15 +150,13 @@ router.post('/PostProduto/', async (req, res) => {
                             // Criando a Imagem Produto
                             const imagemProdutoCreate = await Imagem.create(imagemBuffer)
 
-                            console.log('Json {} de Imagem Produto', imagemProdutoCreate)
-
                             produtoCreate.imagemPrimaria = imagemProdutoCreate
 
                             const updatedPerson = await Produto.updateOne({ _id: produtoCreate._id }, produtoCreate)
 
-                            console.log(updatedPerson)
-
                             if (updatedPerson.matchedCount === 0) {
+
+                                if(logAtivo)
                                 console.log('Produto.updateOne', 'Update realizado com sucesso!');
                             }
                             imagemPrimaria.imagem.url = data.Location
@@ -160,12 +166,14 @@ router.post('/PostProduto/', async (req, res) => {
 
                 }
 
+                const arraySecundario = imagemSecundaria
 
-                if (imagemSecundaria != null && imagemSecundaria.length != 0) {
+                if (arraySecundario != null && arraySecundario.length != 0) {
 
-                    imagemSecundaria.forEach(async (imagem) => {
-                        console.log(imagem);
+                    arraySecundario.forEach(async (imagem, index) => {
+
                         try {
+                            if(logAtivo)
                             console.log('Json {} de Imagem', imagem)
 
                             let buffer = new Buffer.from(imagem.imagem, 'base64');
@@ -178,8 +186,6 @@ router.post('/PostProduto/', async (req, res) => {
                                 ContentType: 'image/jpeg',
 
                             };
-
-                            console.log(params);
 
                             s3Bucket.upload(params, async function (err, data) {
                                 if (err) {
@@ -196,21 +202,11 @@ router.post('/PostProduto/', async (req, res) => {
                                     };
 
                                     // Criando a Imagem Produto
-                                    const imagemProdutoCreate = await Imagem.create(imagemBuffer)
-                                    console.log(imagemProdutoCreate)
-                                    //console.log('Json {} de Imagem Produto', imagemProdutoCreate)
-
-                                    //produtoCreate.imagemSecundaria = imagemProdutoCreate
-
-                                    //const updatedPerson = await Produto.updateOne({ _id: produtoCreate._id }, produtoCreate)
-
-                                    //console.log(updatedPerson)
-
-                                   // if (updatedPerson.matchedCount === 0) {
-                                    //    console.log('Produto.updateOne', 'Update realizado com sucesso!');
-                                    //}
-                                    //imagem.url = data.Location
-
+                                    await Imagem.create(imagemBuffer)
+                                    
+                                    imagemSecundaria[index] = imagemBuffer 
+                                    
+                                    console.log('imagemSecundaria[index]', imagemSecundaria[index]);
                                 }
                             });
 
@@ -218,22 +214,20 @@ router.post('/PostProduto/', async (req, res) => {
                         } catch (error) {
                             console.log('Array Imagens', error);
                         }
-
                     });
-
 
                 }
 
-
+                const updatedPerson = await Produto.updateOne({ _id: produtoCreate._id }, { imagemSecundaria: arraySecundario })
+                
+                if(logAtivo)
+                console.log(updatedPerson)
 
                 res.status(201).json({
                     success: true,
                     message: "Produto cadastrado com sucesso!",
                     data: produtoCreate,
                 })
-
-
-
             }
 
 
