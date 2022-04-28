@@ -210,10 +210,7 @@ router.post('/PostProduto/', async (req, res) => {
                                         if (index === array.length - 1) resolve();
                                     }
                                 });
-
-                                //imagemBuffers.push(imagemBuffer);
-                                //console.log(imagemBuffers)
-                                // Criando a Imagem Produto
+                                
                                 await Imagem.create(allAsyncResults[index])
 
                             } catch (error) {
@@ -225,7 +222,7 @@ router.post('/PostProduto/', async (req, res) => {
                     });
 
                     imagemBuffers.then(async () => {
-                        console.log('------------------> Está zerado essa porra', allAsyncResults.length)
+                        console.log(allAsyncResults.length)
 
                         const updatedProdutoUpdateOne = await Produto.updateOne({ _id: produtoCreate._id }, { imagemSecundaria: allAsyncResults })
 
