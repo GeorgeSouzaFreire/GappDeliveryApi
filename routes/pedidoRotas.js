@@ -15,7 +15,7 @@ router.post('/PostPedido/', async (req, res) => {
         idUsuario,
         nomeUsuario,
         endereco,
-        quantidade,
+        produto,
         formaPagamento,
         statusPedido,
         idStatusPedido,
@@ -48,7 +48,7 @@ router.post('/PostPedido/', async (req, res) => {
             idUsuario,
             nomeUsuario,
             endereco,
-            quantidade,
+            produto,
             formaPagamento,
             statusPedido,
             idStatusPedido,
@@ -60,26 +60,57 @@ router.post('/PostPedido/', async (req, res) => {
         // Create
         try {
 
-            const pedidoFindOne = await Pedido.findOne({_id: idStatusPedido})
+            const pedidoFindOne = await Pedido.findOne({ idUsuario: idUsuario, idEmpresa: idEmpresa })
 
-            if(pedidoFindOne == null){
+            if (pedidoFindOne == null) {
 
+                const pedidoCreate = await Pedido.create(pedido)
+
+                res.status(201).json({
+                    success: true,
+                    message: "Pedido criada com sucesso!",
+                    data: pedidoCreate,
+                })
+            } else {
 
                 
+
+                pedido.produto.forEach(quantidadePOST => {
+
+                    let soma = 0;
+
+                    soma = quantidadePOST.quantidade
+
+                    pedidoFindOne.produto.forEach(quantidadeBD => {
+
+                        if (quantidadePOST.idProduto.String == quantidadeBD.idProduto.String) {
+
+                            soma += quantidadeBD.quantidade;
+
+                            quantidadeBD.quantidade = soma
+
+                            console.log('Soma das quantidades', soma)
+                        } else {
+                            console.log(':( Não são iguais ------------> ', quantidadeBD.quantidade)
+                        }
+
+                    });
+                });
+
+                const pedidoOneAndUpdate = await Pedido.findOneAndUpdate({ _id: pedidoFindOne._id }, pedidoFindOne)
+
+                res.status(201).json({
+                    success: true,
+                    message: "Pedido atualizado com sucesso!",
+                    data: pedidoOneAndUpdate,
+                })
+
             }
 
-            // Criando dados
-            const pedidoCreate = await Pedido.create(pedido)
-
-            res.status(201).json({
-                success: true,
-                message: "Pedido criada com sucesso!",
-                data: pedidoCreate,
-            })
-
         } catch (error) {
-            res.status(500).json({ 
-                success: false, 
+            console.log(error)
+            res.status(500).json({
+                success: false,
                 error: error,
                 data: {},
             })
@@ -92,14 +123,14 @@ router.post('/PostPedido/', async (req, res) => {
 // Get Pedido App
 router.get('/GetPedidoApp', async (req, res) => {
 
-    const empresaId = req.query.IdEmpresa 
+    const empresaId = req.query.IdEmpresa
     const usuarioId = req.query.IdUsuario
 
     try {
 
-        const pedidoFindOne = await Pedido.findOne({ 
-            idEmpresa: Number.parseInt(empresaId), 
-            idUsuario: usuarioId 
+        const pedidoFindOne = await Pedido.findOne({
+            idEmpresa: Number.parseInt(empresaId),
+            idUsuario: usuarioId
         })
 
         if (pedidoFindOne == null) {
