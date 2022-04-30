@@ -155,7 +155,7 @@ router.get('/GetPedidoApp', async (req, res) => {
     }
 })
 
-// Get Pedido App
+// Patch AtualizaQuantidadePedido
 router.patch('/AtualizaQuantidadePedido', async (req, res) => {
 
     const pedidoId = req.query.IdPedido
