@@ -135,10 +135,16 @@ router.get('/GetPedidoApp', async (req, res) => {
                 data: {},
             })
         } else {
+
+            
+
             res.status(200).json({
                 success: true,
                 message: 'Foram encontrado ' + pedidoFindOne.length + ' resultado!',
-                data: pedidoFindOne,
+                data: {
+                   resumo: '',
+                   pedido: pedidoFindOne
+                },
             })
         }
 
