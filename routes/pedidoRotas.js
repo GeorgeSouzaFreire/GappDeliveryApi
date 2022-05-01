@@ -129,19 +129,17 @@ router.get('/GetPedidoApp', async (req, res) => {
         })
 
         if (pedidoFindOne == null) {
-            res.status(422).json({
+            res.status(205).json({
                 success: false,
-                message: 'Pedido não encontrado!',
-                data: [],
+                message: 'Você ainda não adicionou nenhum item no carrinho!',
+                data: {},
             })
         } else {
-
             res.status(200).json({
                 success: true,
                 message: 'Foram encontrado ' + pedidoFindOne.length + ' resultado!',
                 data: pedidoFindOne,
             })
-
         }
 
 
@@ -153,6 +151,94 @@ router.get('/GetPedidoApp', async (req, res) => {
             error: error
         })
     }
+})
+
+// Patch AtualizaEndereco
+router.patch('/AtualizaEndereco', async (req, res) => {
+
+    const pedidoId = req.query.IdPedido
+
+    const {
+        endereco,
+    } = req.body
+
+    const pedido = {
+        endereco,
+    }
+
+    console.log('Patch - AtualizaEndereco', pedido)
+
+    try {
+
+        const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoId }, pedido, { new: true })
+
+        if (pedidoUpdate == null) {
+            res.status(422).json({
+                success: false,
+                message: 'Endereço não pode ser atualizado!',
+                data: [],
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Atualização realizada com sucesso!',
+                data: pedidoUpdate,
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Ops, Algo de errado por aqui...' + error,
+            error: error
+        })
+    }
+
+})
+
+// Patch AtualizaFormaPagamento
+router.patch('/AtualizaFormaPagamento', async (req, res) => {
+
+    const pedidoId = req.query.IdPedido
+
+    const {
+        formaPagamento,
+    } = req.body
+
+    const pedido = {
+        formaPagamento,
+    }
+
+    console.log('Patch - AtualizaFormaPagamento', pedido)
+
+    try {
+
+        const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoId }, pedido, { new: true })
+
+        if (pedidoUpdate == null) {
+            res.status(422).json({
+                success: false,
+                message: 'Pedido não pode ser atualizado!',
+                data: [],
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Atualização realizada com sucesso!',
+                data: pedidoUpdate,
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Ops, Algo de errado por aqui...' + error,
+            error: error
+        })
+    }
+
 })
 
 // Patch AtualizaQuantidadePedido
@@ -286,5 +372,85 @@ router.patch('/AtualizaQuantidadePedido', async (req, res) => {
         })
     }
 })
+
+// Delete Produto do Pedido
+router.delete('/ExcluirProdutoCarrinho', async (req, res) => {
+
+    const pedidoId = req.query.IdPedido
+    const produtoId = req.query.IdProduto
+
+    try {
+
+        const pedidoFindOne = await Pedido.findOne({ _id: pedidoId })
+
+        if (!pedidoFindOne) {
+            res.status(422).json({
+                success: false,
+                message: 'Pedido não pode ser localizado!',
+                data: [],
+            })
+        } else {
+
+            for (let j = 0; j < pedidoFindOne.produto.length; j++) {
+
+                console.log('ID --- > Query / BD', produtoId + ' * ' + pedidoFindOne.produto[j])
+
+                if (pedidoFindOne.produto[j] != null && pedidoFindOne.produto[j] != undefined) {
+                    if (produtoId == pedidoFindOne.produto[j].idProduto) {
+                        console.log('Antes Delete --- > ', pedidoFindOne.produto[j])
+                        delete pedidoFindOne.produto[j];
+                        console.log('Depois Delete --- > ', pedidoFindOne.produto[j])
+                    }
+                }
+            }
+
+            pedidoFindOne.produto = cleanArray(pedidoFindOne.produto);
+
+            if (pedidoFindOne.produto.length == 0) {
+
+                const pedidoDelete = await Pedido.deleteOne({ _id: pedidoFindOne._id })
+
+                res.status(200).json({
+                    success: true,
+                    message: 'Foram excluido todos os produto do pedido, Pedido foi deletado!',
+                    data: {},
+                })
+
+            } else {
+
+                const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoFindOne._id }, pedidoFindOne, { new: true })
+
+                res.status(200).json({
+                    success: true,
+                    message: 'Produto excluido com sucesso!',
+                    data: pedidoUpdate,
+                })
+
+            }
+
+
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do Pedido.',
+            error: error
+        })
+    }
+
+})
+
+function cleanArray(actual) {
+    var newArray = new Array();
+    console.log('Atual --- > ', actual)
+    for (var i = 0; i < actual.length; i++) {
+        if (actual[i] != null || actual[i] != undefined) {
+            newArray.push(actual[i]);
+        }
+    }
+    return newArray;
+}
 
 module.exports = router
