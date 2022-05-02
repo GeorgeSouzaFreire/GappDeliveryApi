@@ -10,6 +10,8 @@ const EstabelecimentoEndereco = require('../models/EstabelecimentoEndereco')
 const EmpresaEstabelecimento = require('../models/EmpresaEstabelecimento')
 const HorarioEstabelecimento = require('../models/HorarioEstabelecimento')
 const Horario = require('../models/Horario')
+const FormaPagamento = require('../models/FormaPagamento')
+const EstabelecimentoFormaPagamento = require('../models/EstabelecimentoFormaPagamento')
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostEstabelecimento/', async (req, res) => {
@@ -73,9 +75,9 @@ router.post('/PostEstabelecimento/', async (req, res) => {
             // Buscando Empresa 
             const empresa = await Empresa.findOne({ id: Number.parseInt(idEmpresa) })
 
-           
+
             if (empresa != null) {
-                
+
                 // Criando o Estabelecimento            
                 const estabelecimentoCreate = await Estabelecimento.create(estabelecimento)
                 console.log('Json {} de Estabelicimento', estabelecimentoCreate)
@@ -135,10 +137,10 @@ router.post('/PostEstabelecimento/', async (req, res) => {
             }
 
         } catch (error) {
-            res.status(500).json({ 
-                success: false, 
+            res.status(500).json({
+                success: false,
                 message: "Não foi possivel registrar o Estabelecimento!",
-                error: error 
+                error: error
             })
         }
 
@@ -175,6 +177,120 @@ router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
         }
 
 
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Não foi possivel registrar o Estabelecimento!",
+            error: error
+        })
+    }
+
+})
+
+// Create 
+router.get('/GetFormaPagamento', async (req, res) => {
+
+    const estabelecimentoId = req.query.IdEstabelecimento
+
+    const { name, salary, approved } = req.body
+
+    if (!name) {
+        res.status(422).json({ error: 'Obrigatorio o Nome' })
+    }
+
+    const person = {
+        name,
+        salary,
+        approved
+    }
+
+    // create
+
+    try {
+
+        // Criando dados
+        await Person.create(person)
+
+        res.status(201).json({ message: "Pessoa inserida com sucesso" })
+
+    } catch (error) {
+        res.status(500).json({ error: error })
+    }
+
+})
+
+// Post Forma de Pagamento 
+router.post('/PostFormaPagamento', async (req, res) => {
+
+    const {
+        guid,
+        nome,
+        imagem,
+        ordem
+    } = req.body
+
+    const formaPagamento = {
+        guid,
+        nome,
+        imagem,
+        ordem
+    }
+
+    try {
+
+        /*formaPagamento.forEach(async (formaPagamento) => {
+            // Criando dados Forma de Pagamento
+            const formaPagamentoCreate = await FormaPagamento.create(formaPagamento)
+            if (formaPagamentoCreate == null) {
+
+            } else {
+
+            }
+        })*/
+
+        res.status(200).json({
+            success: true,
+            message: 'Forma de Pagamento registrada com sucesso!',
+            data: formaPagamento,
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível registrar o Forma de Pagamento!",
+            error: error
+        })
+    }
+
+})
+
+// Create 
+router.patch('/AtualizarFormaPagamento', async (req, res) => {
+
+    // req.body
+    // {name: "", salary: "", "approved"}
+    const { name, salary, approved } = req.body
+
+    if (!name) {
+        res.status(422).json({ error: 'Obrigatorio o Nome' })
+    }
+
+    const person = {
+        name,
+        salary,
+        approved
+    }
+
+    // create
+
+    try {
+
+        // Criando dados
+        await Person.create(person)
+
+        res.status(201).json({ message: "Pessoa inserida com sucesso" })
 
     } catch (error) {
         res.status(500).json({ error: error })
@@ -239,11 +355,11 @@ router.patch('/:idEstabelecimento', async (req, res) => {
         horarios.forEach(async (horario) => {
 
             try {
-                
+
                 // Buscando a HorarioEstabelecimento                
-                const estabelecimentoHorarioFindOne = await HorarioEstabelecimento.findOne( { idEstabelecimento: estabelecimentoId })
-                
-                const horarioCreate = await Horario.updateOne({_id: estabelecimentoHorarioFindOne.idHorario.String}, horario)
+                const estabelecimentoHorarioFindOne = await HorarioEstabelecimento.findOne({ idEstabelecimento: estabelecimentoId })
+
+                const horarioCreate = await Horario.updateOne({ _id: estabelecimentoHorarioFindOne.idHorario.String }, horario)
                 console.log('Json {} de Horario UpdateOne', horarioCreate)
 
             } catch (error) {
@@ -252,7 +368,7 @@ router.patch('/:idEstabelecimento', async (req, res) => {
 
         });
 
-        const updatedEstabelecimento = await Estabelecimento.updateOne({_id: estabelecimentoId}, estabelecimento)
+        const updatedEstabelecimento = await Estabelecimento.updateOne({ _id: estabelecimentoId }, estabelecimento)
 
         if (updatedEstabelecimento.matchedCount === 0) {
             res.status(422).json({ message: 'O usuário não foi encontrado!' })

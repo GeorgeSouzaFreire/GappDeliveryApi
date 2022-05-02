@@ -41,6 +41,7 @@ app.use('/App/V1/Imagem', imagemRotas)
 app.use('/App/V1/Empresa', empresaRotas)
 app.use('/App/V1/Pedido', pedidoRotas)
 app.use('/App/V1/Empresa', empresaDesignerRotas)
+app.use('/App/V1/Endereco', enderecoRotas)
 
 app.use('/Web/V1/Usuario', usuarioRotas)
 app.use('/Web/V1/Usuario', usuarioEnderecoRotas)
