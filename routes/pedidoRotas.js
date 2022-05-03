@@ -15,7 +15,7 @@ router.post('/PostPedido/', async (req, res) => {
         idUsuario,
         nomeUsuario,
         endereco,
-        produto,
+        item,
         formaPagamento,
         statusPedido,
         idStatusPedido,
@@ -34,8 +34,8 @@ router.post('/PostPedido/', async (req, res) => {
         errors.idUsuario = ['O IdUsuario é obrigatório'];
     }
 
-    if (!String(endereco).trim()) {
-        errors.endereco = ['O Endereço é obrigatório'];
+    if (!String(item).trim()) {
+        errors.item = ['O Produto é obrigatório'];
     }
 
     if (Object.keys(errors).length) {
@@ -48,7 +48,7 @@ router.post('/PostPedido/', async (req, res) => {
             idUsuario,
             nomeUsuario,
             endereco,
-            produto,
+            item,
             formaPagamento,
             statusPedido,
             idStatusPedido,
@@ -73,19 +73,19 @@ router.post('/PostPedido/', async (req, res) => {
                 })
             } else {
 
-                for (let k = 0; k < pedido.produto.length; k++) {
+                for (let k = 0; k < pedido.item.length; k++) {
 
                     let soma = 0;
 
-                    soma = pedido.produto[k].quantidade
+                    soma = pedido.item[k].quantidade
 
-                    for (let j = 0; j < pedidoFindOne.produto.length; j++) {
+                    for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
-                        if (pedido.produto[k].idProduto == pedidoFindOne.produto[j].idProduto) {
+                        if (pedido.item[k].idProduto == pedidoFindOne.item[j].idProduto) {
 
-                            soma += pedidoFindOne.produto[j].quantidade;
+                            soma += pedidoFindOne.item[j].quantidade;
 
-                            pedidoFindOne.produto[j].quantidade = soma
+                            pedidoFindOne.item[j].quantidade = soma
 
                             console.log('Soma das quantidades', soma)
                         }
@@ -137,28 +137,19 @@ router.get('/GetPedidoApp', async (req, res) => {
         } else {
 
             let quantidadeTotal = 0
-
-            for (let j = 0; j < pedidoFindOne.produto.length; j++) {
-
-                quantidadeTotal += pedidoFindOne.produto[j].quantidade;
-
-                console.log('Detalhe do Pedido', quantidadeTotal)
-            }
-
-            var precoListTotal = await Promise.all(pedidoFindOne.produto.map(async (produto) => {
-                console.log(produto.idProduto)
-                const produtoFindOne = await Produto.findOne({ _id: produto.idProduto })
-                if (produtoFindOne == null) {
-                    return 0.0
-                } else {
-                    return produtoFindOne.precoAtual;
-                }
-            }));
-
             var valorTotal = 0.0
 
-            for (let j = 0; j < precoListTotal.length; j++) {
-                valorTotal += precoListTotal[j];
+            for (let j = 0; j < pedidoFindOne.item.length; j++) {
+
+                quantidadeTotal += pedidoFindOne.item[j].quantidade;
+
+                if (pedidoFindOne.item[j].produto == null) {
+                    valorTotal = 0.0
+                } else {
+                    valorTotal += pedidoFindOne.item[j].produto.precoAtual;
+                }
+
+                console.log('Detalhe do Pedido', 'Quantidade = ' + quantidadeTotal + ' / R$ ' + valorTotal)
             }
 
             res.status(200).json({
