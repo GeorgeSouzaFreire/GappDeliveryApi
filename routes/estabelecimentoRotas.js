@@ -223,23 +223,42 @@ router.get('/GetFormaPagamento', async (req, res) => {
 // Post Forma de Pagamento 
 router.post('/PostFormaPagamento', async (req, res) => {
 
-    const {
+    /*const {
         guid,
         nome,
         imagem,
         ordem
-    } = req.body
+    } = req.body*/
 
-    const formaPagamento = {
+    //console.log('Request', req.body)
+
+    /*const formaPagamento = {
         guid,
         nome,
         imagem,
         ordem
-    }
+    }*/
+
+    //console.log(formaPagamento)
 
     try {
 
-        /*formaPagamento.forEach(async (formaPagamento) => {
+        req.body.forEach(async function (item) {
+
+            const {
+                id,
+                guid,
+                tipo,
+                ordem,
+            } = item
+
+            const formaPagamento = {
+                id,
+                guid,
+                tipo,
+                ordem,
+            }
+
             // Criando dados Forma de Pagamento
             const formaPagamentoCreate = await FormaPagamento.create(formaPagamento)
             if (formaPagamentoCreate == null) {
@@ -247,12 +266,13 @@ router.post('/PostFormaPagamento', async (req, res) => {
             } else {
 
             }
-        })*/
+            console.log(formaPagamento)
+        })
 
         res.status(200).json({
             success: true,
             message: 'Forma de Pagamento registrada com sucesso!',
-            data: formaPagamento,
+            data: req.body,
         })
 
     } catch (error) {

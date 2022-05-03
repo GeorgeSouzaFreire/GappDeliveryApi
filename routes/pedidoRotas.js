@@ -3,7 +3,7 @@ const router = require('express').Router()
 const { response } = require('express')
 const { get } = require('express/lib/response')
 const Pedido = require('../models/Pedido')
-
+const Produto = require('../models/Produto')
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostPedido/', async (req, res) => {
@@ -136,14 +136,38 @@ router.get('/GetPedidoApp', async (req, res) => {
             })
         } else {
 
-            
+            let quantidadeTotal = 0
+
+            for (let j = 0; j < pedidoFindOne.produto.length; j++) {
+
+                quantidadeTotal += pedidoFindOne.produto[j].quantidade;
+
+                console.log('Detalhe do Pedido', quantidadeTotal)
+            }
+
+            var precoListTotal = await Promise.all(pedidoFindOne.produto.map(async (produto) => {
+                console.log(produto.idProduto)
+                const produtoFindOne = await Produto.findOne({ _id: produto.idProduto })
+                if (produtoFindOne == null) {
+                    return 0.0
+                } else {
+                    return produtoFindOne.precoAtual;
+                }
+            }));
+
+            var valorTotal = 0.0
+
+            for (let j = 0; j < precoListTotal.length; j++) {
+                valorTotal += precoListTotal[j];
+            }
 
             res.status(200).json({
                 success: true,
                 message: 'Foram encontrado ' + pedidoFindOne.length + ' resultado!',
                 data: {
-                   resumo: '',
-                   pedido: pedidoFindOne
+                    quantidadeTotal: quantidadeTotal,
+                    valorTotal: valorTotal,
+                    pedido: pedidoFindOne
                 },
             })
         }
