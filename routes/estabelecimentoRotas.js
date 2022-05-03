@@ -223,24 +223,6 @@ router.get('/GetFormaPagamento', async (req, res) => {
 // Post Forma de Pagamento 
 router.post('/PostFormaPagamento', async (req, res) => {
 
-    /*const {
-        guid,
-        nome,
-        imagem,
-        ordem
-    } = req.body*/
-
-    //console.log('Request', req.body)
-
-    /*const formaPagamento = {
-        guid,
-        nome,
-        imagem,
-        ordem
-    }*/
-
-    //console.log(formaPagamento)
-
     try {
 
         req.body.forEach(async function (item) {
