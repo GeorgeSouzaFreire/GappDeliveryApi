@@ -263,7 +263,7 @@ router.patch('/AtualizaFormaPagamento', async (req, res) => {
 })
 
 // Patch AtualizaQuantidadePedido
-router.patch('/AtualizaQuantidadePedido', async (req, res) => {
+router.patch('/AtualizaQuantidadeProdutoPedido', async (req, res) => {
 
     const pedidoId = req.query.IdPedido
     const tipo = req.query.Tipo
@@ -274,7 +274,7 @@ router.patch('/AtualizaQuantidadePedido', async (req, res) => {
         idUsuario,
         nomeUsuario,
         endereco,
-        produto,
+        item,
         formaPagamento,
         statusPedido,
         idStatusPedido,
@@ -289,7 +289,7 @@ router.patch('/AtualizaQuantidadePedido', async (req, res) => {
         idUsuario,
         nomeUsuario,
         endereco,
-        produto,
+        item,
         formaPagamento,
         statusPedido,
         idStatusPedido,
@@ -304,21 +304,21 @@ router.patch('/AtualizaQuantidadePedido', async (req, res) => {
 
             const pedidoFindOne = await Pedido.findOne({ _id: pedidoId })
 
-            for (let k = 0; k < pedido.produto.length; k++) {
+            for (let k = 0; k < pedido.item.length; k++) {
 
-                const subtracao = pedido.produto[k].quantidade;
+                const subtracao = pedido.item[k].quantidade;
 
                 console.log('Valor para subtracao', subtracao)
 
-                for (let j = 0; j < pedidoFindOne.produto.length; j++) {
+                for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
-                    if (pedido.produto[k].idProduto == pedidoFindOne.produto[j].idProduto) {
+                    if (pedido.item[k].produto.id == pedidoFindOne.item[j].produto.id) {
 
-                        console.log('Calculo de subtracao', pedidoFindOne.produto[j].quantidade - subtracao)
+                        console.log('Calculo de subtracao', pedidoFindOne.item[j].quantidade - subtracao)
 
-                        const total = pedidoFindOne.produto[j].quantidade - subtracao;
+                        const total = pedidoFindOne.item[j].quantidade - subtracao;
 
-                        pedidoFindOne.produto[j].quantidade = total
+                        pedidoFindOne.item[j].quantidade = total
 
                         console.log('Subtracao Toral', total)
                     }
@@ -344,23 +344,26 @@ router.patch('/AtualizaQuantidadePedido', async (req, res) => {
 
             const pedidoFindOne = await Pedido.findOne({ _id: pedidoId })
 
-            for (let k = 0; k < pedido.produto.length; k++) {
+            for (let k = 0; k < pedido.item.length; k++) {
 
                 let adicao = 0;
 
-                adicao = pedido.produto[k].quantidade
+                adicao = pedido.item[k].quantidade
 
                 console.log('Valor para adição', adicao)
 
-                for (let j = 0; j < pedidoFindOne.produto.length; j++) {
+                for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
-                    if (pedido.produto[k].idProduto == pedidoFindOne.produto[j].idProduto) {
 
-                        console.log('Calculo de Adição', pedidoFindOne.produto[j].quantidade - adicao)
+                    console.log('Id -- > ', pedido.item[k].produto.id  + ' Id -- > ' + pedidoFindOne.item[j].produto.id)
 
-                        const total = pedidoFindOne.produto[j].quantidade + adicao;
+                    if (pedido.item[k].produto.id == pedidoFindOne.item[j].produto.id) {
 
-                        pedidoFindOne.produto[j].quantidade = total
+                        console.log('Calculo de Adição', pedidoFindOne.item[j].quantidade - adicao)
+
+                        const total = pedidoFindOne.item[j].quantidade + adicao;
+
+                        pedidoFindOne.item[j].quantidade = total
 
                         console.log('Soma das quantidades', total)
                     }
