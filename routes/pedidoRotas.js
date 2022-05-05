@@ -81,7 +81,7 @@ router.post('/PostPedido/', async (req, res) => {
 
                     for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
-                        if (pedido.item[k].idProduto == pedidoFindOne.item[j].idProduto) {
+                        if (pedido.item[k]._id == pedidoFindOne.item[j]._id) {
 
                             soma += pedidoFindOne.item[j].quantidade;
 
@@ -266,7 +266,7 @@ router.patch('/AtualizaFormaPagamento', async (req, res) => {
 router.patch('/AtualizaQuantidadeProdutoPedido', async (req, res) => {
 
     const pedidoId = req.query.IdPedido
-    const tipo = req.query.Tipo
+    const tipo     = req.query.Tipo
 
     const {
         guid,
@@ -300,6 +300,8 @@ router.patch('/AtualizaQuantidadeProdutoPedido', async (req, res) => {
 
     try {
 
+        console.log('Tipo ----- > ', tipo)
+
         if (tipo == 0) {
 
             const pedidoFindOne = await Pedido.findOne({ _id: pedidoId })
@@ -312,7 +314,9 @@ router.patch('/AtualizaQuantidadeProdutoPedido', async (req, res) => {
 
                 for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
-                    if (pedido.item[k].produto.id == pedidoFindOne.item[j].produto.id) {
+                    console.log('Calculo de subtracao', pedido.item[k].produto._id + ' / '  + pedidoFindOne.item[j].produto._id)
+
+                    if (pedido.item[k].produto._id == pedidoFindOne.item[j].produto._id) {
 
                         console.log('Calculo de subtracao', pedidoFindOne.item[j].quantidade - subtracao)
 
@@ -355,9 +359,9 @@ router.patch('/AtualizaQuantidadeProdutoPedido', async (req, res) => {
                 for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
 
-                    console.log('Id -- > ', pedido.item[k].produto.id  + ' Id -- > ' + pedidoFindOne.item[j].produto.id)
+                    console.log('Id -- > ', pedido.item[k].produto._id  + ' Id -- > ' + pedidoFindOne.item[j].produto._id)
 
-                    if (pedido.item[k].produto.id == pedidoFindOne.item[j].produto.id) {
+                    if (pedido.item[k].produto._id == pedidoFindOne.item[j].produto._id) {
 
                         console.log('Calculo de Adição', pedidoFindOne.item[j].quantidade - adicao)
 
@@ -400,7 +404,7 @@ router.patch('/AtualizaQuantidadeProdutoPedido', async (req, res) => {
 // Delete Produto do Pedido
 router.delete('/ExcluirProdutoCarrinho', async (req, res) => {
 
-    const pedidoId = req.query.IdPedido
+    const pedidoId  = req.query.IdPedido
     const produtoId = req.query.IdProduto
 
     try {
@@ -411,33 +415,33 @@ router.delete('/ExcluirProdutoCarrinho', async (req, res) => {
             res.status(422).json({
                 success: false,
                 message: 'Pedido não pode ser localizado!',
-                data: [],
+                data: {},
             })
         } else {
 
-            for (let j = 0; j < pedidoFindOne.produto.length; j++) {
+            for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
-                console.log('ID --- > Query / BD', produtoId + ' * ' + pedidoFindOne.produto[j])
+                console.log('ID --- > Query / BD', produtoId + ' * ' + pedidoFindOne.item[j])
 
-                if (pedidoFindOne.produto[j] != null && pedidoFindOne.produto[j] != undefined) {
-                    if (produtoId == pedidoFindOne.produto[j].idProduto) {
-                        console.log('Antes Delete --- > ', pedidoFindOne.produto[j])
-                        delete pedidoFindOne.produto[j];
-                        console.log('Depois Delete --- > ', pedidoFindOne.produto[j])
+                if (pedidoFindOne.item[j] != null && pedidoFindOne.item[j] != undefined) {
+                    if (produtoId == pedidoFindOne.item[j].produto._id) {
+                        console.log('Antes Delete --- > ', pedidoFindOne.item[j])
+                        delete pedidoFindOne.item[j];
+                        console.log('Depois Delete --- > ', pedidoFindOne.item[j])
                     }
                 }
             }
 
-            pedidoFindOne.produto = cleanArray(pedidoFindOne.produto);
+            pedidoFindOne.item = cleanArray(pedidoFindOne.item);
 
-            if (pedidoFindOne.produto.length == 0) {
+            if (pedidoFindOne.item.length == 0) {
 
                 const pedidoDelete = await Pedido.deleteOne({ _id: pedidoFindOne._id })
 
                 res.status(200).json({
                     success: true,
                     message: 'Foram excluido todos os produto do pedido, Pedido foi deletado!',
-                    data: {},
+                    data: pedidoDelete,
                 })
 
             } else {
