@@ -322,12 +322,20 @@ router.patch('/AtualizaQuantidadeProdutoPedido', async (req, res) => {
 
                         const total = pedidoFindOne.item[j].quantidade - subtracao;
 
-                        pedidoFindOne.item[j].quantidade = total
+                        if(total >= 1){
+                            pedidoFindOne.item[j].quantidade = total
 
-                        console.log('Subtracao Toral', total)
+                            console.log('Subtracao Toral', total)
+                        }else{
+                            console.log('O Total já é ----> ', total + ' então não vamos adicionar mais na lista')
+                        }                        
+
+                       
                     }
                 }
             }
+
+            console.log('Tamanho da Lista de Item ----> ', pedidoFindOne.item.length)            
 
             const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoId }, pedidoFindOne, { new: true })
 

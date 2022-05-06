@@ -3,6 +3,7 @@ const router = require('express').Router()
 const { response } = require('express')
 const { get } = require('express/lib/response')
 const Usuario = require('../models/Usuario')
+const UsuarioEndereco = require('../models/UsuarioEndereco')
 
 
 
@@ -10,53 +11,7 @@ const Usuario = require('../models/Usuario')
 router.post('/PostUsuario/', async (req, res) => {
 
     // req.body   
-    const { 
-        id,
-        guid,
-        idEmpresa,
-        idEstabelecimento,
-        nome,
-        sobrenome,
-        telefone,
-        email,
-        senha,
-        facebookId,
-        googleId,
-        idUsuarioEndereco,
-        web,
-        adminEmpresa,
-        adminMaster,
-        aceitaReceberInfo,
-        ativo,
-        dataCriacao,
-        dataAtualizacao 
-    } = req.body
-
-    const errors = {};
-
-    if (!String(nome).trim()) {
-        errors.nome = ['O nome é obrigatório'];
-    }
-
-    if (!String(telefone).trim()) {
-        errors.telefone = ['O telefone é obrigatório'];
-    }
-    
-    if (!String(senha).trim()) {
-        errors.senha = ['Sua senha é fundamental, Anote para não esquecer.'];
-    }
-
-    if (!String(email).trim()) {
-        errors.email = ['O email é obrigatório'];
-    } else if (!(/^[\-0-9a-zA-Z\.\+_]+@[\-0-9a-zA-Z\.\+_]+\.[a-zA-Z]{2,}$/).test(String(email))) {
-        errors.email = ['E-mail não é válido.'];
-    }
-
-    if (Object.keys(errors).length) {
-        res.status(422).json({ error: errors })
-    }else{
-
-    const usuario = {
+    const {
         id,
         guid,
         idEmpresa,
@@ -76,25 +31,117 @@ router.post('/PostUsuario/', async (req, res) => {
         ativo,
         dataCriacao,
         dataAtualizacao
+    } = req.body
+
+    const errors = {};
+
+    if (!String(nome).trim()) {
+        errors.nome = ['O nome é obrigatório'];
     }
 
-    // create
-    try {
-
-        // Criando dados
-        const usuarioCreate = await Usuario.create(usuario)
-
-        res.status(201).json({ 
-            success: true, 
-            message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
-            data: usuarioCreate,
-        })
-
-    } catch (error) {
-        res.status(500).json({ success: false, error: error })
+    if (!String(telefone).trim()) {
+        errors.telefone = ['O telefone é obrigatório'];
     }
 
-}
+    if (!String(senha).trim()) {
+        errors.senha = ['Sua senha é fundamental, Anote para não esquecer.'];
+    }
+
+    if (!String(email).trim()) {
+        errors.email = ['O email é obrigatório'];
+    } else if (!(/^[\-0-9a-zA-Z\.\+_]+@[\-0-9a-zA-Z\.\+_]+\.[a-zA-Z]{2,}$/).test(String(email))) {
+        errors.email = ['E-mail não é válido.'];
+    }
+
+    if (Object.keys(errors).length) {
+        res.status(422).json({ error: errors })
+    } else {
+
+        const usuario = {
+            id,
+            guid,
+            idEmpresa,
+            idEstabelecimento,
+            nome,
+            sobrenome,
+            telefone,
+            email,
+            senha,
+            facebookId,
+            googleId,
+            idUsuarioEndereco,
+            web,
+            adminEmpresa,
+            adminMaster,
+            aceitaReceberInfo,
+            ativo,
+            dataCriacao,
+            dataAtualizacao
+        }
+
+        // create
+        try {
+
+            // Criando dados
+            const usuarioCreate = await Usuario.create(usuario)
+
+            res.status(201).json({
+                success: true,
+                message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
+                data: usuarioCreate,
+            })
+
+        } catch (error) {
+            res.status(500).json({ success: false, error: error })
+        }
+
+    }
+
+})
+
+// Create - POST Usuario
+router.post('/PostUsuarioEndereco/', async (req, res) => {
+
+    // req.body   
+    const {
+        usuario,
+        entrega,
+    } = req.body
+
+    const errors = {};
+
+    if (!String(usuario).trim()) {
+        errors.nome = ['O Usuário é obrigatório'];
+    }
+
+    if (Object.keys(errors).length) {
+        res.status(422).json({ error: errors })
+    } else {
+
+        const usuarioEndereco = {
+            usuario,
+            entrega
+        }
+
+        try {
+
+            // Criando dados
+            const usuarioCreate = await UsuarioEndereco.create(usuarioEndereco)
+
+            res.status(201).json({
+                success: true,
+                message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
+                data: usuarioCreate,
+            })
+
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                error: error
+            })
+        }
+
+    }
 
 })
 
@@ -110,16 +157,16 @@ router.get('/GetUsuario', async (req, res) => {
 
     try {
 
-        if(emailId != '' & senhaId != ''){
-            const usuario = await Usuario.findOne({ email: emailId, senha: senhaId})
+        if (emailId != '' & senhaId != '') {
+            const usuario = await Usuario.findOne({ email: emailId, senha: senhaId })
 
-            if(usuario != null){
+            if (usuario != null) {
                 res.status(200).json({
                     success: true,
                     message: 'Usuário encontrado com sucesso!',
                     data: usuario,
                 })
-            }else{
+            } else {
                 res.status(201).json({
                     success: true,
                     message: 'Não foi possivel localizar Usuário.',
@@ -127,8 +174,8 @@ router.get('/GetUsuario', async (req, res) => {
                 })
             }
 
-           
-        }else{
+
+        } else {
             const usuario = await Usuario.findOne({ email: emailId })
 
             res.status(200).json({
@@ -136,7 +183,54 @@ router.get('/GetUsuario', async (req, res) => {
                 message: 'Parâmetro de Email',
                 data: usuario,
             })
-        }     
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error })
+    }
+
+
+})
+
+// GET Usuario - Leitura de dados
+router.get('/GetUsuarioEndereco', async (req, res) => {
+
+    const emailId = req.query.Email;
+    const senhaId = req.query.Senha;
+
+    console.log(emailId)
+    console.log(senhaId)
+
+    try {
+
+        if (emailId != '' & senhaId != '') {
+            const usuario = await Usuario.findOne({ email: emailId, senha: senhaId })
+
+            if (usuario != null) {
+                res.status(200).json({
+                    success: true,
+                    message: 'Usuário encontrado com sucesso!',
+                    data: usuario,
+                })
+            } else {
+                res.status(201).json({
+                    success: true,
+                    message: 'Não foi possivel localizar Usuário.',
+                    data: usuario,
+                })
+            }
+
+
+        } else {
+            const usuario = await Usuario.findOne({ email: emailId })
+
+            res.status(200).json({
+                success: true,
+                message: 'Parâmetro de Email',
+                data: usuario,
+            })
+        }
 
     } catch (error) {
         console.log(error)
