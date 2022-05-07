@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const UsuarioEndereco  = mongoose.model('UsuarioEndereco', { 
-    usuario: Object,
+    usuario: String,
     endereco: Object,
     entrega: Object,
 })

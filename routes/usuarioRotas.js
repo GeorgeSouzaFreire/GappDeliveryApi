@@ -105,6 +105,7 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
     // req.body   
     const {
         usuario,
+        endereco,
         entrega,
     } = req.body
 
@@ -120,23 +121,35 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
 
         const usuarioEndereco = {
             usuario,
+            endereco,
             entrega
         }
+
+        console.log(usuarioEndereco)
 
         try {
 
             // Criando dados
-            const usuarioCreate = await UsuarioEndereco.create(usuarioEndereco)
+            const usuarioEnderecoCreate = await UsuarioEndereco.create(usuarioEndereco)
 
-            res.status(201).json({
-                success: true,
-                message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
-                data: usuarioCreate,
-            })
+            if (usuarioEnderecoCreate == null) {
+                res.status(201).json({
+                    success: true,
+                    message: "Não foi possível registrar o endereço informado!",
+                    data: usuarioEnderecoCreate,
+                })
+            } else {
+                res.status(200).json({
+                    success: true,
+                    message: "Seu endereço foi registrado com sucesso!",
+                    data: usuarioEnderecoCreate,
+                })
+            }
 
         } catch (error) {
             res.status(500).json({
                 success: false,
+                message: "Não foi possível realizar a operação!",
                 error: error
             })
         }
@@ -196,45 +209,34 @@ router.get('/GetUsuario', async (req, res) => {
 // GET Usuario - Leitura de dados
 router.get('/GetUsuarioEndereco', async (req, res) => {
 
-    const emailId = req.query.Email;
-    const senhaId = req.query.Senha;
-
-    console.log(emailId)
-    console.log(senhaId)
+    const usuarioId = req.query.IdUsuario;
 
     try {
 
-        if (emailId != '' & senhaId != '') {
-            const usuario = await Usuario.findOne({ email: emailId, senha: senhaId })
+        const usuarioFindOne = await UsuarioEndereco.findOne({ idUsuario: usuarioId });
 
-            if (usuario != null) {
-                res.status(200).json({
-                    success: true,
-                    message: 'Usuário encontrado com sucesso!',
-                    data: usuario,
-                })
-            } else {
-                res.status(201).json({
-                    success: true,
-                    message: 'Não foi possivel localizar Usuário.',
-                    data: usuario,
-                })
-            }
-
-
+        if (usuarioFindOne == null) {
+            console.log({ 'usuario._id': { usuarioId } })
+            res.status(201).json({
+                success: true,
+                message: 'Não foi possivel localizar Usuário.',
+                data: usuarioFindOne,
+            })
         } else {
-            const usuario = await Usuario.findOne({ email: emailId })
-
             res.status(200).json({
                 success: true,
-                message: 'Parâmetro de Email',
-                data: usuario,
+                message: 'Busca do Usuário realizada com sucesso!',
+                data: usuarioFindOne,
             })
         }
 
     } catch (error) {
         console.log(error)
-        res.status(500).json({ error: error })
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível realizar a operação!",
+            error: error
+        })
     }
 
 
@@ -318,6 +320,53 @@ router.patch('/:id', async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ error: error })
+    }
+
+})
+
+// Update - Atualização de dados Usuario Endereço (PUT, PATCH)
+router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
+
+    const usuarioId = req.query.IdUsuario
+
+    const {
+        usuario,
+        endereco,
+        entrega
+    } = req.body
+
+    const usuarioEndereco = {
+        usuario,
+        endereco,
+        entrega
+    }
+
+    try {
+
+        const usuarioFindOne = await UsuarioEndereco.updateOne({ idUsuario: usuarioId }, usuarioEndereco);
+
+        if (usuarioFindOne == null) {
+            console.log({ 'usuario._id': { usuarioId } })
+            res.status(201).json({
+                success: true,
+                message: 'Não foi possivel localizar Usuário.',
+                data: usuarioFindOne,
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Busca do Usuário realizada com sucesso!',
+                data: usuarioFindOne,
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível realizar a operação!",
+            error: error
+        })
     }
 
 })
