@@ -151,7 +151,7 @@ router.post('/PostEstabelecimento/', async (req, res) => {
 // GetEstabelecimentoPorIdEmpresa por IdEmpresa
 router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
 
-    //console.log(req)
+    console.log(req)
 
     // extrair o dado da requisição, pela url = req.params
     const id = req.query.IdEmpresa
@@ -192,30 +192,46 @@ router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
 router.get('/GetFormaPagamento', async (req, res) => {
 
     const estabelecimentoId = req.query.IdEstabelecimento
-
-    const { name, salary, approved } = req.body
-
-    if (!name) {
-        res.status(422).json({ error: 'Obrigatorio o Nome' })
-    }
-
-    const person = {
-        name,
-        salary,
-        approved
-    }
-
-    // create
+    const ativoId = req.query.Ativo
 
     try {
 
-        // Criando dados
-        await Person.create(person)
+        console.log('Id do Estabelecimento!', estabelecimentoId)
 
-        res.status(201).json({ message: "Pessoa inserida com sucesso" })
+        const estabelecimentoFormaPagamentoFind = await EstabelecimentoFormaPagamento.find({ idEstabelecimento: estabelecimentoId, ativo: ativoId })
+
+        console.log('EstabelecimentoFormaPagamento ---> ', estabelecimentoFormaPagamentoFind)
+
+        if (estabelecimentoFormaPagamentoFind == null) {
+            res.status(422).json({
+                success: false,
+                message: 'O Estabelecimento não foi encontrado!',
+                data: {},
+            })
+        } else {
+
+            var lista = await Promise.all(estabelecimentoFormaPagamentoFind.map(async (estabelecimentoFormaPagamento) => {
+
+                const formaDePagamentoFind = await FormaPagamento.findOne({ _id: estabelecimentoFormaPagamento.idFormaPagamento }).sort({ ordem: 1 })
+
+                return formaDePagamentoFind;
+            }));
+
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontrado ' + lista.length + ' resultado(s) cadastrado!',
+                data: { lista },
+            })
+        }
+
+
 
     } catch (error) {
-        res.status(500).json({ error: error })
+        res.status(500).json({
+            success: false,
+            message: "Não foi possivel realizar a busca da Forma de Pagamento!",
+            error: error
+        })
     }
 
 })
@@ -228,26 +244,30 @@ router.post('/PostFormaPagamento', async (req, res) => {
         req.body.forEach(async function (item) {
 
             const {
-                id,
                 guid,
                 tipo,
+                idTipo,
                 ordem,
+                ativo,
+                dataCriacao,
+                dataAtualizacao,
             } = item
 
             const formaPagamento = {
-                id,
                 guid,
                 tipo,
+                idTipo,
                 ordem,
+                ativo,
+                dataCriacao,
+                dataAtualizacao,
             }
 
             // Criando dados Forma de Pagamento
             const formaPagamentoCreate = await FormaPagamento.create(formaPagamento)
-            if (formaPagamentoCreate == null) {
 
-            } else {
+            console.log('Forma de Pagamento criada com sucesso!', formaPagamentoCreate)
 
-            }
             console.log(formaPagamento)
         })
 
@@ -269,33 +289,82 @@ router.post('/PostFormaPagamento', async (req, res) => {
 })
 
 // Create 
-router.patch('/AtualizarFormaPagamento', async (req, res) => {
-
-    // req.body
-    // {name: "", salary: "", "approved"}
-    const { name, salary, approved } = req.body
-
-    if (!name) {
-        res.status(422).json({ error: 'Obrigatorio o Nome' })
-    }
-
-    const person = {
-        name,
-        salary,
-        approved
-    }
-
-    // create
+router.patch('/AtualizarFormaPagamentoEstabelecimento', async (req, res) => {
 
     try {
 
-        // Criando dados
-        await Person.create(person)
+        const estabelecimentoId = req.query.IdEstabelecimento
 
-        res.status(201).json({ message: "Pessoa inserida com sucesso" })
+        req.body.forEach(async function (item) {
+
+
+            console.log(item)
+
+            const {
+                id,
+                ativo,
+                dataAtualizacao,
+            } = item
+
+            const formaPagamento = {
+                id,
+                ativo,
+                dataAtualizacao,
+            }
+
+            // Criando dados Forma de Pagamento
+            const formaPagamentoFindOne = await FormaPagamento.findOne({ _id: formaPagamento.id })
+
+            console.log(formaPagamentoFindOne)
+
+            console.log('Busca de Forma de Pagamento realizada com sucesso!', formaPagamentoFindOne)
+
+            if (formaPagamentoFindOne == null) {
+                res.status(422).json({
+                    success: true,
+                    message: 'Não foi possível registrar Forma de Pagamento!',
+                    data: req.body,
+                })
+            } else {
+
+                const estabelecimentoFormaPagamentoUpdateOrCreate = await EstabelecimentoFormaPagamento.findOne({ idFormaPagamento: formaPagamentoFindOne._id })
+
+                console.log('Busca EstabelecimentoFormaPagamento para ver ser atualizamos!', estabelecimentoFormaPagamentoUpdateOrCreate)
+
+                if (estabelecimentoFormaPagamentoUpdateOrCreate == null) {
+
+                    const estabelecimentoFormaPagamento = {
+                        idEstabelecimento: estabelecimentoId,
+                        idFormaPagamento: formaPagamentoFindOne._id,
+                        ativo: formaPagamento.ativo,
+                    };
+
+                    const estabelecimentoFormaPagamentoCreate = await EstabelecimentoFormaPagamento.create(estabelecimentoFormaPagamento)
+
+                    console.log('Relacionamento Estabelecimento x Forma de Pagamento criado com sucesso!', estabelecimentoFormaPagamentoCreate)
+
+                } else {
+                    const estabelecimentoFormaPagamentoCreate = await EstabelecimentoFormaPagamento.updateOne({ _id: estabelecimentoFormaPagamentoUpdateOrCreate._id }, estabelecimentoFormaPagamentoUpdateOrCreate)
+
+                    console.log('Relacionamento Estabelecimento x Forma de Pagamento atualizado com sucesso!', estabelecimentoFormaPagamentoCreate)
+                }
+
+            }
+        })
+
+        res.status(200).json({
+            success: true,
+            message: 'Forma de Pagamento Por Estabelcimento atualizado com sucesso!',
+            data: req.body,
+        })
 
     } catch (error) {
-        res.status(500).json({ error: error })
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível atualizar a Forma de Pagamento!",
+            error: error
+        })
     }
 
 })

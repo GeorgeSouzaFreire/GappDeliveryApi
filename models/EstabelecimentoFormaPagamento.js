@@ -4,6 +4,9 @@ const EstabelecimentoFormaPagamento  = mongoose.model('EstabelecimentoFormaPagam
     id: String,    
     idEstabelecimento: String,
     idFormaPagamento: String,
+    ativo: Boolean,
+    dataCriacao: String,
+    dataAtualizacao: String
 })
 
 module.exports = EstabelecimentoFormaPagamento

@@ -4,7 +4,7 @@ const Usuario  = mongoose.model('Usuario', {
     id: String,
     guid: String,
     idEmpresa: Number,
-    idEstabelecimento: Number,
+    idEstabelecimento: String,
     nome: String,
     telefone: String,
     email: String,

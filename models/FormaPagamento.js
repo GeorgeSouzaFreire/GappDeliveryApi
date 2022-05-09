@@ -1,10 +1,13 @@
 const mongoose = require('mongoose')
 
-const FormaPagamento = mongoose.model('FormaPagamento', {
-    id: String,
+const FormaPagamento = mongoose.model('FormaPagamento', {    
     guid: String,    
-    tipo: String,    
-    ordem: Number
+    tipo: String,  
+    idTipo: Number,  
+    ordem: Number,
+    ativo: Boolean,
+    dataCriacao: String,
+    dataAtualizacao: String
 })
 
 module.exports = FormaPagamento
