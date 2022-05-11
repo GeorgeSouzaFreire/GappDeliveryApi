@@ -115,6 +115,22 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
         errors.nome = ['O Usuário é obrigatório'];
     }
 
+    if (!String(entrega.logradouro).trim()) {
+        errors.logradouro = ['Logradouro é obrigatório'];
+    }
+
+    if (!String(entrega.numero).trim()) {
+        errors.numero = ['Número é obrigatório'];
+    }
+
+    if (!String(entrega.bairro).trim()) {
+        errors.bairro = ['Bairro é obrigatório'];
+    }
+
+    if (!String(entrega.bairro).trim()) {
+        errors.complemento = ['Complemento é obrigatório'];
+    }
+
     if (Object.keys(errors).length) {
         res.status(422).json({ error: errors })
     } else {
@@ -125,24 +141,45 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
             entrega
         }
 
-        console.log(usuarioEndereco)
+        //console.log(usuarioEndereco)
 
         try {
 
-            // Criando dados
-            const usuarioEnderecoCreate = await UsuarioEndereco.create(usuarioEndereco)
+            const usuarioFindOne = await UsuarioEndereco.findOne({ idUsuario: usuario });
 
-            if (usuarioEnderecoCreate == null) {
-                res.status(201).json({
-                    success: true,
-                    message: "Não foi possível registrar o endereço informado!",
-                    data: usuarioEnderecoCreate,
-                })
+            if (usuarioFindOne == null) {
+
+                // Criando dados
+                const usuarioEnderecoCreate = await UsuarioEndereco.create(usuarioEndereco)
+
+                if (usuarioEnderecoCreate == null) {
+                    res.status(201).json({
+                        success: true,
+                        message: "Não foi possível registrar o endereço informado!",
+                        data: usuarioEnderecoCreate,
+                    })
+                } else {
+                    res.status(200).json({
+                        success: true,
+                        message: "Seu endereço foi registrado com sucesso!",
+                        data: usuarioEnderecoCreate,
+                    })
+                }
+
             } else {
+
+                usuarioFindOne.entrega = entrega
+
+                for (let k = 0; k < endereco.length; k++) {
+                    usuarioFindOne.endereco.push(endereco[k])
+                }
+
+                const usuarioEnderecoFindOneAndUpdate = await UsuarioEndereco.findOneAndUpdate({ _id: usuarioFindOne._id }, usuarioFindOne, { new: true })
+
                 res.status(200).json({
                     success: true,
                     message: "Seu endereço foi registrado com sucesso!",
-                    data: usuarioEnderecoCreate,
+                    data: usuarioEnderecoFindOneAndUpdate,
                 })
             }
 
