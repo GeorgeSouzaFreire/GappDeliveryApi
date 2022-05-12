@@ -479,6 +479,7 @@ router.patch('/AtualizaUsuarioEndereco/:IdUsuarioEndereco', async (req, res) => 
 router.delete('/ExcluirUsuarioEndereco', async (req, res) => {
 
     const usuarioEnderecoId  = req.query.IdUsuarioEndereco
+    const guid  = req.query.GUID
   
     try {
 
@@ -496,8 +497,8 @@ router.delete('/ExcluirUsuarioEndereco', async (req, res) => {
 
                 console.log('ID --- > Query / BD', 'Endereço' + ' * ' + usuarioEnderecoFindOne.endereco[j])
 
-                if (usuarioEnderecoFindOne.endereco[j].guid != null && usuarioEnderecoFindOne.endereco[j].guid != undefined) {
-                    if (produtoId == usuarioEnderecoFindOne.endereco[j].produto._id) {
+                if (usuarioEnderecoFindOne.endereco[j] != null && usuarioEnderecoFindOne.endereco[j] != undefined) {
+                    if (guid == usuarioEnderecoFindOne.endereco[j].guid) {
                         console.log('Antes Delete --- > ', usuarioEnderecoFindOne.endereco[j])
                         delete usuarioEnderecoFindOne.endereco[j];
                         console.log('Depois Delete --- > ', usuarioEnderecoFindOne.endereco[j])
