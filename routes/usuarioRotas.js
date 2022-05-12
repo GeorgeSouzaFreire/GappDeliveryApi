@@ -1,9 +1,11 @@
 const router = require('express').Router()
+const mongoose = require('mongoose')
 
 const { response } = require('express')
 const { get } = require('express/lib/response')
 const Usuario = require('../models/Usuario')
 const UsuarioEndereco = require('../models/UsuarioEndereco')
+const { ObjectId } = require('mongodb')
 
 
 
@@ -312,8 +314,7 @@ router.get('/GetUsuarioEndereco', async (req, res) => {
 
         const usuarioFindOne = await UsuarioEndereco.findOne({ idUsuario: usuarioId });
 
-        if (usuarioFindOne == null) {
-            console.log({ 'usuario._id': { usuarioId } })
+        if (usuarioFindOne == null) {           
             res.status(201).json({
                 success: true,
                 message: 'Não foi possivel localizar Usuário.',
@@ -422,9 +423,13 @@ router.patch('/:id', async (req, res) => {
 })
 
 // Update - Atualização de dados Usuario Endereço (PUT, PATCH)
-router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
+router.patch('/AtualizaUsuarioEndereco/:IdUsuarioEndereco', async (req, res) => {
 
-    const usuarioId = req.query.IdUsuario
+    console.log(req.query)
+
+    const usuarioEnderecoId = req.params.IdUsuarioEndereco
+
+    console.log(usuarioEnderecoId)
 
     const {
         usuario,
@@ -438,12 +443,14 @@ router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
         entrega
     }
 
+    console.log(usuarioEndereco)
+
     try {
 
-        const usuarioFindOne = await UsuarioEndereco.updateOne({ idUsuario: usuarioId }, usuarioEndereco);
+        const usuarioFindOne = await UsuarioEndereco.findByIdAndUpdate({ _id: usuarioEnderecoId }, usuarioEndereco);
 
         if (usuarioFindOne == null) {
-            console.log({ 'usuario._id': { usuarioId } })
+            console.log(usuarioFindOne)
             res.status(201).json({
                 success: true,
                 message: 'Não foi possivel localizar Usuário.',
@@ -452,7 +459,7 @@ router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
         } else {
             res.status(200).json({
                 success: true,
-                message: 'Busca do Usuário realizada com sucesso!',
+                message: 'Busca do Usuário Endereco realizada com sucesso!',
                 data: usuarioFindOne,
             })
         }
@@ -462,6 +469,73 @@ router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Não foi possível realizar a operação!",
+            error: error
+        })
+    }
+
+})
+
+// Delete Produto do Pedido
+router.delete('/ExcluirUsuarioEndereco', async (req, res) => {
+
+    const usuarioEnderecoId  = req.query.IdUsuarioEndereco
+  
+    try {
+
+        const usuarioEnderecoFindOne = await UsuarioEndereco.findOne({ _id: usuarioEnderecoId })
+
+        if (usuarioEnderecoFindOne == null) {
+            res.status(422).json({
+                success: false,
+                message: 'Não foi possível encontrar Usuário Endereco para excluir',
+                data: {},
+            })
+        } else {
+
+            for (let j = 0; j < usuarioEnderecoFindOne.endereco.length; j++) {
+
+                console.log('ID --- > Query / BD', 'Endereço' + ' * ' + usuarioEnderecoFindOne.endereco[j])
+
+                if (usuarioEnderecoFindOne.endereco[j].guid != null && usuarioEnderecoFindOne.endereco[j].guid != undefined) {
+                    if (produtoId == usuarioEnderecoFindOne.endereco[j].produto._id) {
+                        console.log('Antes Delete --- > ', usuarioEnderecoFindOne.endereco[j])
+                        delete usuarioEnderecoFindOne.endereco[j];
+                        console.log('Depois Delete --- > ', usuarioEnderecoFindOne.endereco[j])
+                    }
+                }
+            }
+
+            usuarioEnderecoFindOne.endereco = cleanArray(usuarioEnderecoFindOne.endereco);
+
+            if (usuarioEnderecoFindOne.endereco.length == 0) {
+
+                const usuarioEnderecoDelete = await UsuarioEndereco.deleteOne({ _id: usuarioEnderecoFindOne._id })
+
+                res.status(200).json({
+                    success: true,
+                    message: 'Foram excluido todos os produto do pedido, Pedido foi deletado!',
+                    data: usuarioEnderecoDelete,
+                })
+
+            } else {
+
+                const usuarioEnderecoUpdate = await UsuarioEndereco.findOneAndUpdate({ _id: usuarioEnderecoFindOne._id }, usuarioEnderecoFindOne, { new: true })
+
+                res.status(200).json({
+                    success: true,
+                    message: 'Produto excluido com sucesso!',
+                    data: usuarioEnderecoUpdate,
+                })
+
+            }
+           
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do Usuário Endereco.',
             error: error
         })
     }
@@ -492,6 +566,17 @@ router.delete('/:id', async (req, res) => {
     }
 
 })
+
+function cleanArray(actual) {
+    var newArray = new Array();
+    console.log('Atual --- > ', actual)
+    for (var i = 0; i < actual.length; i++) {
+        if (actual[i] != null || actual[i] != undefined) {
+            newArray.push(actual[i]);
+        }
+    }
+    return newArray;
+}
 
 
 module.exports = router
