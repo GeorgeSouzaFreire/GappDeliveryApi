@@ -425,11 +425,7 @@ router.patch('/:id', async (req, res) => {
 // Update - Atualização de dados Usuario Endereço (PUT, PATCH)
 router.patch('/AtualizaUsuarioEndereco/:IdUsuarioEndereco', async (req, res) => {
 
-    console.log(req.query)
-
     const usuarioEnderecoId = req.params.IdUsuarioEndereco
-
-    console.log(usuarioEnderecoId)
 
     const {
         usuario,
@@ -447,7 +443,7 @@ router.patch('/AtualizaUsuarioEndereco/:IdUsuarioEndereco', async (req, res) => 
 
     try {
 
-        const usuarioFindOne = await UsuarioEndereco.findByIdAndUpdate({ _id: usuarioEnderecoId }, usuarioEndereco);
+        const usuarioFindOne = await UsuarioEndereco.findByIdAndUpdate({ _id: usuarioEnderecoId }, usuarioEndereco, { new: true });
 
         if (usuarioFindOne == null) {
             console.log(usuarioFindOne)
