@@ -10,6 +10,7 @@ const Pedido = mongoose.model('Pedido', {
     formaPagamento: Object,
     statusPedido: String,
     idStatusPedido: Number,
+    observacao: String,
     ativo: Boolean,
     dataCriacao: String,
     dataAtualizacao: String

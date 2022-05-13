@@ -157,7 +157,7 @@ router.get('/GetPedidoApp', async (req, res) => {
                 message: 'Foram encontrado ' + pedidoFindOne.length + ' resultado!',
                 data: {
                     quantidadeTotal: quantidadeTotal,
-                    valorTotal: valorTotal,
+                    valorTotal: Math.round((quantidadeTotal * valorTotal) * 100) / 100,
                     pedido: pedidoFindOne
                 },
             })
@@ -232,6 +232,50 @@ router.patch('/AtualizaFormaPagamento', async (req, res) => {
     }
 
     console.log('Patch - AtualizaFormaPagamento', pedido)
+
+    try {
+
+        const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoId }, pedido, { new: true })
+
+        if (pedidoUpdate == null) {
+            res.status(422).json({
+                success: false,
+                message: 'Pedido não pode ser atualizado!',
+                data: [],
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Atualização realizada com sucesso!',
+                data: pedidoUpdate,
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Ops, Algo de errado por aqui...' + error,
+            error: error
+        })
+    }
+
+})
+
+// Patch AtualizaFormaPagamento
+router.patch('/AtualizaObservacaoPedido', async (req, res) => {
+
+    const pedidoId = req.query.IdPedido
+
+    const {
+        observacao,
+    } = req.body
+
+    const pedido = {
+        observacao,
+    }
+
+    console.log('Patch - AtualizaObservacaoPedido', pedido)
 
     try {
 
