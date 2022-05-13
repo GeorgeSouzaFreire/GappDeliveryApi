@@ -317,7 +317,7 @@ router.get('/GetUsuarioEndereco', async (req, res) => {
         if (usuarioFindOne == null) {           
             res.status(201).json({
                 success: true,
-                message: 'Não foi possivel localizar Usuário.',
+                message: 'Não há Endereço cadastrado!',
                 data: usuarioFindOne,
             })
         } else {
@@ -488,10 +488,12 @@ router.delete('/ExcluirUsuarioEndereco', async (req, res) => {
         if (usuarioEnderecoFindOne == null) {
             res.status(422).json({
                 success: false,
-                message: 'Não foi possível encontrar Usuário Endereco para excluir',
+                message: 'Usuário Endereço não foi localizado',
                 data: {},
             })
         } else {
+
+            console.log(usuarioEnderecoFindOne.endereco)
 
             for (let j = 0; j < usuarioEnderecoFindOne.endereco.length; j++) {
 
@@ -514,7 +516,7 @@ router.delete('/ExcluirUsuarioEndereco', async (req, res) => {
 
                 res.status(200).json({
                     success: true,
-                    message: 'Foram excluido todos os produto do pedido, Pedido foi deletado!',
+                    message: 'Foram excluido todos os endereço, Endereço cadastrado foi deletado!',
                     data: usuarioEnderecoDelete,
                 })
 
@@ -524,7 +526,7 @@ router.delete('/ExcluirUsuarioEndereco', async (req, res) => {
 
                 res.status(200).json({
                     success: true,
-                    message: 'Produto excluido com sucesso!',
+                    message: 'Endereço excluido com sucesso!',
                     data: usuarioEnderecoUpdate,
                 })
 
