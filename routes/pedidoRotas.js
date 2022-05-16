@@ -174,6 +174,41 @@ router.get('/GetPedidoApp', async (req, res) => {
     }
 })
 
+
+// Get Pedido App
+router.get('/GetPedidoPorId', async (req, res) => {
+
+    const pedidoId = req.query.IdPedido
+
+    try {
+
+        const pedidoFindOne = await Pedido.findOne({ _id: pedidoId })
+
+        if (pedidoFindOne == null) {
+            res.status(205).json({
+                success: false,
+                message: 'Você ainda não adicionou nenhum item no carrinho!',
+                data: {},
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontrado ' + pedidoFindOne.length + ' resultado!',
+                data: pedidoFindOne,
+            })
+        }
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do Pedido.',
+            error: error
+        })
+    }
+})
+
 // Patch AtualizaEndereco
 router.patch('/AtualizaEndereco', async (req, res) => {
 
@@ -310,7 +345,7 @@ router.patch('/AtualizaObservacaoPedido', async (req, res) => {
 router.patch('/AtualizaQuantidadeProdutoPedido', async (req, res) => {
 
     const pedidoId = req.query.IdPedido
-    const tipo     = req.query.Tipo
+    const tipo = req.query.Tipo
 
     const {
         guid,
@@ -358,7 +393,7 @@ router.patch('/AtualizaQuantidadeProdutoPedido', async (req, res) => {
 
                 for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
-                    console.log('Calculo de subtracao', pedido.item[k].produto._id + ' / '  + pedidoFindOne.item[j].produto._id)
+                    console.log('Calculo de subtracao', pedido.item[k].produto._id + ' / ' + pedidoFindOne.item[j].produto._id)
 
                     if (pedido.item[k].produto._id == pedidoFindOne.item[j].produto._id) {
 
@@ -366,20 +401,20 @@ router.patch('/AtualizaQuantidadeProdutoPedido', async (req, res) => {
 
                         const total = pedidoFindOne.item[j].quantidade - subtracao;
 
-                        if(total >= 1){
+                        if (total >= 1) {
                             pedidoFindOne.item[j].quantidade = total
 
                             console.log('Subtracao Toral', total)
-                        }else{
+                        } else {
                             console.log('O Total já é ----> ', total + ' então não vamos adicionar mais na lista')
-                        }                        
+                        }
 
-                       
+
                     }
                 }
             }
 
-            console.log('Tamanho da Lista de Item ----> ', pedidoFindOne.item.length)            
+            console.log('Tamanho da Lista de Item ----> ', pedidoFindOne.item.length)
 
             const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoId }, pedidoFindOne, { new: true })
 
@@ -411,7 +446,7 @@ router.patch('/AtualizaQuantidadeProdutoPedido', async (req, res) => {
                 for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
 
-                    console.log('Id -- > ', pedido.item[k].produto._id  + ' Id -- > ' + pedidoFindOne.item[j].produto._id)
+                    console.log('Id -- > ', pedido.item[k].produto._id + ' Id -- > ' + pedidoFindOne.item[j].produto._id)
 
                     if (pedido.item[k].produto._id == pedidoFindOne.item[j].produto._id) {
 
@@ -456,7 +491,7 @@ router.patch('/AtualizaQuantidadeProdutoPedido', async (req, res) => {
 // Delete Produto do Pedido
 router.delete('/ExcluirProdutoCarrinho', async (req, res) => {
 
-    const pedidoId  = req.query.IdPedido
+    const pedidoId = req.query.IdPedido
     const produtoId = req.query.IdProduto
 
     try {
