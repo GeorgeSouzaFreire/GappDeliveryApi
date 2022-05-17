@@ -72,25 +72,8 @@ router.post('/PostPedido/', async (req, res) => {
                     data: pedidoCreate,
                 })
             } else {
-
-                var include = []
-
-                for (let j = 0; j < pedidoFindOne.item.length; j++) {
-                    for (let k = 0; k < pedido.item.length; k++) {
-                        if (pedido.item[k].produto._id != pedidoFindOne.item[j].produto._id) {
-                            include.push(pedido.item[k])
-                        }
-                    }
-                }
-
-                console.log('Necessário atualizar os itens do carrinho = ', include)
-
-                for (let j = 0; j < include.length; j++) {
-                    pedidoFindOne.item.push(include[j])
-                }
-
-                console.log('Itens da Lista = ', pedidoFindOne.item)
-
+               
+                const pedidofindOneAndUpdate = await Pedido.findOneAndUpdate({ _id: pedidoFindOne._id }, pedido, { new: true })
 
                 for (let k = 0; k < pedido.item.length; k++) {
 
@@ -98,22 +81,22 @@ router.post('/PostPedido/', async (req, res) => {
 
                     soma = pedido.item[k].quantidade
 
-                    for (let j = 0; j < pedidoFindOne.item.length; j++) {
+                    for (let j = 0; j < pedidofindOneAndUpdate.item.length; j++) {
 
-                        console.log('Id ---> Json', pedido.item[k].produto._id + '  <---> Id -- Banco --- >' + pedidoFindOne.item[j].produto._id)
+                        console.log('Id ---> Json', pedido.item[k].produto._id + '  <---> Id -- Banco --- >' + pedidofindOneAndUpdate.item[j].produto._id)
 
-                        if (pedido.item[k].produto._id == pedidoFindOne.item[j].produto._id) {
+                        if (pedido.item[k].produto._id == pedidofindOneAndUpdate.item[j].produto._id) {
 
-                            soma += pedidoFindOne.item[j].quantidade;
+                            soma += pedidofindOneAndUpdate.item[j].quantidade;
 
-                            pedidoFindOne.item[j].quantidade = soma
+                            pedidofindOneAndUpdate.item[j].quantidade = soma
 
                             console.log('Soma das quantidades', soma)
                         }
                     }
                 }
 
-                const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoFindOne._id }, pedidoFindOne, { new: true })
+                const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidofindOneAndUpdate._id }, pedidofindOneAndUpdate, { new: true })
 
                 res.status(201).json({
                     success: true,
