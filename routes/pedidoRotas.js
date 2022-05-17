@@ -73,6 +73,25 @@ router.post('/PostPedido/', async (req, res) => {
                 })
             } else {
 
+                var include = []
+
+                for (let j = 0; j < pedidoFindOne.item.length; j++) {
+                    for (let k = 0; k < pedido.item.length; k++) {
+                        if (pedido.item[k].produto._id != pedidoFindOne.item[j].produto._id) {
+                            include.push(pedido.item[k])
+                        }
+                    }
+                }
+
+                console.log('Necessário atualizar os itens do carrinho = ', include)
+
+                for (let j = 0; j < include.length; j++) {
+                    pedidoFindOne.item.push(include[j])
+                }
+
+                console.log('Itens da Lista = ', pedidoFindOne.item)
+
+
                 for (let k = 0; k < pedido.item.length; k++) {
 
                     let soma = 0;
@@ -81,7 +100,9 @@ router.post('/PostPedido/', async (req, res) => {
 
                     for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
-                        if (pedido.item[k]._id == pedidoFindOne.item[j]._id) {
+                        console.log('Id ---> Json', pedido.item[k].produto._id + '  <---> Id -- Banco --- >' + pedidoFindOne.item[j].produto._id)
+
+                        if (pedido.item[k].produto._id == pedidoFindOne.item[j].produto._id) {
 
                             soma += pedidoFindOne.item[j].quantidade;
 
