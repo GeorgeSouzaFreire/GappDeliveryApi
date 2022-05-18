@@ -81,7 +81,11 @@ router.post('/PostPedido/', async (req, res) => {
 
                     soma = pedido.item[k].quantidade
 
-                    newArray.push(pedido.item[k])
+                    var isPushOne = newArray.includes(pedidoFindOne.item[j])
+
+                    if(isPushOne == false){
+                       newArray.push(pedidoFindOne.item[j])
+                    }                    
 
                     for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
@@ -97,7 +101,7 @@ router.post('/PostPedido/', async (req, res) => {
                         }
 
                         var isPush = newArray.includes(pedidoFindOne.item[j])
-
+                        
                         if(isPush == false){
                            newArray.push(pedidoFindOne.item[j])
                         }
