@@ -72,8 +72,6 @@ router.post('/PostPedido/', async (req, res) => {
                     data: pedidoCreate,
                 })
             } else {
-               
-                const pedidofindOneAndUpdate = await Pedido.findOneAndUpdate({ _id: pedidoFindOne._id }, pedido, { new: true })
 
                 for (let k = 0; k < pedido.item.length; k++) {
 
@@ -81,22 +79,22 @@ router.post('/PostPedido/', async (req, res) => {
 
                     soma = pedido.item[k].quantidade
 
-                    for (let j = 0; j < pedidofindOneAndUpdate.item.length; j++) {
+                    for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
-                        console.log('Id ---> Json', pedido.item[k].produto._id + '  <---> Id -- Banco --- >' + pedidofindOneAndUpdate.item[j].produto._id)
+                        console.log('Id ---> Json', pedido.item[k].produto._id + '  <---> Id -- Banco --- >' + pedidoFindOne.item[j].produto._id)
 
-                        if (pedido.item[k].produto._id == pedidofindOneAndUpdate.item[j].produto._id) {
+                        if (pedido.item[k].produto._id == pedidoFindOne.item[j].produto._id) {
 
-                            soma += pedidofindOneAndUpdate.item[j].quantidade;
+                            soma += pedidoFindOne.item[j].quantidade;
 
-                            pedidofindOneAndUpdate.item[j].quantidade = soma
+                            pedidoFindOne.item[j].quantidade = soma
 
                             console.log('Soma das quantidades', soma)
                         }
                     }
                 }
 
-                const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidofindOneAndUpdate._id }, pedidofindOneAndUpdate, { new: true })
+                const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoFindOne._id }, pedidoFindOne, { new: true })
 
                 res.status(201).json({
                     success: true,
