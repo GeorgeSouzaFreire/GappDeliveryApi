@@ -73,11 +73,15 @@ router.post('/PostPedido/', async (req, res) => {
                 })
             } else {
 
+                var newArray = new Array();        
+
                 for (let k = 0; k < pedido.item.length; k++) {
 
                     let soma = 0;
 
                     soma = pedido.item[k].quantidade
+
+                    newArray.push(pedido.item[k])
 
                     for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
@@ -88,11 +92,21 @@ router.post('/PostPedido/', async (req, res) => {
                             soma += pedidoFindOne.item[j].quantidade;
 
                             pedidoFindOne.item[j].quantidade = soma
-
+                           
                             console.log('Soma das quantidades', soma)
                         }
+
+                        var isPush = newArray.includes(pedidoFindOne.item[j])
+
+                        if(isPush == false){
+                           newArray.push(pedidoFindOne.item[j])
+                        }
+                        
                     }
+                    
                 }
+
+                pedidoFindOne.item = newArray
 
                 const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoFindOne._id }, pedidoFindOne, { new: true })
 

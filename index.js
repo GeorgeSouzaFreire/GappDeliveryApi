@@ -51,7 +51,7 @@ app.use('/Web/V1/Estabelecimento', estabelecimentoRotas)
 app.use('/Web/V1/Categoria', categoriaEstabelecimentoRotas)
 app.use('/Web/V1/Produto', categoriaProdutoRotas)
 
-app.get('/Dashboard', (req, res) =>{  
+app.get('/Api', (req, res) =>{  
     // mostrar req
     res.json({message: 'Bem Vindo ao GappDelivery!'})
 })
@@ -65,7 +65,7 @@ mongoose.connect(
 )
 .then(() =>{
     console.log('Conectamos ao MongoDB')
-    app.listen(3000)
+    app.listen(8221)
 })
 .catch((err) =>{
     console.log(err)
