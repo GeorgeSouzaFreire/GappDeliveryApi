@@ -73,7 +73,7 @@ router.post('/PostPedido/', async (req, res) => {
                 })
             } else {
 
-                var newArray = new Array();                
+                var newArray = new Array();
                 var newContainsMongo = new Array();
 
                 for (let k = 0; k < pedido.item.length; k++) {
@@ -178,15 +178,16 @@ router.get('/GetPedidoApp', async (req, res) => {
                     valorTotal += pedidoFindOne.item[j].produto.precoAtual;
                 }
 
-                console.log('Detalhe do Pedido', 'Quantidade = ' + quantidadeTotal + ' / R$ ' + valorTotal)
             }
+
+            console.log('Calculo do Pedido ', 'Quantidade = ' + quantidadeTotal + ' * ' + valorTotal + ' = R$ ' + ((quantidadeTotal * valorTotal) * 100 / 100).toFixed(2))
 
             res.status(200).json({
                 success: true,
                 message: 'Foram encontrado ' + pedidoFindOne.length + ' resultado!',
                 data: {
                     quantidadeTotal: quantidadeTotal,
-                    valorTotal: Math.round((quantidadeTotal * valorTotal) * 100) / 100,
+                    valorTotal: ((quantidadeTotal * valorTotal) * 100 / 100).toFixed(2),
                     pedido: pedidoFindOne
                 },
             })
