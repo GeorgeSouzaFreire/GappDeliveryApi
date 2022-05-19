@@ -73,19 +73,14 @@ router.post('/PostPedido/', async (req, res) => {
                 })
             } else {
 
-                var newArray = new Array();        
+                var newArray = new Array();                
+                var newContainsMongo = new Array();
 
                 for (let k = 0; k < pedido.item.length; k++) {
 
                     let soma = 0;
 
                     soma = pedido.item[k].quantidade
-
-                    var isPushOne = newArray.includes(pedidoFindOne.item[j])
-
-                    if(isPushOne == false){
-                       newArray.push(pedidoFindOne.item[j])
-                    }                    
 
                     for (let j = 0; j < pedidoFindOne.item.length; j++) {
 
@@ -96,19 +91,33 @@ router.post('/PostPedido/', async (req, res) => {
                             soma += pedidoFindOne.item[j].quantidade;
 
                             pedidoFindOne.item[j].quantidade = soma
-                           
+
                             console.log('Soma das quantidades', soma)
                         }
 
-                        var isPush = newArray.includes(pedidoFindOne.item[j])
-                        
-                        if(isPush == false){
-                           newArray.push(pedidoFindOne.item[j])
+                        var isPush = newContainsMongo.includes(pedidoFindOne.item[j].produto._id)
+
+                        if (isPush == false) {
+                            newArray.push(pedidoFindOne.item[j])
+                            newContainsMongo.push(pedidoFindOne.item[j].produto._id)
                         }
-                        
+
                     }
-                    
+
                 }
+
+                // O que aconteceu aqui Dev????? By George Freire
+                for (let k = 0; k < pedido.item.length; k++) {
+
+                    var isPush = newContainsMongo.includes(pedido.item[k].produto._id)
+
+                    if (isPush == false) {
+                        newArray.push(pedido.item[k])
+                    }
+
+                }
+
+                console.log('New Contains Mongo ---- > ', newContainsMongo)
 
                 pedidoFindOne.item = newArray
 
