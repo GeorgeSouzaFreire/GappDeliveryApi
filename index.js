@@ -15,6 +15,7 @@ app.use(
         extended: true,
     }),
 )
+app.set('port', process.env.PORT || 3000);
 
 app.use(express.json())
 
@@ -65,7 +66,7 @@ mongoose.connect(
 )
 .then(() =>{
     console.log('Conectamos ao MongoDB')
-    app.listen(8221)
+    app.listen(process.env.PORT)
 })
 .catch((err) =>{
     console.log(err)
