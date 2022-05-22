@@ -74,7 +74,7 @@ router.post('/PostFuncionario', async (req, res) => {
                 res.status(200).json({
                     success: true,
                     message: "Funcionário cadastrado com sucesso!",
-                    data: enderecoCreate,
+                    data: funcionarioCreate,
                 })
             }
 
@@ -134,7 +134,7 @@ router.post('/PostCargo', async (req, res) => {
                 res.status(200).json({
                     success: true,
                     message: "Cargo cadastrado com sucesso!",
-                    data: enderecoCreate,
+                    data: cargoCreate,
                 })
             }
 
@@ -149,6 +149,40 @@ router.post('/PostCargo', async (req, res) => {
 
     }
 
+})
+
+// Get Pedido App
+router.get('/GetCargo', async (req, res) => {
+
+    const empresaId = req.query.IdEmpresa
+
+    try {
+
+        const cargoFind = await Cargo.find({ idEmpresa: empresaId })
+
+        if (cargoFind == null) {
+            res.status(205).json({
+                success: false,
+                message: 'Você ainda não adicionou nenhum cargo para empresa!',
+                data: {},
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontrado ' + cargoFind.length + ' resultado!',
+                data: cargoFind,
+            })
+        }
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do cargo.',
+            error: error
+        })
+    }
 })
 
 
