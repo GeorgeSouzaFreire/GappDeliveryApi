@@ -185,5 +185,59 @@ router.get('/GetCargo', async (req, res) => {
     }
 })
 
+// Get Funcionario
+router.get('/GetFuncionario', async (req, res) => {
+
+    const loginId = req.query.Email
+    const senhaId = req.query.Senha
+
+    try {
+
+        const errors = {};
+        const mensagem = {};
+
+        if (!String(loginId).trim()) {
+            errors.email = 'Email ' + '"' + loginId + '"';
+        }
+
+        if (!String(senhaId).trim()) {
+            errors.senha = 'Senha ' + '"' + senhaId + '"';
+        }
+
+        if (Object.keys(errors).length) {
+
+            mensagem.mensagem = 'Você não pode se conectar como ' + errors.email + ',' + errors.senha + ' informado' +'. Não conseguimos encontrar este usuário. Por favor, tente novamente'
+
+            res.status(422).json({ error: mensagem })
+        } else {
+
+            const funcionarioFindOne = await Funcionario.findOne({ login: loginId, senha: senhaId })
+
+            if (funcionarioFindOne == null) {
+                res.status(205).json({
+                    success: false,
+                    message: 'Ops! Não encontramos nenhum cadastro com o e-mail ou Telefone informados.Por favor, verifique se existe algum erro de digitação.!',
+                    data: {},
+                })
+            } else {
+                res.status(200).json({
+                    success: true,
+                    message: 'Funcionário encontrado ' + funcionarioFindOne.nome + '!',
+                    data: funcionarioFindOne,
+                })
+            }
+
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do cargo.',
+            error: error
+        })
+    }
+})
+
 
 module.exports = router
