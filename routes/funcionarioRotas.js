@@ -206,7 +206,7 @@ router.get('/GetFuncionario', async (req, res) => {
 
         if (Object.keys(errors).length) {
 
-            mensagem.mensagem = 'Você não pode se conectar como ' + errors.email + ',' + errors.senha + ' informado' +'. Não conseguimos encontrar este usuário. Por favor, tente novamente'
+            mensagem.mensagem = 'Você não pode se conectar como ' + errors.email + ',' + errors.senha + ' informado' +'.\nNão conseguimos encontrar este usuário. Por favor, tente novamente'
 
             res.status(422).json({ error: mensagem })
         } else {
@@ -214,10 +214,10 @@ router.get('/GetFuncionario', async (req, res) => {
             const funcionarioFindOne = await Funcionario.findOne({ login: loginId, senha: senhaId })
 
             if (funcionarioFindOne == null) {
-                res.status(205).json({
+                res.status(201).json({
                     success: false,
-                    message: 'Ops! Não encontramos nenhum cadastro com o e-mail ou Telefone informados.Por favor, verifique se existe algum erro de digitação.!',
-                    data: {},
+                    message: 'Ops! Não encontramos nenhum cadastro com o e-mail ou Telefone informados.\nPor favor, Verifique se existe algum erro de digitação!',
+                    data: null,
                 })
             } else {
                 res.status(200).json({

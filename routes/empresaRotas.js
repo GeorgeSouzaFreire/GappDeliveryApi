@@ -168,5 +168,40 @@ router.get('/GetEmpresaApp', async (req, res) => {
 
 })
 
+// Get Empresa
+router.get('/GetEmpresas', async (req, res) => {
+
+    const ativoId = req.query.Ativo
+
+    try {
+
+        const empresaFind = await Empresa.find({ ativo: ativoId })
+
+        if (empresaFind == null) {
+            res.status(422).json({
+                success: false,
+                message: 'O Empresa não foi encontrado!',
+                data: [],
+            })
+        } else {
+
+            res.status(200).json({
+                success: true,
+                message: 'Empresa encontrada com sucesso!',
+                data: empresaFindOne,
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a Empresa.',
+            error: error
+        })      
+    }
+
+})
+
 
 module.exports = router
