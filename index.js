@@ -56,7 +56,26 @@ app.use('/Web/V1/Funcionario', funcionarioRotas)
 ,
 app.get('/Api', (req, res) =>{  
     // mostrar req
-    res.json({message: 'Bem Vindo ao GappDelivery!'})
+    //console.log(req);
+    //console.log(res.status);
+    //console.log(res.json());
+    //console.log(res.text());
+    try {
+        //const result = JSON.parse({'teste' : 'teste'});
+
+        if (!res.statusCode == 200) {
+            throw new Error(`Error status: ${res.status}`);
+          }
+
+        res.type('application/json');
+
+        const result = JSON.parse( JSON.stringify({name: 'Tom'}));
+
+        res.status(200).json(result)
+      } catch (err) {
+        // 👇️ This runs
+        console.log('Error: ', err.message);
+      }
 })
 
 // Entregar uma porta

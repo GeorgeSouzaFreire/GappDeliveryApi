@@ -170,12 +170,11 @@ router.get('/GetEmpresaApp', async (req, res) => {
 
 // Get Empresa
 router.get('/GetEmpresas', async (req, res) => {
-
-    const ativoId = req.query.Ativo
+   
 
     try {
 
-        const empresaFind = await Empresa.find({ ativo: ativoId })
+        const empresaFind = await Empresa.find()
 
         if (empresaFind == null) {
             res.status(422).json({
@@ -188,7 +187,7 @@ router.get('/GetEmpresas', async (req, res) => {
             res.status(200).json({
                 success: true,
                 message: 'Empresa encontrada com sucesso!',
-                data: empresaFindOne,
+                data: empresaFind,
             })
         }
 

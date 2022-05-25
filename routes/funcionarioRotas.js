@@ -193,6 +193,8 @@ router.get('/GetFuncionario', async (req, res) => {
 
     try {
 
+        console.log(loginId)
+
         const errors = {};
         const mensagem = {};
 
