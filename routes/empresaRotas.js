@@ -13,7 +13,7 @@ const EmpresaDesigner = require('../models/EmpresaDesigner')
 router.post('/PostEmpresa/', async (req, res) => {
 
     // req.body   
-    const {        
+    const {
         idEmpresa,
         guid,
         nome,
@@ -37,7 +37,7 @@ router.post('/PostEmpresa/', async (req, res) => {
 
         try {
 
-            const empresa = {                
+            const empresa = {
                 idEmpresa,
                 guid,
                 nome,
@@ -78,7 +78,10 @@ router.post('/PostEmpresa/', async (req, res) => {
             })
 
         } catch (error) {
-            res.status(500).json({ success: false, error: error })
+            res.status(500).json(
+                {
+                    success: false, error: error
+                })
         }
 
     }
@@ -139,12 +142,12 @@ router.get('/GetEmpresaApp', async (req, res) => {
         } else {
 
             const empresaDesigner = await EmpresaDesigner.findOne({ idEmpresa: Number.parseInt(empresaFindOne.idEmpresa) })
-            
+
             empresaFindOne.designer = empresaDesigner
 
             const empresaEndereco = await EmpresaEndereco.findOne({ idEmpresa: empresaFindOne._id })
-            
-            const endereco = await Endereco.findOne({ _id: empresaEndereco.idEndereco})
+
+            const endereco = await Endereco.findOne({ _id: empresaEndereco.idEndereco })
 
             empresaFindOne.endereco = endereco
 
@@ -163,14 +166,14 @@ router.get('/GetEmpresaApp', async (req, res) => {
             success: false,
             message: 'Não foi possível buscar a Empresa.',
             error: error
-        })      
+        })
     }
 
 })
 
 // Get Empresa
 router.get('/GetEmpresas', async (req, res) => {
-   
+
 
     try {
 
@@ -197,7 +200,46 @@ router.get('/GetEmpresas', async (req, res) => {
             success: false,
             message: 'Não foi possível buscar a Empresa.',
             error: error
-        })      
+        })
+    }
+
+})
+
+// Delete Empresa 
+router.delete('/ExcluirEmpresa', async (req, res) => {
+
+
+    const empresaId = req.query.IdEmpresa
+
+    try {
+
+        const empresaFind = await Empresa.find({ idEmpresa: empresaId })
+
+        if (empresaFind == null) {
+            res.status(422).json({
+                success: false,
+                message: 'O Empresa não foi encontrado!',
+                data: {},
+            })
+        } else {
+
+            await Empresa.deleteMany({ idEmpresa: empresaId })
+
+            res.status(200).json({
+                success: true,
+                message: 'Empresa excluida com sucesso!',
+                data: empresaFind,
+            })
+
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a Empresa.',
+            error: error
+        })
     }
 
 })
