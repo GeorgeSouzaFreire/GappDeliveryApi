@@ -55,14 +55,10 @@ app.use('/Web/V1/Produto', categoriaProdutoRotas)
 app.use('/Web/V1/Funcionario', funcionarioRotas)
 ,
 app.get('/Api', (req, res) =>{  
-    // mostrar req
-    //console.log(req);
-    //console.log(res.status);
-    //console.log(res.json());
-    //console.log(res.text());
+   
     try {
         //const result = JSON.parse({'teste' : 'teste'});
-
+        console.log('Status: ', res.statusCode);
         if (!res.statusCode == 200) {
             throw new Error(`Error status: ${res.status}`);
           }
