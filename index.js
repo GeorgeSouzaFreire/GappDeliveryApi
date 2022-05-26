@@ -21,10 +21,10 @@ app.use(express.json())
 
 //Rotas da API
 //const personRoutes = require('./routes/personRoutes')
+const utilRotas         = require('./routes/utilRotas')
 const usuarioRotas         = require('./routes/usuarioRotas')
 const enderecoRotas        = require('./routes/enderecoRotas')
 const empresaRotas         = require('./routes/empresaRotas')
-const empresaEnderecoRotas = require('./routes/empresaEnderecoRotas')
 const empresaDesignerRotas = require('./routes/empresaDesignerRotas')
 const estabelecimentoRotas = require('./routes/estabelecimentoRotas')
 const categoriaEstabelecimentoRotas = require('./routes/categoriaEstabelecimentoRotas')
@@ -35,6 +35,8 @@ const funcionarioRotas              = require('./routes/funcionarioRotas')
 
 //app.use('/person', personRoutes)
 // Rota Usuario
+app.use('/Util', utilRotas)
+
 app.use('/App/V1/Usuario', usuarioRotas)
 app.use('/App/V1/CategoriaProduto', categoriaProdutoRotas)
 app.use('/App/V1/Imagem', imagemRotas)
@@ -47,13 +49,12 @@ app.use('/App/V1/Estabelecimento', estabelecimentoRotas)
 app.use('/Web/V1/Usuario', usuarioRotas)
 app.use('/Web/V1/Endereco', enderecoRotas)
 app.use('/Web/V1/Empresa', empresaRotas)
-app.use('/Web/V1/Empresa', empresaEnderecoRotas)
 app.use('/Web/V1/Empresa', empresaDesignerRotas)
 app.use('/Web/V1/Estabelecimento', estabelecimentoRotas)
 app.use('/Web/V1/Categoria', categoriaEstabelecimentoRotas)
 app.use('/Web/V1/Produto', categoriaProdutoRotas)
 app.use('/Web/V1/Funcionario', funcionarioRotas)
-,
+
 app.get('/Api', (req, res) =>{  
    
     try {
@@ -73,6 +74,7 @@ app.get('/Api', (req, res) =>{
         console.log('Error: ', err.message);
       }
 })
+
 
 // Entregar uma porta
 const DB_USER = process.env.DB_USER

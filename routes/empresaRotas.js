@@ -5,7 +5,6 @@ const { get } = require('express/lib/response')
 const { Int32 } = require('mongodb')
 const Empresa = require('../models/Empresa')
 const Endereco = require('../models/Endereco')
-const EmpresaEndereco = require('../models/EmpresaEndereco')
 const Designer = require('../models/EmpresaDesigner')
 const EmpresaDesigner = require('../models/EmpresaDesigner')
 
@@ -17,21 +16,39 @@ router.post('/PostEmpresa/', async (req, res) => {
         idEmpresa,
         guid,
         nome,
-        nomeFantasia,
         cnpj,
         endereco,
-        telefoneFixo,
+        telefone,
         celular,
-        email
+        email,
+        designer,
+        ativo,
+        dataCriacao,
+        dataAtualizacao
     } = req.body
 
     const errors = {};
 
     if (!String(nome).trim()) {
-        errors.nome = ['O nome é obrigatório'];
+        errors.nome = ['Nome'];
+    }
+
+    if (!String(endereco.cep).trim()) {
+        errors.cep = ['CEP'];
+    }
+
+    if (!String(endereco.logradouro).trim()) {
+        errors.logradouro = ['Logradouro'];
+    }   
+
+    if (!String(email).trim()) {
+        errors.email = ['Email'];
     }
 
     if (Object.keys(errors).length) {
+
+        errors.itens = ['\nSão os ' + Object.keys(errors).length + ' itens obrigatórios!'];
+
         res.status(422).json({ error: errors })
     } else {
 
@@ -41,47 +58,60 @@ router.post('/PostEmpresa/', async (req, res) => {
                 idEmpresa,
                 guid,
                 nome,
-                nomeFantasia,
                 cnpj,
                 endereco,
-                telefoneFixo,
+                telefone,
                 celular,
-                email
+                email,
+                designer,
+                ativo,
+                dataCriacao,
+                dataAtualizacao
             }
 
-            console.log('Json {} de Empresa', empresa)
+            const empresaFind = await Empresa.findOne().sort({ _id: -1 }).limit(1)
 
-            // Criando a Empresa
-            const empresaCreate = await Empresa.create(empresa)
+            console.log('Retorno FindOne Empresa' + empresaFind);
 
-            const enredeco = empresa.endereco;
+            if (empresaFind == null) {
 
-            console.log('Json {} de Endereço', enredeco)
+                // Criando a Empresa
+                const empresaCreate = await Empresa.create(empresa)
 
-            // Criando a Endereço
-            const enderecoCreate = await Endereco.create(enredeco)
+                res.status(201).json({
+                    success: true,
+                    message: "Empresa criada com sucesso!",
+                    data: empresaCreate,
+                })
 
-            const empresaEnredeco = {
-                idEmpresa: empresaCreate._id,
-                idEndereco: enderecoCreate._id
-            };
+            } else {
 
-            console.log('Json {} de Relacionamento Empresa * Endereço', empresaEnredeco)
+                // Adiciona .+1 no Id Empresa 
+                empresa.idEmpresa = (empresaFind.idEmpresa + 1)
 
-            // Criando a EmpresaEndereco
-            await EmpresaEndereco.create(empresaEnredeco)
+                empresa.designer.idEmpresa = empresa.idEmpresa
 
-            res.status(201).json({
-                success: true,
-                message: "Empresa criada com sucesso!",
-                data: empresaCreate,
-            })
+                console.log(empresa.idEmpresa);
+
+                // Criando a Empresa
+                const empresaCreate = await Empresa.create(empresa)
+
+                res.status(201).json({
+                    success: true,
+                    message: "Empresa criada com sucesso!",
+                    data: empresaCreate,
+                })
+
+            }
+
 
         } catch (error) {
-            res.status(500).json(
-                {
-                    success: false, error: error
-                })
+            console.log(error)
+            res.status(500).json({
+                success: false,
+                message: 'Não foi possível buscar a Empresa.',
+                error: error
+            })
         }
 
     }
@@ -144,12 +174,6 @@ router.get('/GetEmpresaApp', async (req, res) => {
             const empresaDesigner = await EmpresaDesigner.findOne({ idEmpresa: Number.parseInt(empresaFindOne.idEmpresa) })
 
             empresaFindOne.designer = empresaDesigner
-
-            const empresaEndereco = await EmpresaEndereco.findOne({ idEmpresa: empresaFindOne._id })
-
-            const endereco = await Endereco.findOne({ _id: empresaEndereco.idEndereco })
-
-            empresaFindOne.endereco = endereco
 
             res.status(200).json({
                 success: true,
