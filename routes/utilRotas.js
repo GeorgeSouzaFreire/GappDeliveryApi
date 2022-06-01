@@ -7,12 +7,12 @@ router.get('/getCEP', function (req, res, next) {
 
   try {
     console.log(cep);
-    request({
+    request.get({
       method: 'GET',
       headers: {
         'Accept': 'application/json'
       },
-      uri: 'https://viacep.com.br/ws/' + cep + '/json/',
+      uri: 'https://www.google.com/',
       function(error, response, body) {
         console.log(body);
 

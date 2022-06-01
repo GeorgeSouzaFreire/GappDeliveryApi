@@ -200,11 +200,11 @@ router.get('/GetEmpresas', async (req, res) => {
 
 
     try {
-
+        
         const empresaFind = await Empresa.find()
-
+        console.log('Foram encontradas ', empresaFind.length + ' empresas!')
         if (empresaFind == null) {
-            res.status(422).json({
+            res.status(201).json({
                 success: false,
                 message: 'O Empresa não foi encontrado!',
                 data: [],
