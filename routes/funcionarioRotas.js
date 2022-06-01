@@ -152,7 +152,7 @@ router.post('/PostCargo', async (req, res) => {
 })
 
 // Get Pedido App
-router.get('/GetCargo', async (req, res) => {
+router.get('/GetCargos', async (req, res) => {
 
     const empresaId = req.query.IdEmpresa
 
