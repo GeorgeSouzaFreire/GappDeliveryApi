@@ -55,24 +55,35 @@ app.use('/Web/V1/Categoria', categoriaEstabelecimentoRotas)
 app.use('/Web/V1/Produto', categoriaProdutoRotas)
 app.use('/Web/V1/Funcionario', funcionarioRotas)
 
-app.get('/Api', (req, res) =>{  
-   
+app.get('/Api', (req, res) => {
+
     try {
-        //const result = JSON.parse({'teste' : 'teste'});
-        console.log('Status: ', res.statusCode);
-        if (!res.statusCode == 200) {
-            throw new Error(`Error status: ${res.status}`);
-          }
 
-        res.type('application/json');
+        if (res.statusCode == 200) {
+            res.status(res.statusCode).json({
+                success: true,
+                message: "Acesso a API realizado com sucesso!",
+                data: {},
+            })
+        } else {
+            res.status(res.statusCode).json({
+                success: false,
+                message: "Ops, Algo de errado ao acessar API",
+                data: {},
+            })
+        }
+        console.log('Api Solicitada: ', ' Status --- > ' + res.statusCode);
 
-        const result = JSON.parse( JSON.stringify({name: 'Tom'}));
-
-        res.status(200).json(result)
-      } catch (err) {
+    } catch (err) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Acesso a API não autorizado!',
+            error: error
+        })
         // 👇️ This runs
         console.log('Error: ', err.message);
-      }
+    }
 })
 
 

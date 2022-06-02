@@ -151,16 +151,12 @@ router.post('/PostEstabelecimento/', async (req, res) => {
 // GetEstabelecimentoPorIdEmpresa por IdEmpresa
 router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
 
-    console.log(req)
-
     // extrair o dado da requisição, pela url = req.params
     const id = req.query.IdEmpresa
 
     try {
 
         const estabelecimento = await Estabelecimento.find({ idEmpresa: Number.parseInt(id) })
-
-        console.log(estabelecimento)
 
         if (estabelecimento == null) {
             res.status(422).json({
@@ -199,8 +195,6 @@ router.get('/GetFormaPagamento', async (req, res) => {
         console.log('Id do Estabelecimento!', estabelecimentoId)
 
         const estabelecimentoFormaPagamentoFind = await EstabelecimentoFormaPagamento.find({ idEstabelecimento: estabelecimentoId, ativo: ativoId })
-
-        console.log('EstabelecimentoFormaPagamento ---> ', estabelecimentoFormaPagamentoFind)
 
         if (estabelecimentoFormaPagamentoFind == null) {
             res.status(422).json({

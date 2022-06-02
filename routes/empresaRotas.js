@@ -202,7 +202,7 @@ router.get('/GetEmpresas', async (req, res) => {
     try {
         
         const empresaFind = await Empresa.find()
-        console.log('Foram encontradas ', empresaFind.length + ' empresas!')
+        
         if (empresaFind == null) {
             res.status(201).json({
                 success: false,
@@ -210,13 +210,14 @@ router.get('/GetEmpresas', async (req, res) => {
                 data: [],
             })
         } else {
-
             res.status(200).json({
                 success: true,
                 message: 'Empresa encontrada com sucesso!',
                 data: empresaFind,
             })
         }
+
+        console.log('Foram encontradas ', empresaFind.length + ' empresas!')
 
     } catch (error) {
         console.log(error)
