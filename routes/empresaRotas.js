@@ -7,6 +7,7 @@ const Empresa = require('../models/Empresa')
 const Endereco = require('../models/Endereco')
 const Designer = require('../models/EmpresaDesigner')
 const EmpresaDesigner = require('../models/EmpresaDesigner')
+const Plano = require('../models/Plano')
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostEmpresa/', async (req, res) => {
@@ -39,7 +40,7 @@ router.post('/PostEmpresa/', async (req, res) => {
 
     if (!String(endereco.logradouro).trim()) {
         errors.logradouro = ['Logradouro'];
-    }   
+    }
 
     if (!String(email).trim()) {
         errors.email = ['Email'];
@@ -200,9 +201,9 @@ router.get('/GetEmpresas', async (req, res) => {
 
 
     try {
-        
+
         const empresaFind = await Empresa.find()
-        
+
         if (empresaFind == null) {
             res.status(201).json({
                 success: false,
@@ -224,6 +225,41 @@ router.get('/GetEmpresas', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Não foi possível buscar a Empresa.',
+            error: error
+        })
+    }
+
+})
+
+// Get Empresa
+router.get('/GetPlanos', async (req, res) => {
+
+
+    try {
+
+        const planoFind = await Plano.find()
+
+        if (planoFind.length == 0) {
+            res.status(201).json({
+                success: false,
+                message: 'Os Planos não foram encontrados!',
+                data: [],
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Planos encontrados com sucesso!',
+                data: planoFind,
+            })
+        }
+
+        console.log('Foram encontradas ', planoFind.length + ' planos!')
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a Plano.',
             error: error
         })
     }
@@ -304,6 +340,82 @@ router.patch('/DesativarEmpresa', async (req, res) => {
             message: 'Não foi possível buscar a Empresa.',
             error: error
         })
+    }
+
+})
+
+// Post Plano 
+router.post('/PostPlano', async (req, res) => {
+
+    const {
+        nome,
+        codigo,
+        quantidadeEstabelecimento,
+        quantidadeProduto,
+        quantidadeCategoria,
+        quantidadeImagem,
+        ativo,
+        dataCriacao,
+        dataAtualizacao,
+    } = req.body
+
+    const errors = {};
+
+    if (!String(nome).trim()) {
+        errors.nome = ['Nome'];
+    }
+
+    if (!String(codigo).trim()) {
+        errors.codigo = ['Codigo'];
+    }
+    
+
+    if (Object.keys(errors).length) {
+
+        errors.itens = ['\nSão os ' + Object.keys(errors).length + ' itens obrigatórios!'];
+
+        res.status(422).json({ error: errors })
+    } else {
+
+        const plano = {
+            nome,
+            codigo,
+            quantidadeEstabelecimento,
+            quantidadeProduto,
+            quantidadeCategoria,
+            quantidadeImagem,
+            ativo,
+            dataCriacao,
+            dataAtualizacao,
+        }
+
+        try {
+
+            const planoCreate = await Plano.create(plano)
+
+            if (planoCreate == null) {
+                res.status(201).json({
+                    success: false,
+                    message: "Não foi possível cadastrar o Plano!",
+                    data: {},
+                })
+            } else {
+                res.status(200).json({
+                    success: true,
+                    message: "Plano cadastrado com sucesso!",
+                    data: planoCreate,
+                })
+            }
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({
+                success: false,
+                message: 'Não foi possível realizar a buscar do Plano.',
+                error: error
+            })
+        }
+
     }
 
 })

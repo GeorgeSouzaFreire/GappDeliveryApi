@@ -4,6 +4,7 @@ const { response } = require('express')
 const Endereco = require('../models/Endereco')
 const Funcionario = require('../models/Funcionario')
 const Cargo = require('../models/Cargo')
+const Permissao = require('../models/Permissao')
 
 // Post Funcionario 
 router.post('/PostFuncionario', async (req, res) => {
@@ -26,22 +27,29 @@ router.post('/PostFuncionario', async (req, res) => {
     const errors = {};
 
     if (!String(nome).trim()) {
-        errors.nome = ['O Nome é obrigatório'];
+        errors.nome = ['Nome'];
     }
 
     if (!String(email).trim()) {
-        errors.email = ['O Email é obrigatório'];
+        errors.email = ['Email'];
     }
 
     if (!String(cargo).trim()) {
-        errors.cargo = ['O Cargo é obrigatório'];
+        errors.cargo = ['Cargo'];
     }
 
     if (!String(permissao).trim()) {
-        errors.permissao = ['O Permissao é obrigatório'];
+        errors.permissao = ['Permissao'];
     }
 
     if (Object.keys(errors).length) {
+
+        if (Object.keys(errors).length <= 1) {
+            errors.itens = ['\nExite ' + Object.keys(errors).length + ' item obrigatório!'];
+        } else {
+            errors.itens = ['\nExistem ' + Object.keys(errors).length + ' itens obrigatórios!'];
+        }
+
         res.status(422).json({ error: errors })
     } else {
 
@@ -208,7 +216,7 @@ router.get('/GetFuncionario', async (req, res) => {
 
         if (Object.keys(errors).length) {
 
-            mensagem.mensagem = 'Você não pode se conectar como ' + errors.email + ',' + errors.senha + ' informado' +'.\nNão conseguimos encontrar este usuário. Por favor, tente novamente'
+            mensagem.mensagem = 'Você não pode se conectar como ' + errors.email + ',' + errors.senha + ' informado' + '.\nNão conseguimos encontrar este usuário. Por favor, tente novamente'
 
             res.status(422).json({ error: mensagem })
         } else {
@@ -239,6 +247,73 @@ router.get('/GetFuncionario', async (req, res) => {
             error: error
         })
     }
+})
+
+// Post Permissao 
+router.post('/PostPermissao', async (req, res) => {
+
+    try {
+
+        req.body.forEach(async (permissao) => {
+
+            try {
+               
+                await Permissao.create(permissao)
+
+            } catch (error) {
+                console.log('Array Horario', error);
+            }
+
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Permissão cadastrado com sucesso!",
+            data: req.body,
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do Permissão.',
+            error: error
+        })
+    }
+
+})
+
+// Get Permissao 
+router.get('/GetPermissao', async (req, res) => {
+   
+    try {
+
+        const permissaoFind = await Permissao.find()
+
+        if (permissaoFind == null) {
+            res.status(205).json({
+                success: false,
+                message: 'Não permissões para carregar!',
+                data: {},
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontrado ' + permissaoFind.length + ' resultado!',
+                data: permissaoFind,
+            })
+        }
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do Permissão.',
+            error: error
+        })
+    }
+
 })
 
 
