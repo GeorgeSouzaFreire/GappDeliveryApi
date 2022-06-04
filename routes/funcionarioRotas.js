@@ -249,6 +249,39 @@ router.get('/GetFuncionario', async (req, res) => {
     }
 })
 
+// Get Funcionario
+router.get('/GetListFuncionarioPorIdEmpresa', async (req, res) => {
+
+    const empresaId = req.query.IdEmpresa
+
+    try {
+
+        const funcionarioFind = await Funcionario.find({ idEmpresa: empresaId })
+
+        if (funcionarioFind == null) {
+            res.status(201).json({
+                success: false,
+                message: 'Ops! Não encontramos nenhum cadastro!',
+                data: null,
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Funcionários encontrados ' + funcionarioFind.length + '!',
+                data: funcionarioFind,
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do cargo.',
+            error: error
+        })
+    }
+})
+
 // Post Permissao 
 router.post('/PostPermissao', async (req, res) => {
 
@@ -257,7 +290,7 @@ router.post('/PostPermissao', async (req, res) => {
         req.body.forEach(async (permissao) => {
 
             try {
-               
+
                 await Permissao.create(permissao)
 
             } catch (error) {
@@ -285,7 +318,7 @@ router.post('/PostPermissao', async (req, res) => {
 
 // Get Permissao 
 router.get('/GetPermissao', async (req, res) => {
-   
+
     try {
 
         const permissaoFind = await Permissao.find()
@@ -310,6 +343,70 @@ router.get('/GetPermissao', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Não foi possível realizar a buscar do Permissão.',
+            error: error
+        })
+    }
+
+})
+
+// Patch AtualizarFuncionario
+router.patch('/AtualizarFuncionario', async (req, res) => {
+
+    const funcionarioId = req.query.IdFuncionario
+
+    const {
+        nome,
+            email,
+            cargo,
+            idCargo,
+            idEmpresa,
+            estabelecimento,
+            permissao,
+            login,
+            senha,
+            ativo,
+            dataCriacao,
+            dataAtualizacao,
+    } = req.body
+
+    const funcionario = {
+        nome,
+            email,
+            cargo,
+            idCargo,
+            idEmpresa,
+            estabelecimento,
+            permissao,
+            login,
+            senha,
+            ativo,
+            dataCriacao,
+            dataAtualizacao,
+    }
+
+    try {
+
+        const funcionarioUpdate = await Funcionario.findOneAndUpdate({ _id: funcionarioId }, funcionario, { new: true })
+
+        if (funcionarioUpdate == null) {
+            res.status(422).json({
+                success: false,
+                message: 'Funcionário não pode ser atualizado!',
+                data: [],
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Atualização realizada com sucesso!',
+                data: funcionarioUpdate,
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Ops, Algo de errado por aqui...' + error,
             error: error
         })
     }
