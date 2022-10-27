@@ -221,7 +221,7 @@ router.get('/GetFuncionario', async (req, res) => {
             res.status(422).json({ error: mensagem })
         } else {
 
-            const funcionarioFindOne = await Funcionario.findOne({ login: loginId, senha: senhaId })
+            const funcionarioFindOne = await Funcionario.findOne({ login: loginId, senha: senhaId , ativo: true})
 
             if (funcionarioFindOne == null) {
                 res.status(201).json({

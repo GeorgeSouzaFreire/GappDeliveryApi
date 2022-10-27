@@ -9,7 +9,8 @@ const Empresa  = mongoose.model('Empresa', {
     telefone: String,
     celular: String,
     email: String,     
-    designer: Object,   
+    designer: Object, 
+    plano: Object,  
     ativo: Boolean,
     dataCriacao: String,
     dataAtualizacao: String 

@@ -23,6 +23,7 @@ router.post('/PostEmpresa/', async (req, res) => {
         celular,
         email,
         designer,
+        plano,
         ativo,
         dataCriacao,
         dataAtualizacao
@@ -65,6 +66,7 @@ router.post('/PostEmpresa/', async (req, res) => {
                 celular,
                 email,
                 designer,
+                plano,
                 ativo,
                 dataCriacao,
                 dataAtualizacao
