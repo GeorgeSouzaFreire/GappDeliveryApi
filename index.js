@@ -78,7 +78,7 @@ app.get('/Api', (req, res) => {
         console.log(error)
         res.status(500).json({
             success: false,
-            message: 'Acesso a API não autorizado!',
+            message: 'Acesso a API não autorizado! Favor entrar em contato com Administrador',
             error: error
         })
         // 👇️ This runs
