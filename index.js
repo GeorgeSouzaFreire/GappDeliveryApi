@@ -17,18 +17,6 @@ app.use(
 )
 app.set('port', process.env.PORT || 3000);
 
-const corsOpts = {
-    origin: '*',  
-    methods: [
-      'GET',
-      'POST',
-    ],  
-    allowedHeaders: [
-      'Content-Type',
-    ],
-};
-  
-app.use(cors(corsOpts));
 app.use(express.json())
 
 //Rotas da API
