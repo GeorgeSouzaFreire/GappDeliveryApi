@@ -77,7 +77,7 @@ app.get('/Api', (req, res) => {
         if (res.statusCode == 200) {
             res.status(res.statusCode).json({
                 success: true,
-                message: "Acesso a API realizado com sucesso!",
+                message: "Acesso a API realizado com sucesso! - Version 0.0.1",
                 data: {},
             })
         } else {
