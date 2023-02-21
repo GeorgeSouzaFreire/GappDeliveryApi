@@ -70,14 +70,14 @@ app.use('/Web/V1/Categoria', categoriaEstabelecimentoRotas)
 app.use('/Web/V1/Produto', categoriaProdutoRotas)
 app.use('/Web/V1/Funcionario', funcionarioRotas)
 
-app.get('/Api', (req, res) => {
+app.get('/api', (req, res) => {
 
     try {
 
         if (res.statusCode == 200) {
             res.status(res.statusCode).json({
                 success: true,
-                message: "Acesso a API realizado com sucesso!",
+                message: "Acesso a API realizado com sucesso! Todos os direitos reservados",
                 data: {
                    Version : "Version 0.0.1",
                    Info: "Contact: application.gapp@gmail.com" 
