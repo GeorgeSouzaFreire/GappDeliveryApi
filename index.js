@@ -17,6 +17,18 @@ app.use(
 )
 app.set('port', process.env.PORT || 3000);
 
+const corsOpts = {
+    origin: '*',  
+    methods: [
+      'GET',
+      'POST',
+    ],  
+    allowedHeaders: [
+      'Content-Type',
+    ],
+};
+  
+app.use(cors(corsOpts));
 app.use(express.json())
 
 //Rotas da API
@@ -78,7 +90,7 @@ app.get('/Api', (req, res) => {
         console.log(error)
         res.status(500).json({
             success: false,
-            message: 'Acesso a API não autorizado! Favor entrar em contato com Administrador',
+            message: 'Acesso a API não autorizado!',
             error: error
         })
         // 👇️ This runs
