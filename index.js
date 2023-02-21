@@ -77,8 +77,11 @@ app.get('/Api', (req, res) => {
         if (res.statusCode == 200) {
             res.status(res.statusCode).json({
                 success: true,
-                message: "Acesso a API realizado com sucesso! - Version 0.0.1",
-                data: {},
+                message: "Acesso a API realizado com sucesso!",
+                data: {
+                   Version : "Version 0.0.1",
+                   Info: "Contact: application.gapp@gmail.com" 
+                },
             })
         } else {
             res.status(res.statusCode).json({
@@ -90,11 +93,11 @@ app.get('/Api', (req, res) => {
         console.log('Api Solicitada: ', ' Status --- > ' + res.statusCode);
 
     } catch (err) {
-        console.log(error)
+        console.log(err)
         res.status(500).json({
             success: false,
             message: 'Acesso a API não autorizado!',
-            error: error
+            error: err
         })
         // 👇️ This runs
         console.log('Error: ', err.message);
