@@ -242,7 +242,7 @@ router.get('/GetFuncionario', async (req, res) => {
                 res.status(201).json({
                     success: false,
                     message: 'Login inativo, entre em contato com administrador.',
-                    data: funcionarioFindOne,
+                    data: null,
                 })
 
             }
