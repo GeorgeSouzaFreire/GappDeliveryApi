@@ -225,11 +225,13 @@ router.get('/GetFuncionario', async (req, res) => {
 
 
             if (funcionarioFindOne == null) {
+                
                 res.status(201).json({
                     success: false,
                     message: 'Ops! Não encontramos nenhum cadastro',
                     data: null,
                 })
+
             } else if (funcionarioFindOne.ativo) {
 
                 res.status(200).json({
@@ -237,6 +239,7 @@ router.get('/GetFuncionario', async (req, res) => {
                     message: 'Funcionário encontrado ' + funcionarioFindOne.nome + '!',
                     data: funcionarioFindOne,
                 })
+
             } else {
 
                 res.status(201).json({
