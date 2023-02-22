@@ -221,20 +221,30 @@ router.get('/GetFuncionario', async (req, res) => {
             res.status(422).json({ error: mensagem })
         } else {
 
-            const funcionarioFindOne = await Funcionario.findOne({ login: loginId, senha: senhaId , ativo: true})
+            const funcionarioFindOne = await Funcionario.findOne({ login: loginId, senha: senhaId })
+
 
             if (funcionarioFindOne == null) {
                 res.status(201).json({
                     success: false,
-                    message: 'Ops! Não encontramos nenhum cadastro com o e-mail ou Telefone informados.\nPor favor, Verifique se existe algum erro de digitação!',
+                    message: 'Ops! Não encontramos nenhum cadastro',
                     data: null,
                 })
-            } else {
+            } else if (funcionarioFindOne.ativo) {
+
                 res.status(200).json({
                     success: true,
                     message: 'Funcionário encontrado ' + funcionarioFindOne.nome + '!',
                     data: funcionarioFindOne,
                 })
+            } else {
+
+                res.status(201).json({
+                    success: false,
+                    message: 'Login inativo, entre em contato com administrador.',
+                    data: funcionarioFindOne,
+                })
+
             }
 
         }
@@ -356,32 +366,32 @@ router.patch('/AtualizarFuncionario', async (req, res) => {
 
     const {
         nome,
-            email,
-            cargo,
-            idCargo,
-            idEmpresa,
-            estabelecimento,
-            permissao,
-            login,
-            senha,
-            ativo,
-            dataCriacao,
-            dataAtualizacao,
+        email,
+        cargo,
+        idCargo,
+        idEmpresa,
+        estabelecimento,
+        permissao,
+        login,
+        senha,
+        ativo,
+        dataCriacao,
+        dataAtualizacao,
     } = req.body
 
     const funcionario = {
         nome,
-            email,
-            cargo,
-            idCargo,
-            idEmpresa,
-            estabelecimento,
-            permissao,
-            login,
-            senha,
-            ativo,
-            dataCriacao,
-            dataAtualizacao,
+        email,
+        cargo,
+        idCargo,
+        idEmpresa,
+        estabelecimento,
+        permissao,
+        login,
+        senha,
+        ativo,
+        dataCriacao,
+        dataAtualizacao,
     }
 
     try {
