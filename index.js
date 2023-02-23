@@ -47,6 +47,7 @@ const categoriaProdutoRotas         = require('./routes/categoriaProdutoRotas')
 const imagemRotas                   = require('./routes/imagemRotas')
 const pedidoRotas                   = require('./routes/pedidoRotas')
 const funcionarioRotas              = require('./routes/funcionarioRotas')
+const planoEmpresaRotas             = require('./routes/planoEmpresaRotas')
 
 //app.use('/person', personRoutes)
 // Rota Usuario
@@ -65,10 +66,12 @@ app.use('/Web/V1/Usuario', usuarioRotas)
 app.use('/Web/V1/Endereco', enderecoRotas)
 app.use('/Web/V1/Empresa', empresaRotas)
 app.use('/Web/V1/Empresa', empresaDesignerRotas)
+app.use('/Web/V1/Empresa', planoEmpresaRotas)
 app.use('/Web/V1/Estabelecimento', estabelecimentoRotas)
 app.use('/Web/V1/Categoria', categoriaEstabelecimentoRotas)
 app.use('/Web/V1/Produto', categoriaProdutoRotas)
 app.use('/Web/V1/Funcionario', funcionarioRotas)
+
 
 app.get('/api', (req, res) => {
 

@@ -1,30 +1,54 @@
-const Plano = require('../models/Plano')
-
 const router = require('express').Router()
 
-// Post Plano Empresa 
-router.post('/PostPlanoEmpresa', async (req, res) => {
+const Empresa = require('../models/Empresa')
+const Plano = require('../models/Plano')
+
+// Update Plano Empresa 
+router.patch('/UpdatePlanoEmpresa', async (req, res) => {
 
     try {
 
-        const planoEmpresaCreate = await Plano.create(cargo)
+        const empresaId = req.query.IdEmpresa
 
-        if (planoEmpresaCreate == null) {
-
-            res.status(201).json({
-                success: false,
-                message: "Permissão cadastrado com sucesso!",
-                data: null,
-            })
-
-        } else {
-
+        const  {
+            idEmpresa,            
+            plano,  
+            ativo,
+            dataCriacao,
+            dataAtualizacao 
+        } = req.body
+    
+        const empresa = {
+            idEmpresa,           
+            plano,  
+            ativo,
+            dataCriacao,
+            dataAtualizacao 
+        }
+    
+        try {
+    
+            const updatedEmpresa = await Empresa.updateOne({ idEmpresa: empresaId }, empresa)
+    
+            console.log(updatedEmpresa)
+    
+            if (updatedEmpresa.matchedCount === 0) {
+                res.status(422).json({ message: 'A Empresa não foi encontrado!' })
+                return
+            }
+    
             res.status(200).json({
                 success: true,
-                message: "Permissão cadastrado com sucesso!",
-                data: planoEmpresaCreate,
+                message: 'Plano atualizado com sucesso!',
+                data: empresa,
             })
-
+    
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: 'Não foi possivel atualizar o plano',
+                error: error
+            })
         }
 
         
@@ -39,3 +63,5 @@ router.post('/PostPlanoEmpresa', async (req, res) => {
     }
 
 })
+
+module.exports = router
