@@ -6,9 +6,7 @@ const Plano = require('../models/Plano')
 // Update Plano Empresa 
 router.patch('/UpdatePlanoEmpresa', async (req, res) => {
 
-    try {
-
-        const empresaId = req.query.IdEmpresa
+    try {       
 
         const  {
             idEmpresa,            
@@ -26,11 +24,13 @@ router.patch('/UpdatePlanoEmpresa', async (req, res) => {
             dataAtualizacao 
         }
     
+        console.log(empresa)
+
         try {
     
-            const updatedEmpresa = await Empresa.updateOne({ idEmpresa: empresaId }, empresa)
+            const updatedEmpresa = await Empresa.updateOne({ idEmpresa: empresa.idEmpresa }, empresa)
     
-            console.log(updatedEmpresa)
+            //console.log(updatedEmpresa)
     
             if (updatedEmpresa.matchedCount === 0) {
                 res.status(422).json({ message: 'A Empresa não foi encontrado!' })
