@@ -8,7 +8,6 @@ const { default: mongoose } = require('mongoose')
 const app = express()
   
 app.use(cors());
-
 // forma de ler JSON / middlewares
 app.use(express.json({ limit: '50mb' }))
 app.use(
@@ -58,7 +57,6 @@ app.use('/Web/V1/Estabelecimento', estabelecimentoRotas)
 app.use('/Web/V1/Categoria', categoriaEstabelecimentoRotas)
 app.use('/Web/V1/Produto', categoriaProdutoRotas)
 app.use('/Web/V1/Funcionario', funcionarioRotas)
-
 
 app.get('/api', (req, res) => {
 
