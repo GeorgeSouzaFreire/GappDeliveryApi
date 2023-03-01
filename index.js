@@ -6,21 +6,8 @@ const res = require('express/lib/response')
 const cors = require('cors')
 const { default: mongoose } = require('mongoose')
 const app = express()
- 
-const corsOpts = {
-    origin: '*',
   
-    methods: [
-      'GET',
-      'POST',
-    ],
-  
-    allowedHeaders: [
-      'Content-Type',
-    ],
-};
-  
-app.use(cors(corsOpts));
+app.use(cors());
 
 // forma de ler JSON / middlewares
 app.use(express.json({ limit: '50mb' }))
