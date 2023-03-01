@@ -3,11 +3,11 @@ require('dotenv').config()
 const express = require('express')
 const req = require('express/lib/request')
 const res = require('express/lib/response')
-const cors = require('cors')
+//const cors = require('cors')
 const { default: mongoose } = require('mongoose')
 const app = express()
   
-app.use(cors());
+//app.use(cors());
 // forma de ler JSON / middlewares
 app.use(express.json({ limit: '50mb' }))
 app.use(
