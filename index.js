@@ -62,9 +62,6 @@ app.use('/Web/V1/Funcionario', funcionarioRotas)
 
 app.get('/api', (req, res) => {
 
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     try {
 
         if (res.statusCode == 200) {
