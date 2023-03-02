@@ -49,9 +49,7 @@ router.patch('/UpdatePlanoEmpresa', async (req, res) => {
                 message: 'Não foi possivel atualizar o plano',
                 error: error
             })
-        }
-
-        
+        }        
 
     } catch (error) {
         console.log(error)
