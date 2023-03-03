@@ -223,6 +223,7 @@ router.get('/GetFuncionario', async (req, res) => {
 
             const funcionarioFindOne = await Funcionario.findOne({ login: loginId, senha: senhaId })
 
+            console.log(funcionarioFindOne)
 
             if (funcionarioFindOne == null) {
                 
