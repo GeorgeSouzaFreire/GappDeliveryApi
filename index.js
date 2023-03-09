@@ -5,7 +5,7 @@ const req = require('express/lib/request')
 const res = require('express/lib/response')
 
 const path = require('path');
-//const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 //const logger = require('morgan');
 
 const cors = require('cors')
@@ -25,7 +25,7 @@ app.use(
 app.set('port', process.env.PORT || 3000);
 
 //app.use(logger('dev'));
-//app.use(cookieParser());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public-flutter')));
 
 //Rotas da API
