@@ -201,7 +201,8 @@ router.get('/GetFuncionario', async (req, res) => {
 
     try {
 
-        console.log(loginId)
+        console.log("Login: "  + loginId)
+        console.log("Senha: "  + senhaId)
 
         const errors = {};
         const mensagem = {};
@@ -225,7 +226,7 @@ router.get('/GetFuncionario', async (req, res) => {
 
             console.log(funcionarioFindOne)
 
-            if (funcionarioFindOne == null) {
+            if (funcionarioFindOne === null) {
                 
                 res.status(201).json({
                     success: false,
