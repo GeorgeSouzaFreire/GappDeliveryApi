@@ -12,9 +12,8 @@ router.post('/PostFuncionario', async (req, res) => {
     const {
         nome,
         email,
-        cargo,
-        idCargo,
-        idEmpresa,
+        cargo,        
+        empresa,
         estabelecimento,
         permissao,
         login,
@@ -32,10 +31,6 @@ router.post('/PostFuncionario', async (req, res) => {
 
     if (!String(email).trim()) {
         errors.email = ['Email'];
-    }
-
-    if (!String(cargo).trim()) {
-        errors.cargo = ['Cargo'];
     }
 
     if (!String(permissao).trim()) {
@@ -56,9 +51,8 @@ router.post('/PostFuncionario', async (req, res) => {
         const funcionario = {
             nome,
             email,
-            cargo,
-            idCargo,
-            idEmpresa,
+            cargo,            
+            empresa,
             estabelecimento,
             permissao,
             login,
