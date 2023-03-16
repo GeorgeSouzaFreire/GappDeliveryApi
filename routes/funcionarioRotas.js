@@ -258,6 +258,39 @@ router.get('/GetFuncionario', async (req, res) => {
     }
 })
 
+// Get Funcionario Por ID
+router.get('/GetListFuncionarioPorIdEmpresa', async (req, res) => {
+
+    const id = req.query.Id
+
+    try {
+
+        const funcionarioFind = await Funcionario.findOne({ _id: id })
+
+        if (funcionarioFind == null) {
+            res.status(201).json({
+                success: false,
+                message: 'Ops! Não encontramos nenhum cadastro!',
+                data: null,
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Funcionários encontrados ' + funcionarioFind.nome + '!',
+                data: funcionarioFind,
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do cargo.',
+            error: error
+        })
+    }
+})
+
 // Get Funcionario
 router.get('/GetListFuncionarioPorIdEmpresa', async (req, res) => {
 
