@@ -259,7 +259,7 @@ router.get('/GetFuncionario', async (req, res) => {
 })
 
 // Get Funcionario Por ID
-router.get('/GetListFuncionarioPorIdEmpresa', async (req, res) => {
+router.get('/GetFuncionarioPorId', async (req, res) => {
 
     const id = req.query.Id
 
