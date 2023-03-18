@@ -4,6 +4,7 @@ const { response } = require('express')
 const { get } = require('express/lib/response')
 const Pedido = require('../models/Pedido')
 const Produto = require('../models/Produto')
+const StatusPedido = require('../models/StatusPedido')
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostPedido/', async (req, res) => {
@@ -585,6 +586,40 @@ router.delete('/ExcluirProdutoCarrinho', async (req, res) => {
         })
     }
 
+})
+
+// Get Status Pedido App
+router.get('/GetStatusPedido', async (req, res) => {
+
+    const empresaId = req.query.IdEmpresa
+
+    try {
+
+        const statusPedidoFindOne = await StatusPedido.findOne({ idEmpresa: empresaId })
+
+        if (statusPedidoFindOne == null) {
+            res.status(205).json({
+                success: false,
+                message: 'Status de Pedido não carregado! [205]',
+                data: {},
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontrado ' + statusPedidoFindOne + ' resultado!',
+                data: statusPedidoFindOne,
+            })
+        }
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do Status Pedido.',
+            error: error
+        })
+    }
 })
 
 function cleanArray(actual) {
