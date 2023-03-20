@@ -631,6 +631,7 @@ router.post('/PostStatusPedido', async (req, res) => {
         idEmpresa,
         nome,
         codigo,
+        ordem,
         ativo,
         dataCriacao,
         dataAtualizacao
@@ -655,6 +656,7 @@ router.post('/PostStatusPedido', async (req, res) => {
             idEmpresa,
             nome,
             codigo,
+            ordem,
             ativo,
             dataCriacao,
             dataAtualizacao

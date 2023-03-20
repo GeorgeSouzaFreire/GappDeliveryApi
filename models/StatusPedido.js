@@ -5,6 +5,7 @@ const StatusPedido = mongoose.model('StatusPedido', {
     idEmpresa: Number,
     nome: String,
     codigo: Number,
+    ordem: Number,
     ativo: Boolean,
     dataCriacao: String,
     dataAtualizacao: String
