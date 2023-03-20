@@ -622,6 +622,58 @@ router.get('/GetStatusPedido', async (req, res) => {
     }
 })
 
+// Create Status Pedido
+router.post('/PostStatusPedido', async (req, res) => {
+
+    
+    const {
+        guid, 
+        idEmpresa, 
+        nome,
+        codigo,
+        ativo,
+        dataCriacao,
+        dataAtualizacao
+    } = req.body
+
+    if (!name) {
+        res.status(422).json({ error: 'Obrigatorio o Nome' })
+    }
+
+    const statusPedido = {
+        guid,
+        idEmpresa,
+        nome,
+        codigo,
+        ativo,
+        dataCriacao,
+        dataAtualizacao
+    }
+
+    // create
+    try {
+
+        // Criando dados
+        const statusPedido = await StatusPedido.create(statusPedido)
+
+        res.status(201).json({
+            success: true,
+            message: "Status Pedido criada com sucesso!",
+            data: pedidoCreate,
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do Status Pedido.',
+            error: error
+        })
+    }
+
+})
+
+
 function cleanArray(actual) {
     var newArray = new Array();
     console.log('Atual --- > ', actual)
