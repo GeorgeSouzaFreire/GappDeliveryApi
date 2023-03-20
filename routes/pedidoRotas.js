@@ -595,9 +595,9 @@ router.get('/GetStatusPedido', async (req, res) => {
 
     try {
 
-        const statusPedidoFindOne = await StatusPedido.findOne({ idEmpresa: empresaId })
+        const statusPedidoFind = await StatusPedido.find({ idEmpresa: empresaId })
 
-        if (statusPedidoFindOne == null) {
+        if (statusPedidoFind == null) {
             res.status(205).json({
                 success: false,
                 message: 'Status de Pedido não carregado! [205]',
@@ -606,8 +606,8 @@ router.get('/GetStatusPedido', async (req, res) => {
         } else {
             res.status(200).json({
                 success: true,
-                message: 'Foram encontrado ' + statusPedidoFindOne + ' resultado!',
-                data: statusPedidoFindOne,
+                message: 'Foram encontrado ' + statusPedidoFind.length + ' resultado!',
+                data: statusPedidoFind,
             })
         }
 
@@ -664,12 +664,12 @@ router.post('/PostStatusPedido', async (req, res) => {
         try {
 
             // Criando dados
-            const statusPedido = await StatusPedido.create(statusPedido)
+            const statusPedidoCreate = await StatusPedido.create(statusPedido)
 
             res.status(201).json({
                 success: true,
                 message: "Status Pedido criada com sucesso!",
-                data: pedidoCreate,
+                data: statusPedidoCreate,
             })
 
         } catch (error) {
