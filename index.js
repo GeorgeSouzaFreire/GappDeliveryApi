@@ -65,6 +65,7 @@ app.use('/Web/V1/Estabelecimento', estabelecimentoRotas)
 app.use('/Web/V1/Categoria', categoriaEstabelecimentoRotas)
 app.use('/Web/V1/Produto', categoriaProdutoRotas)
 app.use('/Web/V1/Funcionario', funcionarioRotas)
+app.use('/Web/V1/Pedido', pedidoRotas)
 
 
 app.get('/api', (req, res) => {

@@ -636,16 +636,6 @@ router.post('/PostStatusPedido', async (req, res) => {
         dataAtualizacao
     } = req.body
 
-    const statusPedido = {
-        guid,
-        idEmpresa,
-        nome,
-        codigo,
-        ativo,
-        dataCriacao,
-        dataAtualizacao
-    }
-
     const errors = {};
 
     if (!String(idEmpresa).trim()) {
@@ -660,6 +650,16 @@ router.post('/PostStatusPedido', async (req, res) => {
         res.status(422).json({ error: errors })
     } else {
       
+        const statusPedido = {
+            guid,
+            idEmpresa,
+            nome,
+            codigo,
+            ativo,
+            dataCriacao,
+            dataAtualizacao
+        }
+
         // create
         try {
 
