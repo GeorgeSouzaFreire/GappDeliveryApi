@@ -625,20 +625,16 @@ router.get('/GetStatusPedido', async (req, res) => {
 // Create Status Pedido
 router.post('/PostStatusPedido', async (req, res) => {
 
-    
+
     const {
-        guid, 
-        idEmpresa, 
+        guid,
+        idEmpresa,
         nome,
         codigo,
         ativo,
         dataCriacao,
         dataAtualizacao
     } = req.body
-
-    if (!name) {
-        res.status(422).json({ error: 'Obrigatorio o Nome' })
-    }
 
     const statusPedido = {
         guid,
@@ -650,25 +646,40 @@ router.post('/PostStatusPedido', async (req, res) => {
         dataAtualizacao
     }
 
-    // create
-    try {
+    const errors = {};
 
-        // Criando dados
-        const statusPedido = await StatusPedido.create(statusPedido)
+    if (!String(idEmpresa).trim()) {
+        errors.idEmpresa = ['O IdEmpresa é obrigatório'];
+    }
 
-        res.status(201).json({
-            success: true,
-            message: "Status Pedido criada com sucesso!",
-            data: pedidoCreate,
-        })
+    if (!String(nome).trim()) {
+        errors.nome = ['O Nome é obrigatório'];
+    }
 
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({
-            success: false,
-            message: 'Não foi possível realizar a buscar do Status Pedido.',
-            error: error
-        })
+    if (Object.keys(errors).length) {
+        res.status(422).json({ error: errors })
+    } else {
+      
+        // create
+        try {
+
+            // Criando dados
+            const statusPedido = await StatusPedido.create(statusPedido)
+
+            res.status(201).json({
+                success: true,
+                message: "Status Pedido criada com sucesso!",
+                data: pedidoCreate,
+            })
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({
+                success: false,
+                message: 'Não foi possível realizar a buscar do Status Pedido.',
+                error: error
+            })
+        }
     }
 
 })
