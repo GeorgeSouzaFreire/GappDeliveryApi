@@ -2,7 +2,8 @@ const mongoose = require('mongoose')
 
 const Pedido = mongoose.model('Pedido', {
     guid: String,
-    idEmpresa: Number,   
+    idEmpresa: Number,  
+    idEstabelecimento: String, 
     idUsuario: String,
     nomeUsuario: String,    
     endereco: Object,

@@ -13,7 +13,8 @@ router.post('/PostPedido/', async (req, res) => {
     const {
         guid,
         idEmpresa,
-        idUsuario,
+        idEstabelecimento,
+        idUsuario,        
         nomeUsuario,
         endereco,
         item,
@@ -46,6 +47,7 @@ router.post('/PostPedido/', async (req, res) => {
         const pedido = {
             guid,
             idEmpresa,
+            idEstabelecimento,
             idUsuario,
             nomeUsuario,
             endereco,
@@ -219,6 +221,42 @@ router.get('/GetPedidoPorId', async (req, res) => {
             res.status(205).json({
                 success: false,
                 message: 'Você ainda não adicionou nenhum item no carrinho!',
+                data: {},
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontrado ' + pedidoFindOne.length + ' resultado!',
+                data: pedidoFindOne,
+            })
+        }
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do Pedido.',
+            error: error
+        })
+    }
+})
+
+// Get Pedido App
+router.get('/GetMeusPedido', async (req, res) => {
+
+    const empresaId         = req.query.IdEmpresa
+    const estabelecimentoId = req.query.IdEstabelecimento
+    const statusPedidoId    = req.query.IdStatusPedido
+
+    try {
+
+        const pedidoFindOne = await Pedido.find({ idEmpresa: empresaId, idEstabelecimento: estabelecimentoId, idStatusPedido: statusPedidoId })
+
+        if (pedidoFindOne == null) {
+            res.status(205).json({
+                success: false,
+                message: 'Não registro para está busca!',
                 data: {},
             })
         } else {
