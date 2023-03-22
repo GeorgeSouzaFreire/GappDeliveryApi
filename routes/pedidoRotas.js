@@ -348,13 +348,13 @@ router.patch('/AtualizaStatusPedido', async (req, res) => {
         if (pedidoUpdate == null) {
             res.status(422).json({
                 success: false,
-                message: 'Endereço não pode ser atualizado!',
+                message: 'Status Pedido não pode ser atualizado!',
                 data: [],
             })
         } else {
             res.status(200).json({
                 success: true,
-                message: 'Atualização realizada com sucesso!',
+                message: 'Status atualizado com sucesso!',
                 data: pedidoUpdate,
             })
         }
