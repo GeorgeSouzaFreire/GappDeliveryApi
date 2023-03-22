@@ -339,7 +339,7 @@ router.patch('/AtualizaStatusPedido', async (req, res) => {
         idStatusPedido,
     }
 
-    console.log('Patch - AtualizaStatusPedido', pedido)
+    console.log('Patch - AtualizaStatusPedido', pedidoId)
 
     try {
 
