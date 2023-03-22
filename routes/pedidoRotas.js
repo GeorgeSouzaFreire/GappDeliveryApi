@@ -330,10 +330,12 @@ router.patch('/AtualizaStatusPedido', async (req, res) => {
     const pedidoId = req.query.IdPedido
 
     const {
+        statusPedido,
         idStatusPedido,
     } = req.body
 
     const pedido = {
+        statusPedido,
         idStatusPedido,
     }
 
