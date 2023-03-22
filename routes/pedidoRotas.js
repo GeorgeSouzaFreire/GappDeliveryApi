@@ -26,6 +26,8 @@ router.post('/PostPedido/', async (req, res) => {
         dataAtualizacao,
     } = req.body
 
+    console.log(req.body)
+
     const errors = {};
 
     if (!String(idEmpresa).trim()) {
@@ -292,6 +294,50 @@ router.patch('/AtualizaEndereco', async (req, res) => {
     }
 
     console.log('Patch - AtualizaEndereco', pedido)
+
+    try {
+
+        const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoId }, pedido, { new: true })
+
+        if (pedidoUpdate == null) {
+            res.status(422).json({
+                success: false,
+                message: 'Endereço não pode ser atualizado!',
+                data: [],
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Atualização realizada com sucesso!',
+                data: pedidoUpdate,
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Ops, Algo de errado por aqui...' + error,
+            error: error
+        })
+    }
+
+})
+
+// Patch AtualizaStatusPedido
+router.patch('/AtualizaStatusPedido', async (req, res) => {
+
+    const pedidoId = req.query.IdPedido
+
+    const {
+        idStatusPedido,
+    } = req.body
+
+    const pedido = {
+        idStatusPedido,
+    }
+
+    console.log('Patch - AtualizaStatusPedido', pedido)
 
     try {
 
