@@ -405,7 +405,39 @@ router.patch('/AtualizaEmpresa', async (req, res) => {
             })
         } else {
 
-            const empresaUpdateOne = await Empresa.findOneAndUpdate({ idEmpresa: empresaFind._id }, empresaFind, { new: true })
+            const {
+                idEmpresa,
+                guid,
+                nome,
+                cnpj,
+                endereco,
+                telefone,
+                celular,
+                email,
+                designer,
+                plano,
+                ativo,
+                dataCriacao,
+                dataAtualizacao
+            } = req.body
+
+            const empresa = {
+                idEmpresa,
+                guid,
+                nome,
+                cnpj,
+                endereco,
+                telefone,
+                celular,
+                email,
+                designer,
+                plano,
+                ativo,
+                dataCriacao,
+                dataAtualizacao
+            }
+
+            const empresaUpdateOne = await Empresa.findOneAndUpdate({ _id: empresaFind._id }, empresaFind, { new: true })
 
             res.status(200).json({
                 success: true,
@@ -450,7 +482,7 @@ router.post('/PostPlano', async (req, res) => {
     if (!String(codigo).trim()) {
         errors.codigo = ['Codigo'];
     }
-    
+
 
     if (Object.keys(errors).length) {
 
