@@ -199,6 +199,47 @@ router.get('/GetEmpresaApp', async (req, res) => {
 })
 
 // Get Empresa
+router.get('/GetEmpresa', async (req, res) => {
+
+    const empresaId = req.query.IdEmpresa
+
+    try {
+
+        const empresaFindOne = await Empresa.findOne({ idEmpresa: Number.parseInt(empresaId) })
+
+        if (empresaFindOne == null) {
+            res.status(422).json({
+                success: false,
+                message: 'O Empresa não foi encontrado!',
+                data: [],
+            })
+        } else {
+
+            const empresaDesigner = await EmpresaDesigner.findOne({ idEmpresa: Number.parseInt(empresaFindOne.idEmpresa) })
+
+            empresaFindOne.designer = empresaDesigner
+
+            res.status(200).json({
+                success: true,
+                message: 'Empresa encontrada com sucesso!',
+                data: empresaFindOne,
+            })
+        }
+
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a Empresa.',
+            error: error
+        })
+    }
+
+})
+
+// Get Empresa
 router.get('/GetEmpresas', async (req, res) => {
 
 
