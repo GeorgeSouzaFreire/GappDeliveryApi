@@ -219,8 +219,6 @@ router.get('/GetFuncionario', async (req, res) => {
 
             const funcionarioFindOne = await Funcionario.findOne({ login: loginId, senha: senhaId })
 
-            console.log(funcionarioFindOne)
-
             if (funcionarioFindOne === null) {
                 
                 res.status(201).json({
@@ -277,6 +275,9 @@ router.get('/GetFuncionarioPorId', async (req, res) => {
                 data: null,
             })
         } else {
+
+            funcionarioFind.empresa = await Empresa.findOne({idEmpresa: funcionarioFind.empresa.idEmpresa})
+
             res.status(200).json({
                 success: true,
                 message: 'Funcionários encontrados ' + funcionarioFind.nome + '!',
