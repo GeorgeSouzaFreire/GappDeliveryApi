@@ -437,7 +437,7 @@ router.patch('/AtualizaEmpresa', async (req, res) => {
                 dataAtualizacao
             }
 
-            const empresaUpdateOne = await Empresa.findOneAndUpdate({ _id: empresaFind._id }, empresaFind, { new: true })
+            const empresaUpdateOne = await Empresa.findOneAndUpdate({ idEmpresa: empresa.idEmpresa }, empresa, { new: true })
 
             res.status(200).json({
                 success: true,
