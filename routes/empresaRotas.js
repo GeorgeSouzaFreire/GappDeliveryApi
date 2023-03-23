@@ -439,8 +439,6 @@ router.patch('/AtualizaEmpresa', async (req, res) => {
 
             const empresaUpdateOne = await Empresa.findOneAndUpdate({ idEmpresa: empresaId }, empresa, { new: true })
 
-            console.log(empresaUpdateOne)
-
             res.status(200).json({
                 success: true,
                 message: 'Empresa atualizada com sucesso!',

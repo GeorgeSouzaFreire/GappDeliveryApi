@@ -5,6 +5,7 @@ const Endereco = require('../models/Endereco')
 const Funcionario = require('../models/Funcionario')
 const Cargo = require('../models/Cargo')
 const Permissao = require('../models/Permissao')
+const Empresa = require('../models/Empresa')
 
 // Post Funcionario 
 router.post('/PostFuncionario', async (req, res) => {
@@ -229,6 +230,8 @@ router.get('/GetFuncionario', async (req, res) => {
                 })
 
             } else if (funcionarioFindOne.ativo) {
+
+                funcionarioFindOne.empresa = await Empresa.findOne({idEmpresa: funcionarioFindOne.empresa.idEmpresa})
 
                 res.status(200).json({
                     success: true,
