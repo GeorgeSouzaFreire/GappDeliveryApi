@@ -199,7 +199,7 @@ router.get('/GetEmpresaApp', async (req, res) => {
 })
 
 // Get Empresa
-router.get('/GetEmpresa', async (req, res) => {
+router.get('/GetEmpresaPorId', async (req, res) => {
 
     const empresaId = req.query.IdEmpresa
 
