@@ -387,6 +387,45 @@ router.patch('/DesativarEmpresa', async (req, res) => {
 
 })
 
+// Desativar Empresa 
+router.patch('/AtualizaEmpresa', async (req, res) => {
+
+
+    const empresaId = req.query.IdEmpresa
+
+    try {
+
+        const empresaFind = await Empresa.findOne({ idEmpresa: empresaId })
+
+        if (empresaFind == null) {
+            res.status(422).json({
+                success: false,
+                message: 'O Empresa não foi encontrado!',
+                data: {},
+            })
+        } else {
+
+            const empresaUpdateOne = await Empresa.findOneAndUpdate({ idEmpresa: empresaFind._id }, empresaFind, { new: true })
+
+            res.status(200).json({
+                success: true,
+                message: 'Empresa atualizada com sucesso!',
+                data: empresaUpdateOne,
+            })
+
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a Empresa.',
+            error: error
+        })
+    }
+
+})
+
 // Post Plano 
 router.post('/PostPlano', async (req, res) => {
 
