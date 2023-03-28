@@ -2,7 +2,9 @@ const mongoose = require('mongoose')
 
 const Plano = mongoose.model('Plano', {    
     nome: String,
-    codigo: Number,    
+    codigo: Number,  
+    valor: Number,
+    isPlanoAtual: Boolean,
     quantidadeEstabelecimento: Number,
     quantidadeProduto: Number,
     quantidadeCategoria: Number,
