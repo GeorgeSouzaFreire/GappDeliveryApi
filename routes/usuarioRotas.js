@@ -306,6 +306,39 @@ router.get('/GetUsuario', async (req, res) => {
 })
 
 // GET Usuario - Leitura de dados
+router.get('/GetUsuarios', async (req, res) => {
+
+    try {
+
+        const empresaId = req.query.IdEmpresa
+
+        const usuario = await Usuario.find({ idEmpresa: empresaId })
+
+        if (usuario.length != 0) {
+            res.status(200).json({
+                success: true,
+                message: 'Usuários encontrados com sucesso!',
+                data: usuario,
+            })
+        } else {
+            res.status(201).json({
+                success: true,
+                message: 'Não foi possivel obter os Usuários.',
+                data: usuario,
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível realizar a operação!",
+            error: error
+        })
+    }
+
+})
+
+// GET Usuario - Leitura de dados
 router.get('/GetUsuarioEndereco', async (req, res) => {
 
     const usuarioId = req.query.IdUsuario;
@@ -314,7 +347,7 @@ router.get('/GetUsuarioEndereco', async (req, res) => {
 
         const usuarioFindOne = await UsuarioEndereco.findOne({ idUsuario: usuarioId });
 
-        if (usuarioFindOne == null) {           
+        if (usuarioFindOne == null) {
             res.status(201).json({
                 success: true,
                 message: 'Não há Endereço cadastrado!',
@@ -474,9 +507,9 @@ router.patch('/AtualizaUsuarioEndereco/:IdUsuarioEndereco', async (req, res) => 
 // Delete Produto do Pedido
 router.delete('/ExcluirUsuarioEndereco', async (req, res) => {
 
-    const usuarioEnderecoId  = req.query.IdUsuarioEndereco
-    const guid  = req.query.GUID
-  
+    const usuarioEnderecoId = req.query.IdUsuarioEndereco
+    const guid = req.query.GUID
+
     try {
 
         const usuarioEnderecoFindOne = await UsuarioEndereco.findOne({ _id: usuarioEnderecoId })
@@ -527,7 +560,7 @@ router.delete('/ExcluirUsuarioEndereco', async (req, res) => {
                 })
 
             }
-           
+
         }
 
     } catch (error) {
