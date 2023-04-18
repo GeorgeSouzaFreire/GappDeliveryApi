@@ -8,6 +8,8 @@ const Endereco = require('../models/Endereco')
 const Designer = require('../models/EmpresaDesigner')
 const EmpresaDesigner = require('../models/EmpresaDesigner')
 const Plano = require('../models/Plano')
+const Registro = require('../models/Registro')
+const Funcionario = require('../models/Funcionario')
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostEmpresa/', async (req, res) => {
@@ -16,12 +18,11 @@ router.post('/PostEmpresa/', async (req, res) => {
     const {
         idEmpresa,
         guid,
-        nome,
+        razaoSocial,
+        nomeFantasia,
         cnpj,
         endereco,
-        telefone,
-        celular,
-        email,
+        contato,
         designer,
         plano,
         ativo,
@@ -43,7 +44,7 @@ router.post('/PostEmpresa/', async (req, res) => {
         errors.logradouro = ['Logradouro'];
     }
 
-    if (!String(email).trim()) {
+    if (!String(contato.email).trim()) {
         errors.email = ['Email'];
     }
 
@@ -59,12 +60,11 @@ router.post('/PostEmpresa/', async (req, res) => {
             const empresa = {
                 idEmpresa,
                 guid,
-                nome,
+                razaoSocial,
+                nomeFantasia,
                 cnpj,
                 endereco,
-                telefone,
-                celular,
-                email,
+                contato,
                 designer,
                 plano,
                 ativo,
@@ -526,6 +526,115 @@ router.post('/PostPlano', async (req, res) => {
             res.status(500).json({
                 success: false,
                 message: 'Não foi possível realizar a buscar do Plano.',
+                error: error
+            })
+        }
+
+    }
+
+})
+
+// Post - Criação de uma Nova Empresa / Plano
+router.post('/RegistroEmpresa/', async (req, res) => {
+
+    // req.body   
+    const {
+        guid,
+        empresa,
+        funcionario,
+        ativo,
+        dataCriacao,
+        dataAtualizacao
+    } = req.body
+
+    const errors = {};
+
+    if (!String(empresa.responsavel).trim()) {
+        errors.nome = ['Nome'];
+    }
+
+    if (!String(empresa.endereco.cep).trim()) {
+        errors.cep = ['CEP'];
+    }
+
+    if (!String(empresa.endereco.logradouro).trim()) {
+        errors.logradouro = ['Logradouro'];
+    }
+
+    if (!String(email).trim()) {
+        errors.email = ['Email'];
+    }
+
+    if (Object.keys(errors).length) {
+
+        errors.itens = ['\nSão os ' + Object.keys(errors).length + ' itens obrigatórios!'];
+
+        res.status(422).json({ error: errors })
+    } else {
+
+        try {
+
+            const registro = {                
+                guid,
+                empresa,
+                funcionario,                
+                ativo,
+                dataCriacao,
+                dataAtualizacao
+            }
+
+            const empresaFind = await Empresa.findOne().sort({ _id: -1 }).limit(1)
+
+            console.log('Retorno FindOne Empresa' + empresaFind);
+
+            if (empresaFind == null) {
+
+                // Criando a Empresa
+                const empresaCreate = await Empresa.create(empresa)
+
+                res.status(201).json({
+                    success: true,
+                    message: "Primeira empresa criada com sucesso!",
+                    data: empresaCreate,
+                })
+
+            } else {
+               
+
+                // Adiciona .+1 no Id Empresa 
+                empresa.idEmpresa = (empresaFind.idEmpresa + 1)
+
+                empresa.designer.idEmpresa = empresa.idEmpresa
+
+                console.log(empresa.idEmpresa);
+
+                // Criando a Empresa
+                const empresaCreate = await Empresa.create(empresa)                              
+
+                const funcionarioCreate = await Funcionario.create(funcionario)
+
+                if (empresaCreate == null && funcionarioCreate == null) {
+                    res.status(201).json({
+                        success: false,
+                        message: "Não foi possível realizar o registro, Tente novamente mais tarde!",
+                        data: [empresaCreate, funcionarioCreate],
+                    })
+                } else {
+                    res.status(200).json({
+                        success: true,
+                        message: "Parabéns sua empresa foi criada com sucesso no Gapp Delivery, Aproveite todas os benefícios de ser Gapp Delivery!",
+                        data: [empresaCreate, funcionarioCreate],
+                    })
+                }
+
+            }
+
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({
+                success: false,
+                message: 'Não foi possível buscar a Empresa.',
                 error: error
             })
         }
