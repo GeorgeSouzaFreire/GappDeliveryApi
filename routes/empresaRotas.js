@@ -10,6 +10,7 @@ const EmpresaDesigner = require('../models/EmpresaDesigner')
 const Plano = require('../models/Plano')
 const Registro = require('../models/Registro')
 const Funcionario = require('../models/Funcionario')
+const Cargo = require('../models/Cargo')
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostEmpresa/', async (req, res) => {
@@ -561,7 +562,7 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
         errors.logradouro = ['Logradouro'];
     }
 
-    if (!String(email).trim()) {
+    if (!String(empresa.contato.email).trim()) {
         errors.email = ['Email'];
     }
 
@@ -620,10 +621,27 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
                         data: [empresaCreate, funcionarioCreate],
                     })
                 } else {
+
+                    funcionarioCreate.empresa = empresaCreate
+
+                    const cargo = {
+                        nome :'Administrador',
+                        idEmpresa : empresaCreate.idEmpresa,
+                        ativo : true,
+                        dataCriacao : new Date().toISOString(),
+                        dataAtualizacao : new Date().toISOString(),
+                    }
+
+                    const cargoCreate = await Cargo.create(cargo)
+
+                    funcionarioCreate.cargo = cargoCreate
+
+                    const funcionarioUpdate = await Funcionario.findOneAndUpdate({ _id: funcionarioCreate._id }, funcionarioCreate, { new: true })
+
                     res.status(200).json({
                         success: true,
                         message: "Parabéns sua empresa foi criada com sucesso no Gapp Delivery, Aproveite todas os benefícios de ser Gapp Delivery!",
-                        data: [empresaCreate, funcionarioCreate],
+                        data: [empresaCreate, funcionarioUpdate],
                     })
                 }
 
