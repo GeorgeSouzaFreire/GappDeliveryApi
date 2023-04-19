@@ -6,6 +6,7 @@ const Contato = mongoose.model('Contato', {
     telefone: String,
     celular: String,
     email: String,
+    responsavel: String,
     ativo: Boolean,
     dataCriacao: String,
     dataAtualizacao: String, 

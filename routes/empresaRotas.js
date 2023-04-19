@@ -535,7 +535,7 @@ router.post('/PostPlano', async (req, res) => {
 })
 
 // Post - Criação de uma Nova Empresa / Plano
-router.post('/RegistroEmpresa/', async (req, res) => {
+router.post('/PostRegistroEmpresa/', async (req, res) => {
 
     // req.body   
     const {
