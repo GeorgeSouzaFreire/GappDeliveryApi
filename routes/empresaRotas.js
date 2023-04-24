@@ -575,10 +575,10 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
 
         try {
 
-            const registro = {                
+            const registro = {
                 guid,
                 empresa,
-                funcionario,                
+                funcionario,
                 ativo,
                 dataCriacao,
                 dataAtualizacao
@@ -600,51 +600,64 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
                 })
 
             } else {
-               
 
-                // Adiciona .+1 no Id Empresa 
-                empresa.idEmpresa = (empresaFind.idEmpresa + 1)
+                const empresaAlreadyRegistered = await Empresa.find({email : empresa.contato.email})
 
-                empresa.designer.idEmpresa = empresa.idEmpresa
-
-                console.log(empresa.idEmpresa);
-
-                // Criando a Empresa
-                const empresaCreate = await Empresa.create(empresa)                              
-
-                const funcionarioCreate = await Funcionario.create(funcionario)
-
-                if (empresaCreate == null && funcionarioCreate == null) {
-                    res.status(201).json({
-                        success: false,
-                        message: "Não foi possível realizar o registro, Tente novamente mais tarde!",
-                        data: [empresaCreate, funcionarioCreate],
-                    })
-                } else {
-
-                    funcionarioCreate.empresa = empresaCreate
-
-                    const cargo = {
-                        nome :'Administrador',
-                        idEmpresa : empresaCreate.idEmpresa,
-                        ativo : true,
-                        dataCriacao : new Date().toISOString(),
-                        dataAtualizacao : new Date().toISOString(),
-                    }
-
-                    const cargoCreate = await Cargo.create(cargo)
-
-                    funcionarioCreate.cargo = cargoCreate
-
-                    const funcionarioUpdate = await Funcionario.findOneAndUpdate({ _id: funcionarioCreate._id }, funcionarioCreate, { new: true })
+                if (empresaAlreadyRegistered != 0) {
 
                     res.status(200).json({
-                        success: true,
-                        message: "Parabéns sua empresa foi criada com sucesso no Gapp Delivery, Aproveite todas os benefícios de ser Gapp Delivery!",
-                        data: [empresaCreate, funcionarioUpdate],
+                        success: false,
+                        message: "Se você já teve cadastro anteriormente em nosso sistema pedimos que ao invés de criar uma nova conta você faça um login, utilizando dos mesmos dados" +
+                                 "\nAgora, se é sua primeira vez utilizando o nosso sistema tente um e-mail alternativo.!",
+                        data: empresaAlreadyRegistered,
                     })
-                }
 
+                } else {
+
+                    // Adiciona .+1 no Id Empresa 
+                    empresa.idEmpresa = (empresaFind.idEmpresa + 1)
+
+                    empresa.designer.idEmpresa = empresa.idEmpresa
+
+                    console.log(empresa.idEmpresa);
+
+                    // Criando a Empresa
+                    const empresaCreate = await Empresa.create(empresa)
+
+                    const funcionarioCreate = await Funcionario.create(funcionario)
+
+                    if (empresaCreate == null && funcionarioCreate == null) {
+                        res.status(201).json({
+                            success: false,
+                            message: "Não foi possível realizar o registro, Tente novamente mais tarde!",
+                            data: [empresaCreate, funcionarioCreate],
+                        })
+                    } else {
+
+                        funcionarioCreate.empresa = empresaCreate
+
+                        const cargo = {
+                            nome: 'Administrador',
+                            idEmpresa: empresaCreate.idEmpresa,
+                            ativo: true,
+                            dataCriacao: new Date().toISOString(),
+                            dataAtualizacao: new Date().toISOString(),
+                        }
+
+                        const cargoCreate = await Cargo.create(cargo)
+
+                        funcionarioCreate.cargo = cargoCreate
+
+                        const funcionarioUpdate = await Funcionario.findOneAndUpdate({ _id: funcionarioCreate._id }, funcionarioCreate, { new: true })
+
+                        res.status(200).json({
+                            success: true,
+                            message: "Parabéns sua empresa foi criada com sucesso no Gapp Delivery, Aproveite todas os benefícios de ser Gapp Delivery!",
+                            data: [empresaCreate, funcionarioUpdate],
+                        })
+                    }
+
+                }
             }
 
 
