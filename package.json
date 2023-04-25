@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd /home/application/app && pm2-runtime start /home/application/app/ecosystem.config.js U+2013-env production",
+    "start": "cd /home/application/app && pm2-runtime start /home/application/app/ecosystem.config.js --env production",
     "local": "nodemon ./index.js localhost 8221",
     "web": "nodemon ./bin/www"
   },
