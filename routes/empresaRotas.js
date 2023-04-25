@@ -603,7 +603,9 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
 
                 const empresaAlreadyRegistered = await Empresa.find({email : empresa.contato.email})
 
-                if (empresaAlreadyRegistered != 0) {
+
+                // Fake Email if (empresaAlreadyRegistered != 0) {
+                if (false) {
 
                     res.status(200).json({
                         success: false,
