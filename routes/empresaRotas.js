@@ -601,18 +601,18 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
 
             } else {
 
-                //const empresaAlreadyRegistered = await Empresa.find({email : empresa.contato.email})
+                const empresaAlreadyRegistered = await Empresa.find({email : empresa.contato.email})
 
-                //if (empresaAlreadyRegistered != 0) {
+                if (empresaAlreadyRegistered != 0) {
 
-                    //res.status(200).json({
-                       // success: false,
-                       // message: "Se você já teve cadastro anteriormente em nosso sistema pedimos que ao invés de criar uma nova conta você faça um login, utilizando dos mesmos dados" +
-                       //          "\nAgora, se é sua primeira vez utilizando o nosso sistema tente um e-mail alternativo.!",
-                       // data: empresaAlreadyRegistered,
-                    //})
+                    res.status(200).json({
+                        success: false,
+                        message: "Se você já teve cadastro anteriormente em nosso sistema pedimos que ao invés de criar uma nova conta você faça um login, utilizando dos mesmos dados" +
+                                 "\nAgora, se é sua primeira vez utilizando o nosso sistema tente um e-mail alternativo.!",
+                        data: empresaAlreadyRegistered,
+                    })
 
-                //} else {
+                } else {
 
                     // Adiciona .+1 no Id Empresa 
                     empresa.idEmpresa = (empresaFind.idEmpresa + 1)
@@ -657,7 +657,7 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
                         })
                     }
 
-                //}
+                }
             }
 
 
