@@ -605,7 +605,7 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
 
 
                 // Fake Email if (empresaAlreadyRegistered != 0) {
-                if (false) {
+                if (empresaAlreadyRegistered === null) {
 
                     res.status(200).json({
                         success: false,
