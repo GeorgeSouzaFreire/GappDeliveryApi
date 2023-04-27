@@ -1,10 +1,8 @@
 module.exports = {
     apps: [{
+        name   : "gapp-delivery-dashboard-api",
         script: 'index.js',
         watch: '.'
-    }, {
-        script: './service-worker/',
-        watch: ['./service-worker']
     }],
 
     deploy: {
