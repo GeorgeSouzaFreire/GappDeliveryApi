@@ -603,6 +603,8 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
 
                 const empresaAlreadyRegistered = await Empresa.find({email : empresa.contato.email})
 
+                console.log('Empresa já cadastra = ' + empresaAlreadyRegistered.length);
+
                 if (empresaAlreadyRegistered != 0) {
 
                     res.status(200).json({
