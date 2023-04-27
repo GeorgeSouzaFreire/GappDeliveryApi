@@ -1,6 +1,6 @@
 module.exports = {
     apps: [{
-        name   : "gapp-delivery-dashboard-api",
+        name: 'gapp-delivery-dashboard-api',
         script: 'index.js',
         watch: '.'
     }],
