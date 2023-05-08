@@ -601,7 +601,7 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
 
             } else {
 
-                const empresaAlreadyRegistered = await Empresa.find({email : empresa.contato.email})
+                const empresaAlreadyRegistered = await Empresa.find({"contato.email" : empresa.contato.email})
 
                 console.log('Empresa já cadastra = ' + empresaAlreadyRegistered.length);
 
