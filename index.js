@@ -77,7 +77,7 @@ app.get('/api', (req, res) => {
                 success: true,
                 message: "Acesso a API realizado com sucesso! Todos os direitos reservados",
                 data: {
-                   Version : "Version 1.9.6",
+                   Version : "Version 1.9.7",
                    Info: "Contact: application.gapp@gmail.com" 
                 },
             })
