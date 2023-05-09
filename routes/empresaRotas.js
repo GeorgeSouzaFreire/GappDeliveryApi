@@ -593,7 +593,7 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
 
             } else {
 
-                const empresaAlreadyRegistered = await Empresa.find({"contato.email" : empresa.contato.email})
+                const empresaAlreadyRegistered = await Empresa.find({ "contato.email": empresa.contato.email })
 
                 console.log('Empresa já cadastra = ' + empresaAlreadyRegistered.length);
 
@@ -602,7 +602,7 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
                     res.status(200).json({
                         success: false,
                         message: "Se você já teve cadastro anteriormente em nosso sistema pedimos que ao invés de criar uma nova conta você faça um login, utilizando dos mesmos dados" +
-                                 "\nAgora, se é sua primeira vez utilizando o nosso sistema tente um e-mail alternativo.!",
+                            "\nAgora, se é sua primeira vez utilizando o nosso sistema tente um e-mail alternativo.!",
                         data: empresaAlreadyRegistered,
                     })
 
@@ -645,18 +645,18 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
                         const funcionarioUpdate = await Funcionario.findOneAndUpdate({ _id: funcionarioCreate._id }, funcionarioCreate, { new: true })
 
                         const registro = {
-                            guid,
-                            empresaCreate,
-                            funcionarioUpdate,
-                            ativo,
-                            dataCriacao,
-                            dataAtualizacao
+                            guid: guid,
+                            empresa: empresaCreate,
+                            funcionario: funcionarioUpdate,
+                            ativo: ativo,
+                            dataCriacao: dataCriacao,
+                            dataAtualizacao: dataAtualizacao
                         }
 
                         res.status(200).json({
                             success: true,
                             message: "Parabéns sua empresa foi criada com sucesso no Gapp Delivery, Aproveite todas os benefícios de ser Gapp Delivery!",
-                            data: registro,
+                            data: {registro}
                         })
                     }
 
