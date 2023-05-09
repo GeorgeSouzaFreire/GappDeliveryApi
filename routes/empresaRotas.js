@@ -575,14 +575,6 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
 
         try {
 
-            const registro = {
-                guid,
-                empresa,
-                funcionario,
-                ativo,
-                dataCriacao,
-                dataAtualizacao
-            }
 
             const empresaFind = await Empresa.findOne().sort({ _id: -1 }).limit(1)
 
@@ -652,10 +644,19 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
 
                         const funcionarioUpdate = await Funcionario.findOneAndUpdate({ _id: funcionarioCreate._id }, funcionarioCreate, { new: true })
 
+                        const registro = {
+                            guid,
+                            empresaCreate,
+                            funcionarioUpdate,
+                            ativo,
+                            dataCriacao,
+                            dataAtualizacao
+                        }
+
                         res.status(200).json({
                             success: true,
                             message: "Parabéns sua empresa foi criada com sucesso no Gapp Delivery, Aproveite todas os benefícios de ser Gapp Delivery!",
-                            data: [empresaCreate, funcionarioUpdate],
+                            data: registro,
                         })
                     }
 
