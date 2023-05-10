@@ -174,19 +174,12 @@ router.get('/GetEmpresaApp', async (req, res) => {
                 data: [],
             })
         } else {
-
-            const empresaDesigner = await EmpresaDesigner.findOne({ idEmpresa: Number.parseInt(empresaFindOne.idEmpresa) })
-
-            empresaFindOne.designer = empresaDesigner
-
             res.status(200).json({
                 success: true,
                 message: 'Empresa encontrada com sucesso!',
                 data: empresaFindOne,
             })
         }
-
-
 
     } catch (error) {
         console.log(error)
@@ -656,7 +649,7 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
                         res.status(200).json({
                             success: true,
                             message: "Parabéns sua empresa foi criada com sucesso no Gapp Delivery, Aproveite todas os benefícios de ser Gapp Delivery!",
-                            data: {registro}
+                            data: { registro }
                         })
                     }
 
