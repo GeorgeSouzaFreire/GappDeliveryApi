@@ -379,23 +379,6 @@ router.get('/GetUsuarioEndereco', async (req, res) => {
 
 })
 
-
-// Read - Leitura de dados
-router.get('/', async (req, res) => {
-
-    try {
-
-        const usuario = await Usuario.find()
-
-        res.status(200).json(usuario)
-
-    } catch (error) {
-        res.status(500).json({ error: error })
-    }
-
-
-})
-
 // Validação por Email
 router.get('/ValidacaoUsuarioPorEmail/:email', async (req, res) => {
 
