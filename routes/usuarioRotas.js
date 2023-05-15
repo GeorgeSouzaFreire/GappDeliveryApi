@@ -90,7 +90,7 @@ router.post('/PostUsuario/', async (req, res) => {
 
             console.log(usuario)
 
-            // Criando dados
+            // Criando dados do Usuário.
             const usuarioCreate = await Usuario.create(usuario)
           
             res.status(200).json({
