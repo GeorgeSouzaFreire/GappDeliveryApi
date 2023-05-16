@@ -275,7 +275,23 @@ router.get('/GetUsuario', async (req, res) => {
 
     try {
 
-        if (emailId != '' & senhaId != '') {
+        const errors = {};
+
+        if (!String(emailId).trim() && !String(senhaId).trim()) {
+            errors.nome = ['Favor informar email e senha!'];
+        } else {
+            if (!String(emailId).trim()) {
+                errors.nome = ['Email obrigatório'];
+            }
+            if (!String(senhaId).trim()) {
+                errors.nome = ['Senha obrigatório'];
+            }
+        }
+
+        if (Object.keys(errors).length) {
+            res.status(422).json({ error: errors })
+        } else {
+
             const usuario = await Usuario.findOne({ email: emailId, senha: senhaId })
 
             if (usuario != null) {
@@ -286,21 +302,12 @@ router.get('/GetUsuario', async (req, res) => {
                 })
             } else {
                 res.status(201).json({
-                    success: true,
-                    message: 'Não foi possivel localizar Usuário.',
+                    success: false,
+                    message: 'Não foi possível localizar informações de usuário, tente novamente.',
                     data: usuario,
                 })
             }
 
-
-        } else {
-            const usuario = await Usuario.findOne({ email: emailId })
-
-            res.status(200).json({
-                success: true,
-                message: 'Parâmetro de Email',
-                data: usuario,
-            })
         }
 
     } catch (error) {
