@@ -6,6 +6,7 @@ const { get } = require('express/lib/response')
 const Usuario = require('../models/Usuario')
 const UsuarioEndereco = require('../models/UsuarioEndereco')
 const { ObjectId } = require('mongodb')
+const Empresa = require('../models/Empresa')
 
 
 
@@ -16,16 +17,16 @@ router.post('/PostUsuario/', async (req, res) => {
     const {
         id,
         guid,
-        idEmpresa,
-        idEstabelecimento,
+        empresa,
+        estabelecimento,
         nome,
         sobrenome,
         telefone,
         email,
         senha,
+        package,
         facebookId,
         googleId,
-        idUsuarioEndereco,
         web,
         adminEmpresa,
         adminMaster,
@@ -59,35 +60,40 @@ router.post('/PostUsuario/', async (req, res) => {
         res.status(422).json({ error: errors })
     } else {
 
-        const usuario = {
-            id,
-            guid,
-            idEmpresa,
-            idEstabelecimento,
-            nome,
-            sobrenome,
-            telefone,
-            email,
-            senha,
-            facebookId,
-            googleId,
-            idUsuarioEndereco,
-            web,
-            adminEmpresa,
-            adminMaster,
-            aceitaReceberInfo,
-            ativo,
-            dataCriacao,
-            dataAtualizacao
-        }
-
-        // create
+        // Update and Create Usuario
         try {
 
-            // Criando dados
-            const usuarioCreate = await Usuario.create(usuario)
+            // Empresa Package
+            const empresa = await Empresa.findOne({ package: package })
 
-            res.status(201).json({
+            const usuario = {
+                id,
+                guid,
+                empresa,  
+                estabelecimento,              
+                nome,
+                sobrenome,
+                telefone,
+                email,
+                senha,
+                package,
+                facebookId,
+                googleId,
+                web,
+                adminEmpresa,
+                adminMaster,
+                aceitaReceberInfo,
+                ativo,
+                dataCriacao,
+                dataAtualizacao
+            }
+
+            console.log(usuario)
+
+            // Criando dados do Usuário.
+            const usuarioCreate = await Usuario.create(usuario)
+          
+            res.status(200).json({
                 success: true,
                 message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
                 data: usuarioCreate,
@@ -368,23 +374,6 @@ router.get('/GetUsuarioEndereco', async (req, res) => {
             message: "Não foi possível realizar a operação!",
             error: error
         })
-    }
-
-
-})
-
-
-// Read - Leitura de dados
-router.get('/', async (req, res) => {
-
-    try {
-
-        const usuario = await Usuario.find()
-
-        res.status(200).json(usuario)
-
-    } catch (error) {
-        res.status(500).json({ error: error })
     }
 
 

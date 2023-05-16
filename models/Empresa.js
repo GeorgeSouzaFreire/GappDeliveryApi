@@ -10,6 +10,7 @@ const Empresa = mongoose.model('Empresa', {
     contato: Object,
     designer: Object,
     plano: Object,
+    package: String,
     ativo: Boolean,
     dataCriacao: String,
     dataAtualizacao: String
