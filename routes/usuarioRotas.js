@@ -87,9 +87,6 @@ router.post('/PostUsuario/', async (req, res) => {
                 dataCriacao,
                 dataAtualizacao
             }
-
-            console.log(usuario)
-
             // Criando dados do Usuário.
             const usuarioCreate = await Usuario.create(usuario)
           
