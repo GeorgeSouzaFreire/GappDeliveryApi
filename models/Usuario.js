@@ -5,6 +5,8 @@ const Usuario  = mongoose.model('Usuario', {
     guid: String,
     empresa: Object,
     estabelecimento: Object,
+    endereco: Object,
+    imagem: Object,
     nome: String,
     telefone: String,
     email: String,
