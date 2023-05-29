@@ -8,7 +8,6 @@ const Estabelecimento = mongoose.model('Estabelecimento', {
     nome: String,
     endereco: Object,
     horario: Object,
-    icone: String,
     telefone1: String,
     telefone2: String,
     telefone3: String,

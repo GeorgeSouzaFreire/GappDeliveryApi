@@ -20,11 +20,11 @@ router.post('/PostEstabelecimento/', async (req, res) => {
     const {
         id,
         guid,
-        idEmpresa,
+        empresa,
+        imagem,
         nome,
         endereco,
         horario,
-        icone,
         telefone1,
         telefone2,
         telefone3,
@@ -53,11 +53,11 @@ router.post('/PostEstabelecimento/', async (req, res) => {
         const estabelecimento = {
             id,
             guid,
-            idEmpresa,
+            empresa,
+            imagem,
             nome,
             endereco,
             horario,
-            icone,
             telefone1,
             telefone2,
             telefone3,
@@ -69,72 +69,30 @@ router.post('/PostEstabelecimento/', async (req, res) => {
             dataAtualizacao
         }
 
-        // Create
+
         try {
 
-            // Buscando Empresa 
-            const empresa = await Empresa.findOne({ id: Number.parseInt(idEmpresa) })
+            // Create Estabelecimento
+            const estabelecimentoCreate = await Estabelecimento.create(estabelecimento)
 
+            // Criando a Horario   
+            const horarios = estabelecimento.horario;
 
-            if (empresa != null) {
+            horarios.forEach(async (horario) => {
 
-                // Criando o Estabelecimento            
-                const estabelecimentoCreate = await Estabelecimento.create(estabelecimento)
-                console.log('Json {} de Estabelicimento', estabelecimentoCreate)
-                //--------------------------/
+                try {
+                    const horarioCreate = await Horario.create(horario)
+                } catch (error) {
+                    console.log('Array Horario', error);
+                }
 
-                // Criando o Empresa x Estabelecimento
-                const empresaEstabelecimento = { idEstabelecimento: estabelecimentoCreate._id, idEmpresa: empresa._id };
-                const empresaEstabelecimentoCreate = await EmpresaEstabelecimento.create(empresaEstabelecimento)
-                console.log('Json {} de Relacionamento Empresa x Estabelicimento', empresaEstabelecimentoCreate)
-                //--------------------------/
+            });
 
-                // Criando a Endereço
-                const enredeco = estabelecimento.endereco;
-                const enderecoCreate = await Endereco.create(enredeco)
-                console.log('Json {} de Endereço', enderecoCreate)
-                //--------------------------/
-
-                // Criando a EstabelecimentoEndereco
-                const estabelecimentoEnredeco = { idEstabelecimento: estabelecimentoCreate._id, idEndereco: enderecoCreate._id };
-                const estabelecimentoEnderecoCreate = await EstabelecimentoEndereco.create(estabelecimentoEnredeco)
-                console.log('Json {} de Relacionamento Estabelecimento * Endereço', estabelecimentoEnderecoCreate)
-                //--------------------------/
-
-                // Criando a Horario   
-                const horarios = estabelecimento.horario;
-
-                horarios.forEach(async (horario) => {
-
-                    try {
-                        console.log('Json {} de Horario', horario)
-
-                        const horarioCreate = await Horario.create(horario)
-
-                        // Criando a HorarioEstabelecimento
-                        const horarioEstabelecimento = { idEstabelecimento: estabelecimentoCreate._id, idHorario: horarioCreate._id };
-                        const estabelecimentoEnderecoCreate = await HorarioEstabelecimento.create(horarioEstabelecimento)
-                        console.log('Json {} de Relacionamento Horario * Estabelecimento', estabelecimentoEnderecoCreate)
-
-                    } catch (error) {
-                        console.log('Array Horario', error);
-                    }
-
-                });
-                //----/
-
-                res.status(200).json({
-                    success: true,
-                    message: "Estabelecimento cadastrado com sucesso!",
-                    data: estabelecimentoCreate,
-                })
-            } else {
-                res.status(201).json({
-                    success: false,
-                    message: "Estabelecimento não está registrado!",
-                    data: [],
-                })
-            }
+            res.status(200).json({
+                success: true,
+                message: "Estabelecimento cadastrado com sucesso!",
+                data: estabelecimentoCreate,
+            })
 
         } catch (error) {
             res.status(500).json({
@@ -152,13 +110,13 @@ router.post('/PostEstabelecimento/', async (req, res) => {
 router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
 
     // extrair o dado da requisição, pela url = req.params
-    const id = req.query.IdEmpresa
+    const empresaId = req.query.IdEmpresa
 
     try {
 
-        const estabelecimento = await Estabelecimento.find({ idEmpresa: Number.parseInt(id) })
+        const estabelecimentos = await Estabelecimento.find({ "empresa.idEmpresa": Number.parseInt(empresaId) })
 
-        if (estabelecimento == null) {
+        if (estabelecimentos == null) {
             res.status(422).json({
                 success: false,
                 message: 'O Estabelecimento não foi encontrado!',
@@ -167,12 +125,10 @@ router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
         } else {
             res.status(200).json({
                 success: true,
-                message: 'Foram encontrado ' + estabelecimento.length + ' resultado(s) cadastrado!',
-                data: estabelecimento,
+                message: 'Foram encontrado ' + estabelecimentos.length + ' resultado(s) cadastrado!',
+                data: estabelecimentos,
             })
         }
-
-
 
     } catch (error) {
         res.status(500).json({
