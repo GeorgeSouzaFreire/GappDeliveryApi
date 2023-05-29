@@ -23,6 +23,8 @@ router.post('/PostEstabelecimento/', async (req, res) => {
         empresa,
         imagem,
         nome,
+        tipoEstabelecimento,
+        cnpj,
         endereco,
         horario,
         telefone1,
