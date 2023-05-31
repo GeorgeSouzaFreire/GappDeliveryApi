@@ -15,8 +15,8 @@ router.post('/PostCategoria/', async (req, res) => {
     const {
         id,
         guid,
-        idEmpresa,
-        idEstabelecimento,
+        empresa,
+        estabelecimento,
         ordem,
         nome,
         ativo,
@@ -39,8 +39,8 @@ router.post('/PostCategoria/', async (req, res) => {
             const categoria = {
                 id,
                 guid,
-                idEmpresa,
-                idEstabelecimento,
+                empresa,
+                estabelecimento,
                 ordem,
                 nome,
                 ativo,
@@ -49,18 +49,18 @@ router.post('/PostCategoria/', async (req, res) => {
             }
 
             // Buscando o Estabelecimento
-            const estabelecimento = await Estabelecimento.findOne({ _id: idEstabelecimento })
+            //const estabelecimento = await Estabelecimento.findOne({ _id: idEstabelecimento })
             //***********/
             //console.log('Json {} de Estabelecimento', estabelecimento);
-            if (estabelecimento == null) {
+            //if (estabelecimento == null) {
 
-                res.status(404).json({
-                    success: true,
-                    message: "Id Estabelecimento não encontrado!",
-                    data: {},
-                })
+            //    res.status(404).json({
+            //        success: true,
+            //        message: "Id Estabelecimento não encontrado!",
+            //        data: {},
+            //    })
 
-            } else {
+            //} else {
 
                 // Criando a Categoria
                 const categoriaCreate = await Categoria.create(categoria)
@@ -68,15 +68,15 @@ router.post('/PostCategoria/', async (req, res) => {
                 //***********/
 
                 // Criando a Categoria * Estabelecimento
-                const categoriaEstabelecimento = {
-                    idEstabelecimento: estabelecimento._id,
-                    idCategoria: categoriaCreate._id
-                };
-                const categoriaEstabelecimentoCreate = await CategoriaEstabelecimento.create(categoriaEstabelecimento)
-                console.log('Json {} de Relacionamento Categoria * Estabelecimento', categoriaEstabelecimentoCreate)
+                //const categoriaEstabelecimento = {
+                //    idEstabelecimento: estabelecimento._id,
+                //    idCategoria: categoriaCreate._id
+                //};
+                //const categoriaEstabelecimentoCreate = await CategoriaEstabelecimento.create(categoriaEstabelecimento)
+                //console.log('Json {} de Relacionamento Categoria * Estabelecimento', categoriaEstabelecimentoCreate)
                 //***********/
 
-                res.status(201).json({
+                res.status(200).json({
                     success: true,
                     message: "Categoria cadastrada com sucesso!",
                     data: categoriaCreate,
@@ -84,7 +84,7 @@ router.post('/PostCategoria/', async (req, res) => {
 
 
 
-            }
+            //}
 
 
         } catch (error) {

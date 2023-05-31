@@ -3,8 +3,8 @@ const mongoose = require('mongoose')
 const Categoria = mongoose.model('Categoria', {
     id: Number,
     guid: String,
-    idEmpresa: Number,
-    idEstabelecimento: String,
+    empresa: Object,
+    estabelecimento: Object,
     ordem: Number,
     nome: String,
     ativo: Boolean,
