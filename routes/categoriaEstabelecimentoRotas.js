@@ -81,7 +81,7 @@ router.get('/GetCategoriaPorIdEstabelecimento', async (req, res) => {
 
         const categoria = await Categoria.find({ "estabelecimento.guid": estabelecimentoId, ativo: ativo }).sort({ ordem: 1 })
 
-        if (categoria == null) {
+        if (categoria.length == 0) {
             res.status(422).json({
                 success: false,
                 message: 'O Estabelecimento não foi encontrado!',
