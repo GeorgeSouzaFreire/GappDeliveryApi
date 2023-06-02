@@ -48,44 +48,15 @@ router.post('/PostCategoria/', async (req, res) => {
                 dataAtualizacao
             }
 
-            // Buscando o Estabelecimento
-            //const estabelecimento = await Estabelecimento.findOne({ _id: idEstabelecimento })
-            //***********/
-            //console.log('Json {} de Estabelecimento', estabelecimento);
-            //if (estabelecimento == null) {
+            // Criando a Categoria
+            const categoriaCreate = await Categoria.create(categoria)
+            console.log('Json {} de Categoria', categoriaCreate)
 
-            //    res.status(404).json({
-            //        success: true,
-            //        message: "Id Estabelecimento não encontrado!",
-            //        data: {},
-            //    })
-
-            //} else {
-
-                // Criando a Categoria
-                const categoriaCreate = await Categoria.create(categoria)
-                console.log('Json {} de Categoria', categoriaCreate)
-                //***********/
-
-                // Criando a Categoria * Estabelecimento
-                //const categoriaEstabelecimento = {
-                //    idEstabelecimento: estabelecimento._id,
-                //    idCategoria: categoriaCreate._id
-                //};
-                //const categoriaEstabelecimentoCreate = await CategoriaEstabelecimento.create(categoriaEstabelecimento)
-                //console.log('Json {} de Relacionamento Categoria * Estabelecimento', categoriaEstabelecimentoCreate)
-                //***********/
-
-                res.status(200).json({
-                    success: true,
-                    message: "Categoria cadastrada com sucesso!",
-                    data: categoriaCreate,
-                })
-
-
-
-            //}
-
+            res.status(200).json({
+                success: true,
+                message: "Categoria cadastrada com sucesso!",
+                data: categoriaCreate,
+            })
 
         } catch (error) {
             res.status(500).json({
@@ -108,10 +79,7 @@ router.get('/GetCategoriaPorIdEstabelecimento', async (req, res) => {
 
     try {
 
-        const categoria = await Categoria.find({ idEstabelecimento: estabelecimentoId, ativo: ativo }).sort({ ordem: 1 })
-
-        console.log(categoria)
-        console.log(ativo)
+        const categoria = await Categoria.find({ "estabelecimento.guid": estabelecimentoId, ativo: ativo }).sort({ ordem: 1 })
 
         if (categoria == null) {
             res.status(422).json({
