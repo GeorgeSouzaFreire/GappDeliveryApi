@@ -301,10 +301,10 @@ router.get('/GetFiltroPedido', async (req, res) => {
             }
         })
 
-        if (pedidoFindOne == null) {
-            res.status(205).json({
+        if (pedidoFindOne.length == 0) {
+            res.status(200).json({
                 success: false,
-                message: 'Não registro para está busca!',
+                message: 'Pedidos há pedidos!',
                 data: {},
             })
         } else {
