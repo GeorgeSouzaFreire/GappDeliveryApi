@@ -14,7 +14,7 @@ router.post('/PostPedido/', async (req, res) => {
         guid,
         idEmpresa,
         idEstabelecimento,
-        idUsuario,        
+        idUsuario,
         nomeUsuario,
         endereco,
         item,
@@ -247,13 +247,61 @@ router.get('/GetPedidoPorId', async (req, res) => {
 // Get Pedido App
 router.get('/GetMeusPedido', async (req, res) => {
 
-    const empresaId         = req.query.IdEmpresa
+    const empresaId = req.query.IdEmpresa
     const estabelecimentoId = req.query.IdEstabelecimento
-    const statusPedidoId    = req.query.IdStatusPedido
+    const statusPedidoId = req.query.IdStatusPedido
 
     try {
 
         const pedidoFindOne = await Pedido.find({ idEmpresa: empresaId, idEstabelecimento: estabelecimentoId, idStatusPedido: statusPedidoId })
+
+        if (pedidoFindOne == null) {
+            res.status(205).json({
+                success: false,
+                message: 'Não registro para está busca!',
+                data: {},
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontrado ' + pedidoFindOne.length + ' resultado!',
+                data: pedidoFindOne,
+            })
+        }
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do Pedido.',
+            error: error
+        })
+    }
+})
+
+// Get Pedido App
+router.get('/GetFiltroPedido', async (req, res) => {
+
+    const empresaId = req.query.IdEmpresa
+    const estabelecimentoId = req.query.IdEstabelecimento
+    const statusPedidoId = req.query.IdStatusPedido
+    const dataInicio = req.query.DataInicio
+    const dataFinal = req.query.DataFinal
+
+    console.log('Data Inicio / Final', dataInicio + ' < - > ' + dataFinal)
+
+    try {
+
+        const pedidoFindOne = await Pedido.find({
+            idEmpresa: empresaId,
+            idEstabelecimento: estabelecimentoId,
+            idStatusPedido: statusPedidoId,
+            dataCriacao: {
+                $gte: dataInicio,
+                $lte: dataFinal
+            }
+        })
 
         if (pedidoFindOne == null) {
             res.status(205).json({
@@ -736,7 +784,7 @@ router.post('/PostStatusPedido', async (req, res) => {
     if (Object.keys(errors).length) {
         res.status(422).json({ error: errors })
     } else {
-      
+
         const statusPedido = {
             guid,
             idEmpresa,
