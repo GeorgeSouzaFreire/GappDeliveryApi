@@ -289,8 +289,6 @@ router.get('/GetFiltroPedido', async (req, res) => {
     const dataInicio = req.query.DataInicio
     const dataFinal = req.query.DataFinal
 
-    console.log('Data Inicio / Final', dataInicio + ' < - > ' + dataFinal)
-
     try {
 
         const pedidoFindOne = await Pedido.find({
