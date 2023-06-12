@@ -305,7 +305,7 @@ router.get('/GetFiltroPedido', async (req, res) => {
             res.status(200).json({
                 success: false,
                 message: 'Pedidos há pedidos!',
-                data: {},
+                data: pedidoFindOne,
             })
         } else {
             res.status(200).json({
