@@ -70,7 +70,7 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
 
             } else {
                 
-                const updatedEmpresaDesigner = await EmpresaDesigner.findOneAndUpdate({ _id: empresaDesignerFind._id }, empresaDesigner)
+                const updatedEmpresaDesigner = await EmpresaDesigner.findOneAndUpdate({ _id: empresaDesignerFind._id }, empresaDesigner, { new: true } )
 
                 console.log(updatedEmpresaDesigner)
 
