@@ -3,6 +3,7 @@ const router = require('express').Router()
 const { response } = require('express')
 const { get } = require('express/lib/response')
 const EmpresaDesigner = require('../models/EmpresaDesigner')
+const ConfiguracaoDesign = require('../models/ConfiguracaoDesign')
 
 
 // Post - Criação de uma EmpresaDesigner
@@ -104,6 +105,81 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
 
 })
 
+// Post PostConfiguracaoDesign 
+router.post('/PostConfiguracaoDesign', async (req, res) => {
+
+    const {
+        codigo,    
+        nome,
+        descricao,
+        hexa,    
+        ativo,
+        dataCriacao,
+        dataAtualizacao, 
+    } = req.body
+
+    const errors = {};
+
+    if (!String(nome).trim()) {
+        errors.nome = ['Nome'];
+    }
+
+    if (!String(codigo).trim()) {
+        errors.codigo = ['Codigo'];
+    }
+
+    if (!String(hexa).trim()) {
+        errors.hexa = ['Cor'];
+    }
+
+    if (Object.keys(errors).length) {
+
+        errors.itens = ['\nSão os ' + Object.keys(errors).length + ' itens obrigatórios!'];
+
+        res.status(422).json({ error: errors })
+    } else {
+
+        const configuracaoDesign = {
+            codigo,    
+            nome,
+            descricao,
+            hexa,    
+            ativo,
+            dataCriacao,
+            dataAtualizacao, 
+        }
+
+        try {
+
+            const configuracaoDesignCreate = await ConfiguracaoDesign.create(configuracaoDesign)
+
+            if (configuracaoDesignCreate == null) {
+                res.status(201).json({
+                    success: false,
+                    message: "Não foi possível cadastrar o Configuração Design!",
+                    data: {},
+                })
+            } else {
+                res.status(200).json({
+                    success: true,
+                    message: "Configuração Design cadastrado com sucesso!",
+                    data: configuracaoDesignCreate,
+                })
+            }
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({
+                success: false,
+                message: 'Não foi possível realizar a buscar do Configuração.',
+                error: error
+            })
+        }
+
+    }
+
+})
+
 // GetEmpresaDesigner por IdEmpresa
 router.get('/GetEmpresaDesigner', async (req, res) => {
 
@@ -136,6 +212,30 @@ router.get('/GetEmpresaDesigner', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Não foi possível buscar a EmpresaDesigner.',
+            error: error
+        })
+    }
+
+})
+
+// GetConfiguracaoDesign
+router.get('/GetConfiguracaoDesign', async (req, res) => {
+
+    try {
+
+        const configuracaoDesignFind = await ConfiguracaoDesign.find()
+
+        res.status(200).json({
+            success: true,
+            message: 'Foram encontrado ' + configuracaoDesignFind.length + ' resultado!',
+            data: configuracaoDesignFind,
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a Configuração Design.',
             error: error
         })
     }
