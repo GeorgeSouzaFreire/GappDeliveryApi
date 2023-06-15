@@ -83,7 +83,7 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
                 res.status(200).json({
                     success: true,
                     message: 'Empresa Designer atualizado!',
-                    data: empresaUpdateOne,
+                    data: designer,
                 })
 
             }
