@@ -233,6 +233,9 @@ router.get('/GetFuncionario', async (req, res) => {
 
                 funcionarioFindOne.empresa = await Empresa.findOne({idEmpresa: funcionarioFindOne.empresa.idEmpresa})
 
+                const empresaUpdateOne = await Funcionario.updateOne({ empresa: funcionarioFindOne.empresa }, funcionarioFindOne, { new: true })
+                console.log(empresaUpdateOne);
+
                 res.status(200).json({
                     success: true,
                     message: 'Funcionário encontrado ' + funcionarioFindOne.nome + '!',
