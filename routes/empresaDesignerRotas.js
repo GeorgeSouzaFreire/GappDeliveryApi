@@ -12,18 +12,14 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
     // req.body   
     const {
         id,
+        codigo,
         guid,
         idEmpresa,
-        imagemLogoLogin,
-        corBotaoLogin,
-        corBotaoSemCadastro,
-        corFundoLogin,
-        imagemFundoLogin,
-        isImagemFundoLogin,
-        corToolbar,
-        corBotaoAcao,
-        corPrimariaFundoProduto,
-        corSecundariaFundoProduto
+        corPrincipal,
+        corSecundaria,
+        ativo,
+        dataCriacao,
+        dataAtualizacao
     } = req.body
 
     const errors = {};
@@ -38,18 +34,14 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
 
         const empresaDesigner = {
             id,
+            codigo,
             guid,
             idEmpresa,
-            imagemLogoLogin,
-            corBotaoLogin,
-            corBotaoSemCadastro,
-            corFundoLogin,
-            imagemFundoLogin,
-            isImagemFundoLogin,
-            corToolbar,
-            corBotaoAcao,
-            corPrimariaFundoProduto,
-            corSecundariaFundoProduto
+            corPrincipal,
+            corSecundaria,
+            ativo,
+            dataCriacao,
+            dataAtualizacao
         }
 
         // Create or Update
@@ -58,7 +50,7 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
             const empresaDesignerFind = await EmpresaDesigner.findOne({ idEmpresa: Number.parseInt(idEmpresa) })
 
             if (empresaDesignerFind == null) {
-               
+
                 // Criando dados
                 const empresaDesignerCreate = await EmpresaDesigner.create(empresaDesigner)
 
@@ -69,8 +61,8 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
                 })
 
             } else {
-                
-                const updatedEmpresaDesigner = await EmpresaDesigner.findOneAndUpdate({ _id: empresaDesignerFind._id }, empresaDesigner, { new: true } )
+
+                const updatedEmpresaDesigner = await EmpresaDesigner.findOneAndUpdate({ _id: empresaDesignerFind._id }, empresaDesigner, { new: true })
 
                 console.log(updatedEmpresaDesigner)
 
@@ -109,13 +101,13 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
 router.post('/PostConfiguracaoDesign', async (req, res) => {
 
     const {
-        codigo,    
+        codigo,
         nome,
         descricao,
-        hexa,    
+        hexa,
         ativo,
         dataCriacao,
-        dataAtualizacao, 
+        dataAtualizacao,
     } = req.body
 
     const errors = {};
@@ -140,13 +132,13 @@ router.post('/PostConfiguracaoDesign', async (req, res) => {
     } else {
 
         const configuracaoDesign = {
-            codigo,    
+            codigo,
             nome,
             descricao,
-            hexa,    
+            hexa,
             ativo,
             dataCriacao,
-            dataAtualizacao, 
+            dataAtualizacao,
         }
 
         try {
