@@ -231,10 +231,15 @@ router.get('/GetFuncionario', async (req, res) => {
 
             } else if (funcionarioFindOne.ativo) {
 
-                funcionarioFindOne.empresa = await Empresa.findOne({idEmpresa: funcionarioFindOne.empresa.idEmpresa})
+                const empresa = await Empresa.findOne({idEmpresa: funcionarioFindOne.empresa.idEmpresa})
 
-                const empresaUpdateOne = await Funcionario.updateOne({ empresa: funcionarioFindOne.empresa }, funcionarioFindOne, { new: true })
-                console.log(empresaUpdateOne);
+                console.log('Empresa' , empresa.designer);
+
+                funcionarioFindOne.empresa = empresa
+
+                const empresaUpdateOne = await Funcionario.updateOne({ _id: funcionarioFindOne._id },funcionarioFindOne, { new: true })
+
+                console.log('Funcionario' , funcionarioFindOne);
 
                 res.status(200).json({
                     success: true,
