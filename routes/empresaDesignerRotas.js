@@ -65,9 +65,11 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
 
                 const designer = await EmpresaDesigner.findOneAndUpdate({ _id: empresaDesignerFind._id }, empresaDesigner, { new: true })
 
-                const empresa = { designer }
+                const empresa = {
+                    designer
+                }
 
-                const empresaUpdateOne = await Empresa.updateOne(empresa, { new: true })
+                const empresaUpdateOne = await Empresa.updateOne({ idEmpresa: designer.idEmpresa } , empresa, { new: true })
                
                 console.log(empresaUpdateOne);
 
