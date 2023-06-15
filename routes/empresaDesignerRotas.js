@@ -4,6 +4,7 @@ const { response } = require('express')
 const { get } = require('express/lib/response')
 const EmpresaDesigner = require('../models/EmpresaDesigner')
 const ConfiguracaoDesign = require('../models/ConfiguracaoDesign')
+const Empresa = require('../models/Empresa')
 
 
 // Post - Criação de uma EmpresaDesigner
@@ -62,11 +63,15 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
 
             } else {
 
-                const updatedEmpresaDesigner = await EmpresaDesigner.findOneAndUpdate({ _id: empresaDesignerFind._id }, empresaDesigner, { new: true })
+                const designer = await EmpresaDesigner.findOneAndUpdate({ _id: empresaDesignerFind._id }, empresaDesigner, { new: true })
 
-                console.log(updatedEmpresaDesigner)
+                const empresa = {                    
+                    designer
+                }
+    
+                const empresaUpdateOne = await Empresa.findOneAndUpdate({ idEmpresa: idEmpresa }, empresa, { new: true })
 
-                if (updatedEmpresaDesigner.matchedCount === 0) {
+                if (designer.matchedCount === 0) {
                     res.status(422).json({
                         success: true,
                         message: 'A Empresa Designer não foi encontrado!',
@@ -78,7 +83,7 @@ router.post('/PostEmpresaDesigner/', async (req, res) => {
                 res.status(200).json({
                     success: true,
                     message: 'Empresa Designer atualizado!',
-                    data: updatedEmpresaDesigner,
+                    data: empresaUpdateOne,
                 })
 
             }
