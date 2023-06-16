@@ -401,15 +401,15 @@ router.patch('/AtualizaEmpresa', async (req, res) => {
 
             const {
                 idEmpresa,
-                guid,
-                nome,
-                cnpj,
+                guid,  
+                razaoSocial,
+                nomeFantasia,              
+                cnpj,                
                 endereco,
-                telefone,
-                celular,
-                email,
+                contato,
                 designer,
                 plano,
+                package,
                 ativo,
                 dataCriacao,
                 dataAtualizacao
@@ -417,15 +417,15 @@ router.patch('/AtualizaEmpresa', async (req, res) => {
 
             const empresa = {
                 idEmpresa,
-                guid,
-                nome,
-                cnpj,
+                guid,   
+                razaoSocial,
+                nomeFantasia,           
+                cnpj,                
                 endereco,
-                telefone,
-                celular,
-                email,
+                contato,
                 designer,
                 plano,
+                package,
                 ativo,
                 dataCriacao,
                 dataAtualizacao
