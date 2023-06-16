@@ -404,7 +404,7 @@ router.patch('/AtualizaEmpresa', async (req, res) => {
                 guid,  
                 razaoSocial,
                 nomeFantasia,              
-                cnpj,                
+                cnpj,     
                 endereco,
                 contato,
                 designer,
