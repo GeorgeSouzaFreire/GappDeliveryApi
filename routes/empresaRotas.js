@@ -192,6 +192,40 @@ router.get('/GetEmpresaApp', async (req, res) => {
 
 })
 
+// Get Empresa por Package
+router.get('/GetEmpresaPackage', async (req, res) => {
+
+    const package = req.query.package
+
+    try {
+
+        const empresaFindOne = await Empresa.findOne({ package: package })
+
+        if (empresaFindOne == null) {
+            res.status(422).json({
+                success: false,
+                message: 'O Empresa não foi encontrado!',
+                data: [],
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Empresa encontrada com sucesso!',
+                data: empresaFindOne,
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a Empresa.',
+            error: error
+        })
+    }
+
+})
+
 // Get Empresa
 router.get('/GetEmpresaPorId', async (req, res) => {
 
