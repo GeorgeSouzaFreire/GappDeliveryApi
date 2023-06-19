@@ -199,7 +199,7 @@ router.get('/GetEmpresaPackage', async (req, res) => {
 
     try {
 
-        const empresaFindOne = await Empresa.findOne({ package: package })
+        const empresaFindOne = await Empresa.findOne({ package: String(package) })
 
         if (empresaFindOne == null) {
             res.status(422).json({
