@@ -195,7 +195,7 @@ router.get('/GetEmpresaApp', async (req, res) => {
 // Get Empresa por Package
 router.get('/GetEmpresaPackage', async (req, res) => {
 
-    const package = req.query.package
+    const package = req.query.Package
 
     try {
 

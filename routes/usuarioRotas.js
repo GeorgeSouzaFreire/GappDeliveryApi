@@ -71,10 +71,10 @@ router.post('/PostUsuario/', async (req, res) => {
             const usuario = {
                 id,
                 guid,
-                empresa,  
-                estabelecimento,     
+                empresa,
+                estabelecimento,
                 endereco,
-                imagem,         
+                imagem,
                 nome,
                 sobrenome,
                 telefone,
@@ -93,7 +93,7 @@ router.post('/PostUsuario/', async (req, res) => {
             }
             // Criando dados do Usuário.
             const usuarioCreate = await Usuario.create(usuario)
-          
+
             res.status(200).json({
                 success: true,
                 message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
@@ -270,6 +270,7 @@ router.get('/GetUsuario', async (req, res) => {
 
     const emailId = req.query.Email;
     const senhaId = req.query.Senha;
+    const empresaId = req.query.IdEmpresa;
 
     console.log(emailId)
     console.log(senhaId)
@@ -293,7 +294,13 @@ router.get('/GetUsuario', async (req, res) => {
             res.status(422).json({ error: errors })
         } else {
 
-            const usuario = await Usuario.findOne({ email: emailId, senha: senhaId })
+            const usuario = await Usuario.findOne({ email: emailId, senha: senhaId, idEmpresa: empresaId })
+
+            const empresa = await Empresa.findOne({ idEmpresa: Number.parseInt(empresaId) })
+
+            usuario.empresa = empresa
+
+            const usuarioUpdateOne = await Usuario.updateOne({ _id: usuario._id }, usuario, { new: true })
 
             if (usuario != null) {
                 res.status(200).json({
