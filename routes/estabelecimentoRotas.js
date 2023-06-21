@@ -130,8 +130,6 @@ router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
     
                 const estabelecimentoUpdateOne = await Estabelecimento.updateOne({ _id: estabelecimento._id }, estabelecimento, { new: true })
 
-                //estabelecimento.empresa = 
-                //const horarioCreate = await Horario.create(horario)
             } catch (error) {
                 console.log('Array Update Estabelecimento', error);
             }
