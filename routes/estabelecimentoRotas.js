@@ -120,6 +120,22 @@ router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
 
         const estabelecimentos = await Estabelecimento.find({ "empresa.idEmpresa": Number.parseInt(empresaId) })
 
+        estabelecimentos.forEach(async function(estabelecimento) {
+
+            try {
+
+                const empresa = await Empresa.findOne({ idEmpresa: Number.parseInt(empresaId) })
+
+                estabelecimento.empresa = empresa
+    
+                const estabelecimentoUpdateOne = await Estabelecimento.updateOne({ _id: estabelecimento._id }, estabelecimento, { new: true })
+
+            } catch (error) {
+                console.log('Array Update Estabelecimento', error);
+            }
+
+        });
+
         if (estabelecimentos == null) {
             res.status(422).json({
                 success: false,
