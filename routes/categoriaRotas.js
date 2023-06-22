@@ -105,134 +105,7 @@ router.post('/PostProduto/', async (req, res) => {
                 // Criando a Categoria
                 const produtoCreate = await Produto.create(produto)
 
-                if (logAtivo)
-                    console.log('Json {} de Produto', produtoCreate)
-                //***********/
-
-                // Criando a Categoria * Produto
-                const categoriaProduto = {
-                    idCategoria: categoria._id,
-                    idProduto: produtoCreate._id
-                };
-                const categoriaProdutoCreate = await CategoriaProduto.create(categoriaProduto)
-
-                if (logAtivo)
-                    console.log('Json {} de Relacionamento Categoria * Produto', categoriaProdutoCreate)
-                //***********/
-
-                const constImagemPrimaria = imagemPrimaria
-
-                if (constImagemPrimaria != null && constImagemPrimaria != '') {
-
-                    let buffer = new Buffer.from(constImagemPrimaria.imagem, 'base64');
-
-                    const params = {
-                        Bucket: process.env.AWS_BUCKET_NAME,
-                        Key: produtoCreate._id + '_ID_' + constImagemPrimaria.ordem,
-                        Body: buffer,
-                        ContentEncoding: 'base64',
-                        ContentType: 'image/jpeg',
-
-                    };
-
-                    s3Bucket.upload(params, async function (err, data) {
-                        if (err) {
-                            console.log(err);
-                            console.log('Error uploading data: ', data);
-                        } else {
-                            console.log('successfully uploaded the image!');
-
-                            const imagemBuffer = {
-                                guid: produtoCreate._id,
-                                nome: produtoCreate.nome,
-                                imagem: null,
-                                url: data.Location
-                            };
-
-                            // Criando a Imagem Produto
-                            const imagemCreate = await Imagem.create(imagemBuffer)
-
-                            if (logAtivo)
-                                console.log('Criação da Imagem realizada com sucesso!', imagemCreate);
-
-                            const updatedProduto = await Produto.updateOne({ _id: produtoCreate._id }, { imagemPrimaria: imagemBuffer })
-
-                            if (updatedProduto.matchedCount === 0) {
-
-                                if (logAtivo)
-                                    console.log('Update realizado com sucesso!', updatedProduto);
-                            }
-
-                        }
-                    });
-
-                }
-
-                if (imagemSecundaria != null && imagemSecundaria.length != 0) {
-
-                    const allAsyncResults = []
-
-                    const imagemBuffers = new Promise((resolve, reject) => {
-
-                        imagemSecundaria.forEach(async function (imagem, index, array) {
-
-                            try {
-                                if (logAtivo)
-                                    console.log('Json {} de Imagem', imagem)
-
-                                let buffer = new Buffer.from(imagem.imagem, 'base64');
-
-                                const params = {
-                                    Bucket: process.env.AWS_BUCKET_NAME,
-                                    Key: produtoCreate._id + '_ID_' + imagem.ordem,
-                                    Body: buffer,
-                                    ContentEncoding: 'base64',
-                                    ContentType: 'image/jpeg',
-
-                                };
-
-                                s3Bucket.upload(params, function (err, data) {
-                                    if (err) {
-                                        console.log(err);
-                                        console.log('Error uploading data: ', data);
-                                    } else {
-                                        console.log('successfully uploaded the image!');
-
-                                        const imagemBuffer = {
-                                            guid: produtoCreate._id,
-                                            nome: produtoCreate.nome,
-                                            imagem: null,
-                                            url: data.Location
-                                        };
-
-                                        allAsyncResults.push(imagemBuffer)
-
-                                        if (index === array.length - 1) resolve();
-                                    }
-                                });
-                                
-                                await Imagem.create(allAsyncResults[index])
-
-                            } catch (error) {
-                                console.log('Array Imagens', error);
-                            }
-
-                        });
-
-                    });
-
-                    imagemBuffers.then(async () => {
-                        console.log(allAsyncResults.length)
-
-                        const updatedProdutoUpdateOne = await Produto.updateOne({ _id: produtoCreate._id }, { imagemSecundaria: allAsyncResults })
-
-                        if (logAtivo)
-                            console.log(updatedProdutoUpdateOne)
-                    });
-
-                }
-
-                res.status(201).json({
+                res.status(200).json({
                     success: true,
                     message: "Produto cadastrado com sucesso!",
                     data: produtoCreate,
@@ -241,7 +114,11 @@ router.post('/PostProduto/', async (req, res) => {
 
 
         } catch (error) {
-            res.status(500).json({ success: false, error: error })
+            res.status(500).json({
+                message: 'Não foi possível acessar as informações.',
+                success: false,
+                error: error
+            })
         }
 
     }
