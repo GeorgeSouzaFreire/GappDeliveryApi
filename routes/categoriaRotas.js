@@ -8,6 +8,7 @@ const Categoria = require('../models/Categoria')
 const Produto = require('../models/Produto')
 const CategoriaProduto = require('../models/CategoriaProduto')
 const Imagem = require('../models/Imagem')
+const upload = require("../middleware/upload");
 
 require("dotenv/config")
 
@@ -102,7 +103,15 @@ router.post('/PostProduto/', async (req, res) => {
 
             } else {
 
-                // Criando a Categoria
+                const imgPrimaria = imagemPrimaria
+
+                let buffer = new Buffer.from(imgPrimaria.imagem, 'base64');
+
+                upload.single("file")
+                const imgUrl = `http://gappdelivery.com.br/file/${req.file.filename}`;
+                res.send(imgUrl);
+
+                // Criando o Produto com Imagens
                 const produtoCreate = await Produto.create(produto)
 
                 res.status(200).json({
