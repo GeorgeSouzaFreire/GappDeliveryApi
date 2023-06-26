@@ -110,7 +110,7 @@ router.post('/PostProduto/', async (req, res) => {
                 } else if (opsys == "win32" || opsys == "win64") {
                     origin = 'C:\\Users\\George Freire\\Documents\\Foto\\categoria\\';
                 } else if (opsys == "linux") {
-                    origin = '/home/empresa' + categoria.empresa.idEmpresa +'/categoria/' + categoria.nome + '/image/';
+                    origin = './empresa' + categoria.empresa.idEmpresa +'/categoria/' + categoria.nome + '/image/';
                 }
 
                 if (!fileSystem.existsSync(origin)) {
