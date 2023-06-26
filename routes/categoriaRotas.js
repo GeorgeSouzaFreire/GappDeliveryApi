@@ -8,7 +8,7 @@ const Categoria = require('../models/Categoria')
 const Produto = require('../models/Produto')
 const CategoriaProduto = require('../models/CategoriaProduto')
 const Imagem = require('../models/Imagem')
-const upload = require("../middleware/upload");
+const fileSystem = require('fs');
 
 require("dotenv/config")
 
@@ -88,11 +88,8 @@ router.post('/PostProduto/', async (req, res) => {
             }
 
             // Buscando o Categoria
-            const categoria = await Categoria.findOne({ _id: idCategoria })
-            //***********/
-            if (logAtivo)
-                console.log('Json {} de Categoria', categoria);
-
+            const categoria = await Categoria.findOne({ _id: Object(idCategoria) })
+                
             if (categoria == null) {
 
                 res.status(404).json({
@@ -103,13 +100,37 @@ router.post('/PostProduto/', async (req, res) => {
 
             } else {
 
-                const imgPrimaria = imagemPrimaria
+                const imagePrimariaCreate = await Imagem.create(imagemPrimaria)
 
-                let buffer = new Buffer.from(imgPrimaria.imagem, 'base64');
+                var origin = 'C:\\Users\\George Freire\\Documents\\Foto';
 
-                upload.single("file")
-                const imgUrl = `http://gappdelivery.com.br/file/${req.file.filename}`;
-                res.send(imgUrl);
+                var opsys = process.platform;
+                if (opsys == "darwin") {
+                    origin = 'C:\\Users\\George Freire\\Documents\\Foto';
+                } else if (opsys == "win32" || opsys == "win64") {
+                    origin = 'C:\\Users\\George Freire\\Documents\\Foto\\categoria\\';
+                } else if (opsys == "linux") {
+                    origin = '/home/empresa' + categoria.empresa.idEmpresa +'/categoria/' + categoria.nome + '/image/';
+                }
+
+                if (!fileSystem.existsSync(origin)) {
+                     fileSystem.mkdirSync(origin, { recursive: true });
+                }
+
+                const path = (origin + guid + '.png')
+               
+                fileSystem.writeFileSync(path, imagePrimariaCreate.base64, 'base64' , function (err) {
+                    if (err) {
+                        console.log("failed to save");
+                      } else {
+                        console.log("succeeded in saving");
+                      }
+                });
+
+                imagePrimariaCreate.base64 = '';
+                imagePrimariaCreate.url = '';
+
+                const imagePrimariaCreateUpdateOne = await Imagem.updateOne({ _id: imagePrimariaCreate._id }, imagePrimariaCreate, { new: true })
 
                 // Criando o Produto com Imagens
                 const produtoCreate = await Produto.create(produto)
