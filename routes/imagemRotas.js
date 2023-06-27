@@ -3,56 +3,63 @@ const router = require('express').Router()
 const { response } = require('express')
 const { get } = require('express/lib/response')
 const Imagem = require('../models/Imagem')
+const multer = require('multer')
+const fileSystem = require('fs');
+const upload = multer()
 
 
 // Post - Criação de uma Nova Empresa
-router.post('/PostImagem/', async (req, res) => {
+router.post('/PostImagem/', upload.single("picture") , async (req, res) => {
 
     // req.body   
     const {
-        id,
-        idEmpresa,
-        idEndereco,
+        guid,
+        nome,
+        imagem,
+        ordem,
+        base64,
+        url
     } = req.body
 
     const errors = {};
 
-    if (!String(idEmpresa).trim()) {
-        errors.nome = ['O IdEmpresa é obrigatório'];
-    }
-
-    if (!String(idEndereco).trim()) {
-        errors.nome = ['O IdEndereco é obrigatório'];
+    if (!String(guid).trim()) {
+        errors.nome = ['GUID Obrigatório'];
     }
 
     if (Object.keys(errors).length) {
         res.status(422).json({ error: errors })
     } else {
 
-        const empresaEndereco = {
-            id,
-            idEmpresa,
-            idEndereco
+        const imagem = {
+            guid,
+            nome,
+            imagem,
+            ordem,
+            base64,
+            url
         }
 
         // Create
         try {
 
             // Criando dados
-            const empresaEnderecoCreate = await EmpresaEndereco.create(empresaEndereco)
+            const imagemCreate = await Imagem.create(imagem)
 
             res.status(201).json({
                 success: true,
-                message: "Relacionamento Empresa x Endereço criada com sucesso!",
-                data: empresaEnderecoCreate,
+                message: "Imagem registrada com sucesso!",
+                data: imagemCreate,
             })
 
         } catch (error) {
-            res.status(500).json({ success: false, error: error })
+            res.status(500).json({
+                success: false,
+                message: 'Não foi possível buscar as imagens.',
+                error: error
+            })
         }
-
     }
-
 })
 
 // GetImagem por IdProduto
@@ -84,7 +91,7 @@ router.get('/GetImagemPorIdProduto', async (req, res) => {
                 })
             }
         })
-        
+
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -92,7 +99,7 @@ router.get('/GetImagemPorIdProduto', async (req, res) => {
             error: error
         })
     }
-    
+
 
 })
 
