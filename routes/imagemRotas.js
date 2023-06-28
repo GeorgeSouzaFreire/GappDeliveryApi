@@ -9,13 +9,18 @@ const upload = multer()
 
 
 // Post - Criação de uma Nova Empresa
-router.post('/PostImagem/', upload.single("picture") , async (req, res) => {
+router.post('/PostImagem/:Empresa/:Categoria', async (req, res) => {
+
+    const pathEmpresa = req.params.Empresa
+    const pathCategoria = req.params.Categoria
+
+    console.log('Pasta', pathEmpresa)
+    console.log('Pasta', pathCategoria)
 
     // req.body   
     const {
         guid,
-        nome,
-        imagem,
+        nome,        
         ordem,
         base64,
         url
@@ -33,8 +38,7 @@ router.post('/PostImagem/', upload.single("picture") , async (req, res) => {
 
         const imagem = {
             guid,
-            nome,
-            imagem,
+            nome,            
             ordem,
             base64,
             url
@@ -43,14 +47,29 @@ router.post('/PostImagem/', upload.single("picture") , async (req, res) => {
         // Create
         try {
 
-            // Criando dados
-            const imagemCreate = await Imagem.create(imagem)
+            console.log("Received file" + req.file.originalname);
+            console.log("Received file" + req.file.path);
 
-            res.status(201).json({
-                success: true,
-                message: "Imagem registrada com sucesso!",
-                data: imagemCreate,
-            })
+            var src = fileSystem.createReadStream(req.file.path);
+            var dest = fileSystem.createWriteStream(path + req.file.originalname);
+            src.pipe(dest);
+            src.on('end', async () => {
+                fs.unlinkSync(req.file.path);
+                console.log('OK: received ' + req.file.originalname);
+
+                // Criando dados
+                const imagemCreate = await Imagem.create(imagem)
+
+                res.status(201).json({
+                    success: true,
+                    message: "Imagem registrada com sucesso!",
+                    data: imagemCreate,
+                })
+
+            });
+            src.on('error', function (err) { res.json('Something went wrong!'); });
+
+
 
         } catch (error) {
             res.status(500).json({
