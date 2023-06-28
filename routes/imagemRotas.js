@@ -9,7 +9,7 @@ const fileSystem = require('fs');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
 
-        var dir = 'uploads/' + req.params.folderOne + '/' + req.params.folderTwo + '/';
+        var dir = 'uploads/' + req.params.pasta + '/' + req.params.subpasta + '/';
 
         console.log(dir)
 
@@ -38,7 +38,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Post - Criação de uma Nova Empresa
-router.post('/PostImagem/:folderOne/:folderTwo', upload.single("picture"), async (req, res) => {
+router.post('/PostImagem/:pasta/:subpasta', upload.single("picture"), async (req, res) => {
 
     const {
         guid,        
@@ -47,7 +47,7 @@ router.post('/PostImagem/:folderOne/:folderTwo', upload.single("picture"), async
 
     // Create
     try {
-        var dir = 'uploads/' + req.params.folderOne + '/' + req.params.folderTwo + '/'
+        var dir = 'uploads/' + req.params.pasta + '/' + req.params.subpasta + '/'
 
         console.log("Received file" + req.file.originalname);
         var src = fileSystem.createReadStream(req.file.path);
