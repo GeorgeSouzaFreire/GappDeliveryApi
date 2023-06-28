@@ -5,81 +5,104 @@ const { get } = require('express/lib/response')
 const Imagem = require('../models/Imagem')
 const multer = require('multer')
 const fileSystem = require('fs');
-const upload = multer()
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
 
-// Post - Criação de uma Nova Empresa
-router.post('/PostImagem/:Empresa/:Categoria', async (req, res) => {
+        var dir = 'uploads/' + req.params.folderOne + '/' + req.params.folderTwo + '/';
 
-    const pathEmpresa = req.params.Empresa
-    const pathCategoria = req.params.Categoria
+        console.log(dir)
 
-    console.log('Pasta', pathEmpresa)
-    console.log('Pasta', pathCategoria)
-
-    // req.body   
-    const {
-        guid,
-        nome,        
-        ordem,
-        base64,
-        url
-    } = req.body
-
-    const errors = {};
-
-    if (!String(guid).trim()) {
-        errors.nome = ['GUID Obrigatório'];
-    }
-
-    if (Object.keys(errors).length) {
-        res.status(422).json({ error: errors })
-    } else {
-
-        const imagem = {
-            guid,
-            nome,            
-            ordem,
-            base64,
-            url
+        if (!fileSystem.existsSync(dir)) {
+            fileSystem.mkdirSync(dir, { recursive: true, mode: 0o777, });
         }
 
-        // Create
-        try {
+        cb(null, dir)
+    },
+    options: { useNewUrlParser: true, useUnifiedTopology: true },
+    file: (req, file) => {
+        const match = ["image/png", "image/jpeg"];
 
-            console.log("Received file" + req.file.originalname);
-            console.log("Received file" + req.file.path);
+        if (match.indexOf(file.mimetype) === -1) {
+            const filename = `${Date.now()}-any-name-${file.originalname}`;
+            return filename;
+        }
 
-            var src = fileSystem.createReadStream(req.file.path);
-            var dest = fileSystem.createWriteStream(path + req.file.originalname);
-            src.pipe(dest);
-            src.on('end', async () => {
-                fs.unlinkSync(req.file.path);
-                console.log('OK: received ' + req.file.originalname);
+        return {
+            bucketName: "photos",
+            filename: `${Date.now()}-any-name-${file.originalname}`,
+        };
+    },
+});
 
-                // Criando dados
-                const imagemCreate = await Imagem.create(imagem)
+const upload = multer({ storage });
 
-                res.status(201).json({
-                    success: true,
-                    message: "Imagem registrada com sucesso!",
-                    data: imagemCreate,
-                })
+// Post - Criação de uma Nova Empresa
+router.post('/PostImagem/:folderOne/:folderTwo', upload.single("picture"), async (req, res) => {
 
-            });
-            src.on('error', function (err) { res.json('Something went wrong!'); });
+    const {
+        guid,        
+        ordem,
+    } = req.body;
 
+    // Create
+    try {
+        var dir = 'uploads/' + req.params.folderOne + '/' + req.params.folderTwo + '/'
 
+        console.log("Received file" + req.file.originalname);
+        var src = fileSystem.createReadStream(req.file.path);
+        var dest = fileSystem.createWriteStream(dir + req.file.originalname);
+        src.pipe(dest);
+        src.on('end', async () => {
 
-        } catch (error) {
+            fileSystem.unlinkSync(req.file.path);
+         
+            const imagem = {
+                guid: guid,
+                caminho: dir + req.file.originalname,
+                nome : req.file.originalname,                        
+                url : 'http://gappdelivery.com.br/'+ dir + req.file.originalname
+            }
+
+            const imagemCreate = await Imagem.create(imagem)
+
+            res.status(200).json({
+                success: true,
+                message: "Imagem registrada com sucesso!",
+                data: imagemCreate,
+            })
+        });
+        src.on('error', function (err) {
             res.status(500).json({
                 success: false,
                 message: 'Não foi possível buscar as imagens.',
-                error: error
-            })
-        }
+                error: err
+            })            
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar as imagens.',
+            error: error
+        })
     }
+
 })
+
+router.get("/GetUploads", async (req, res) => {
+    try {        
+        const {pathLike} = req.body;
+        const readStream = fileSystem.createReadStream(pathLike);
+        readStream.pipe(res);
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar as imagens.',
+            error: error
+        })
+    }
+});
 
 // GetImagem por IdProduto
 router.get('/GetImagemPorIdProduto', async (req, res) => {
