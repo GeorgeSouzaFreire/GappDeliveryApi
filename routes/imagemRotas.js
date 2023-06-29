@@ -5,6 +5,7 @@ const { get } = require('express/lib/response')
 const Imagem = require('../models/Imagem')
 const multer = require('multer')
 const fileSystem = require('fs');
+const Produto = require('../models/Produto')
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -21,7 +22,8 @@ const storage = multer.diskStorage({
     },
     options: { useNewUrlParser: true, useUnifiedTopology: true },
     file: (req, file) => {
-        const match = ["image/png", "image/jpeg"];
+        cb(null, Date.now() + file.originalname);
+        /*const match = ["image/png", "image/jpeg"];
 
         if (match.indexOf(file.mimetype) === -1) {
             const filename = `${Date.now()}-any-name-${file.originalname}`;
@@ -31,7 +33,7 @@ const storage = multer.diskStorage({
         return {
             bucketName: "photos",
             filename: `${Date.now()}-any-name-${file.originalname}`,
-        };
+        };*/
     },
 });
 
@@ -41,9 +43,11 @@ const upload = multer({ storage });
 router.post('/PostImagem/:pasta/:subpasta', upload.single("picture"), async (req, res) => {
 
     const {
-        guid,        
+        guid,
         ordem,
     } = req.body;
+
+    console.log("Body", req.body);
 
     // Create
     try {
@@ -56,28 +60,53 @@ router.post('/PostImagem/:pasta/:subpasta', upload.single("picture"), async (req
         src.on('end', async () => {
 
             fileSystem.unlinkSync(req.file.path);
-         
+
             const imagem = {
                 guid: guid,
                 caminho: dir + req.file.originalname,
-                nome : req.file.originalname,                        
-                url : 'http://gappdelivery.com.br/'+ dir + req.file.originalname
+                nome: req.file.originalname,
+                url: 'http://gappdelivery.com.br/' + dir + req.file.originalname
             }
 
-            const imagemCreate = await Imagem.create(imagem)
+            var produto;
 
-            res.status(200).json({
-                success: true,
-                message: "Imagem registrada com sucesso!",
-                data: imagemCreate,
-            })
+            if (ordem === '0') {
+                const imagemPrimaria = await Imagem.create(imagem)
+                produto = {
+                    imagemPrimaria: imagemPrimaria,
+                }
+            } else {
+                const imagemSecundaria = await Imagem.create(imagem)
+                produto = {
+                    imagemSecundaria: imagemSecundaria
+                }
+            }
+
+            console.log("Produto" + produto);
+
+            const produtoUpdateOne = await Produto.findByIdAndUpdate({ _id: Object(guid), ativo: true }, produto, { new: true })
+
+            if (produtoUpdateOne == null) {
+                res.status(422).json({
+                    success: false,
+                    message: 'O Estabelecimento não foi encontrado!',
+                    data: null,
+                })
+            } else {
+                res.status(200).json({
+                    success: true,
+                    message: 'Atualização realizada com sucesso!',
+                    data: produtoUpdateOne,
+                })
+            }
+
         });
         src.on('error', function (err) {
             res.status(500).json({
                 success: false,
                 message: 'Não foi possível buscar as imagens.',
                 error: err
-            })            
+            })
         });
 
     } catch (error) {
@@ -91,8 +120,8 @@ router.post('/PostImagem/:pasta/:subpasta', upload.single("picture"), async (req
 })
 
 router.get("/GetUploads", async (req, res) => {
-    try {        
-        const {pathLike} = req.body;
+    try {
+        const { pathLike } = req.body;
         const readStream = fileSystem.createReadStream(pathLike);
         readStream.pipe(res);
     } catch (error) {
