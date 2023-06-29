@@ -7351,7 +7351,7 @@ flutter_material_color_picker
 
 MIT License
 
-Copyright (c) 2018 Jean-Charles Moussé
+Copyright (c) 2023 Jean-Charles Moussé
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35253,7 +35253,7 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 win32
 
-Copyright 2019, the Dart project authors. All rights reserved.
+Copyright 2019, Dart | Windows. All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
