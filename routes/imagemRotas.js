@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
     },
     options: { useNewUrlParser: true, useUnifiedTopology: true },
     file: (req, file) => {
-        cb(null, Date.now() + file.originalname);
+        cb(null, file.originalname);
         /*const match = ["image/png", "image/jpeg"];
 
         if (match.indexOf(file.mimetype) === -1) {
@@ -40,7 +40,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Post - Criação de uma Nova Empresa
-router.post('/PostImagem/:pasta/:subpasta', upload.single("picture"), async (req, res) => {
+router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (req, res) => {
 
     const {
         guid,
@@ -48,24 +48,27 @@ router.post('/PostImagem/:pasta/:subpasta', upload.single("picture"), async (req
     } = req.body;
 
     console.log("Body", req.body);
+    console.log(req.files);
 
     // Create
     try {
         var dir = 'uploads/' + req.params.pasta + '/' + req.params.subpasta + '/'
 
-        console.log("Received file" + req.file.originalname);
-        var src = fileSystem.createReadStream(req.file.path);
-        var dest = fileSystem.createWriteStream(dir + req.file.originalname);
+        req.files.forEach(async (file) => {            
+
+        console.log("Received file" + file.originalname);
+        var src = fileSystem.createReadStream(file.path);
+        var dest = fileSystem.createWriteStream(dir + file.originalname);
         src.pipe(dest);
         src.on('end', async () => {
 
-            fileSystem.unlinkSync(req.file.path);
+            fileSystem.unlinkSync(file.path);
 
             const imagem = {
                 guid: guid,
-                caminho: dir + req.file.originalname,
-                nome: req.file.originalname,
-                url: 'http://gappdelivery.com.br/' + dir + req.file.originalname
+                caminho: dir + file.originalname,
+                nome: file.originalname,
+                url: 'http://gappdelivery.com.br/' + dir + file.originalname
             }
 
             var produto;
@@ -89,7 +92,7 @@ router.post('/PostImagem/:pasta/:subpasta', upload.single("picture"), async (req
             if (produtoUpdateOne == null) {
                 res.status(422).json({
                     success: false,
-                    message: 'O Estabelecimento não foi encontrado!',
+                    message: 'O Produto não foi encontrado!',
                     data: null,
                 })
             } else {
@@ -108,6 +111,8 @@ router.post('/PostImagem/:pasta/:subpasta', upload.single("picture"), async (req
                 error: err
             })
         });
+
+    });
 
     } catch (error) {
         res.status(500).json({
