@@ -84,11 +84,7 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
 
             });
             src.on('error', function (err) {
-                res.status(500).json({
-                    success: false,
-                    message: 'Não foi possível buscar as imagens.',
-                    error: err
-                })
+                console.log(err);
             });
 
         });
@@ -110,6 +106,7 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
         }
 
     } catch (error) {
+        console.log(error);
         res.status(500).json({
             success: false,
             message: 'Não foi possível buscar as imagens.',
