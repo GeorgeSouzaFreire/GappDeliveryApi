@@ -23,17 +23,6 @@ const storage = multer.diskStorage({
     options: { useNewUrlParser: true, useUnifiedTopology: true },
     file: (req, file) => {
         cb(null, file.originalname);
-        /*const match = ["image/png", "image/jpeg"];
-
-        if (match.indexOf(file.mimetype) === -1) {
-            const filename = `${Date.now()}-any-name-${file.originalname}`;
-            return filename;
-        }
-
-        return {
-            bucketName: "photos",
-            filename: `${Date.now()}-any-name-${file.originalname}`,
-        };*/
     },
 });
 
@@ -42,10 +31,7 @@ const upload = multer({ storage });
 // Post - Criação de uma Nova Empresa
 router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (req, res) => {
 
-    const {
-        guid,
-        ordem,
-    } = req.body;
+
 
     console.log("Body", req.body);
     console.log(req.files);
@@ -54,65 +40,74 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
     try {
         var dir = 'uploads/' + req.params.pasta + '/' + req.params.subpasta + '/'
 
-        req.files.forEach(async (file) => {            
+        const {
+            guid,
+            ordem,
+        } = req.body;
 
-        console.log("Received file" + file.originalname);
-        var src = fileSystem.createReadStream(file.path);
-        var dest = fileSystem.createWriteStream(dir + file.originalname);
-        src.pipe(dest);
-        src.on('end', async () => {
+        var status = true;
 
-            fileSystem.unlinkSync(file.path);
+        req.files.forEach(async (file, index) => {
 
-            const imagem = {
-                guid: guid,
-                caminho: dir + file.originalname,
-                nome: file.originalname,
-                url: 'http://gappdelivery.com.br/' + dir + file.originalname
-            }
+            console.log("Received file" + file.originalname);
+            var src = fileSystem.createReadStream(file.path);
+            var dest = fileSystem.createWriteStream(dir + file.originalname);
+            src.pipe(dest);
+            src.on('end', async () => {
 
-            var produto;
+                fileSystem.unlinkSync(file.path);
 
-            if (ordem === '0') {
-                const imagemPrimaria = await Imagem.create(imagem)
-                produto = {
-                    imagemPrimaria: imagemPrimaria,
+                const imagem = {
+                    guid: guid,
+                    caminho: dir + file.originalname,
+                    nome: file.originalname,
+                    url: 'http://gappdelivery.com.br/' + dir + file.originalname
                 }
-            } else {
-                const imagemSecundaria = await Imagem.create(imagem)
-                produto = {
-                    imagemSecundaria: imagemSecundaria
+
+                var produto;
+
+                if (ordem[index] === '0') {
+                    const imagemPrimaria = await Imagem.create(imagem)
+                    produto = {
+                        imagemPrimaria: imagemPrimaria,
+                    }
+                } else {
+                    const imagemSecundaria = await Imagem.create(imagem)
+                    produto = {
+                        imagemSecundaria: imagemSecundaria
+                    }
                 }
-            }
 
-            console.log("Produto" + produto);
+                console.log("Produto" + produto);
 
-            const produtoUpdateOne = await Produto.findByIdAndUpdate({ _id: Object(guid), ativo: true }, produto, { new: true })
+                await Produto.findByIdAndUpdate({ _id: Object(guid), ativo: true }, produto, { new: true })
 
-            if (produtoUpdateOne == null) {
-                res.status(422).json({
+            });
+            src.on('error', function (err) {
+                res.status(500).json({
                     success: false,
-                    message: 'O Produto não foi encontrado!',
-                    data: null,
+                    message: 'Não foi possível buscar as imagens.',
+                    error: err
                 })
-            } else {
-                res.status(200).json({
-                    success: true,
-                    message: 'Atualização realizada com sucesso!',
-                    data: produtoUpdateOne,
-                })
-            }
+            });
 
         });
-        src.on('error', function (err) {
-            res.status(500).json({
+
+        const produtoUpdateOne = await Produto.findOne({ _id: Object(guid), ativo: true })
+
+        if (produtoUpdateOne == null) {
+            res.status(422).json({
                 success: false,
-                message: 'Não foi possível buscar as imagens.',
-                error: err
+                message: 'O Produto não foi encontrado!',
+                data: null,
             })
-        });
-
-    });
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Atualização realizada com sucesso!',
+                data: produtoUpdateOne,
+            })
+        }
 
     } catch (error) {
         res.status(500).json({
@@ -123,6 +118,15 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
     }
 
 })
+
+function contains(a, obj) {
+    for (var i = 0; i < a.length; i++) {
+        if (a[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
 
 router.get("/GetUploads", async (req, res) => {
     try {
