@@ -43,7 +43,6 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
 
         req.files.forEach(async (file, index) => {
 
-            console.log("Received file" + file.originalname);
             var src = fileSystem.createReadStream(file.path);
             var dest = fileSystem.createWriteStream(dir + file.originalname);
             src.pipe(dest);
@@ -74,6 +73,9 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
 
         var imagemPrimaria = {};     
         var imagemSecundariaArray = new Array();
+
+        console.log(guid);
+        console.log('Imagem.find for GUID' , imagem);
 
         imagem.forEach(async (imagem, index) => {
 
