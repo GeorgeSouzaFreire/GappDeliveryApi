@@ -65,6 +65,8 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
                     url: 'http://gappdelivery.com.br/' + dir + file.originalname
                 }
 
+                console.log(imagem);
+
                 await Imagem.create(imagem)
 
             });
