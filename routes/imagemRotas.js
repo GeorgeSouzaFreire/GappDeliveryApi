@@ -36,7 +36,7 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
         var dir = 'uploads/' + req.params.pasta + '/' + req.params.subpasta + '/'
 
         const {
-            guid,            
+            guid,
         } = req.body;
 
         console.log(req.body)
@@ -71,25 +71,25 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
 
         const imagem = await Imagem.find({ guid: guid });
 
-        var imagemPrimaria = {};     
+        var imagemPrimaria = {};
         var imagemSecundariaArray = new Array();
 
         console.log(guid);
-        console.log('Imagem.find for GUID' , imagem);
+        console.log('Imagem.find for GUID', imagem);
 
         imagem.forEach(async (imagem, index) => {
 
             if (imagem.ordem === '0') {
-                imagemPrimaria = {imagem};
+                imagemPrimaria = { imagem };
             } else {
                 imagemSecundariaArray.push(imagem);
             }
 
-        });      
-        
+        });
+
         const produto = {
-            imagemPrimaria : imagemPrimaria,
-            imagemSecundaria : imagemSecundariaArray
+            imagemPrimaria: imagemPrimaria,
+            imagemSecundaria: imagemSecundariaArray
         }
 
         console.log(produto);
