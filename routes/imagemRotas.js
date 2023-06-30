@@ -74,7 +74,7 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
                 } else {
                     const imagemSecundaria = await Imagem.create(imagem)
                     produto = {
-                        imagemSecundaria: imagemSecundaria
+                        imagemSecundaria: [imagemSecundaria]
                     }
                 }
 
