@@ -5,7 +5,7 @@ const Imagem = mongoose.model('Imagem', {
     nome: String,
     caminho: String,
     imagem: Buffer,
-    ordem: Number,
+    ordem: String,
     base64: String,
     url: String,
 })

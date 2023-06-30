@@ -59,28 +59,13 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
 
                 const imagem = {
                     guid: guid,
+                    ordem: ordem[index],
                     caminho: dir + file.originalname,
                     nome: file.originalname,
                     url: 'http://gappdelivery.com.br/' + dir + file.originalname
                 }
 
-                var produto;
-
-                if (ordem[index] === '0') {
-                    const imagemPrimaria = await Imagem.create(imagem)
-                    produto = {
-                        imagemPrimaria: imagemPrimaria,
-                    }
-                } else {
-                    const imagemSecundaria = await Imagem.create(imagem)
-                    produto = {
-                        imagemSecundaria: [imagemSecundaria]
-                    }
-                }
-
-                console.log("Produto" + produto);
-
-                await Produto.findByIdAndUpdate({ _id: Object(guid), ativo: true }, produto, { new: true })
+                await Imagem.create(imagem)
 
             });
             src.on('error', function (err) {
@@ -89,7 +74,29 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
 
         });
 
-        const produtoUpdateOne = await Produto.findOne({ _id: Object(guid), ativo: true })
+        const imagem = await Imagem.find({ guid: guid });
+
+        var imagemPrimaria = {};     
+        var imagemSecundariaArray = new Array();
+
+        imagem.forEach(async (imagem, index) => {
+
+            if (imagem.ordem === '0') {
+                imagemPrimaria = {imagem};
+            } else {
+                imagemSecundariaArray.push(imagem);
+            }
+
+        });      
+        
+        const produto = {
+            imagemPrimaria : imagemPrimaria,
+            imagemSecundaria : imagemSecundariaArray
+        }
+
+        console.log(produto);
+
+        const produtoUpdateOne = await Produto.findByIdAndUpdate({ _id: Object(guid), ativo: true }, produto, { new: true })
 
         if (produtoUpdateOne == null) {
             res.status(422).json({
