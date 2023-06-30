@@ -51,11 +51,11 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
 
                 fileSystem.unlinkSync(file.path);
 
-                var ordem = req.body['key' + index]
+                var key = req.body['key-' + index]
 
                 const imagem = {
                     guid: guid,
-                    ordem: ordem,
+                    ordem: key,
                     caminho: dir + file.originalname,
                     nome: file.originalname,
                     url: 'http://gappdelivery.com.br/' + dir + file.originalname
