@@ -31,21 +31,15 @@ const upload = multer({ storage });
 // Post - Criação de uma Nova Empresa
 router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (req, res) => {
 
-
-
-    console.log("Body", req.body);
-    console.log(req.files);
-
-    // Create
+    // Create PostImagem
     try {
         var dir = 'uploads/' + req.params.pasta + '/' + req.params.subpasta + '/'
 
         const {
-            guid,
-            ordem,
+            guid,            
         } = req.body;
 
-        var status = true;
+        console.log(req.body)
 
         req.files.forEach(async (file, index) => {
 
@@ -57,15 +51,15 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
 
                 fileSystem.unlinkSync(file.path);
 
+                var ordem = req.body['key' + index]
+
                 const imagem = {
                     guid: guid,
-                    ordem: ordem[index],
+                    ordem: ordem,
                     caminho: dir + file.originalname,
                     nome: file.originalname,
                     url: 'http://gappdelivery.com.br/' + dir + file.originalname
                 }
-
-                console.log(imagem);
 
                 await Imagem.create(imagem)
 
