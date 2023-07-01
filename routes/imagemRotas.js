@@ -39,6 +39,9 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
             guid,
         } = req.body;
 
+        var imagemPrimariaObject = {};
+        var imagemSecundariaArray = new Array();
+
         req.files.forEach(async (file, index) => {
 
             console.log('Glória a Deus --> ', index);
@@ -61,23 +64,18 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
                 }
 
                 const imagemCreate = await Imagem.create(imagem)
-
-                var imagemPrimariaObject = {};
-                var imagemSecundariaArray = new Array();
-
+                
                 if (imagemCreate.ordem === '0') {
                     imagemPrimariaObject = imagemCreate;
+                    const produto = { imagemPrimaria: imagemPrimariaObject }
+                    const produtoUpdateOne = await Produto.updateOne({ _id: Object(guid) }, produto, { new: true })
+                    console.log(produtoUpdateOne);
                 } else {
                     imagemSecundariaArray.push(imagemCreate);
+                    const produto = { imagemSecundaria: imagemSecundariaArray }
+                    const produtoUpdateOne = await Produto.updateOne({ _id: Object(guid) }, produto, { new: true })
+                    console.log(produtoUpdateOne);
                 }
-
-                const produto = {
-                    imagemPrimaria: imagemPrimariaObject,
-                    imagemSecundaria: imagemSecundariaArray
-                }
-
-                const produtoUpdateOne = await Produto.updateOne({ _id: Object(guid) }, produto, { new: true })
-                console.log(produtoUpdateOne);
 
             });
             src.on('error', function (err) {
