@@ -38,7 +38,7 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
         const {
             guid,
         } = req.body;
-        
+
         req.files.forEach(async (file, index) => {
 
             console.log('Glória a Deus --> ', index);
@@ -60,8 +60,48 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
                     url: 'http://gappdelivery.com.br/' + dir + file.originalname
                 }
 
-                const image = await Imagem.create(imagem)
-                console.log('Amém senhor Criou --> ', image);
+                const imagemCreate = await Imagem.create(imagem)
+
+                //const imagem = await Imagem.find({ guid: guid });
+
+                var imagemPrimariaObject = {};
+                var imagemSecundariaArray = new Array();
+
+                console.log('Imagem.find for GUID', imagem);
+
+                //imagem.forEach(async (imagem, index) => {
+
+                    if (imagemCreate.ordem === '0') {
+                        imagemPrimariaObject = imagemCreate;
+                    } else {
+                        imagemSecundariaArray.push(imagemCreate);
+                    }
+
+                //});
+
+                const produto = {
+                    imagemPrimaria: imagemPrimariaObject,
+                    imagemSecundaria: imagemSecundariaArray
+                }
+
+                console.log(produto);
+
+                const produtoUpdateOne = await Produto.findByIdAndUpdate({ _id: Object(guid) }, produto, { new: true })
+
+                /*if (produtoUpdateOne == null) {
+                    res.status(422).json({
+                        success: false,
+                        message: 'O Produto não foi encontrado!',
+                        data: null,
+                    })
+                } else {
+                    res.status(200).json({
+                        success: true,
+                        message: 'Atualização realizada com sucesso!',
+                        data: produtoUpdateOne,
+                    })
+                }*/
+
             });
             src.on('error', function (err) {
                 console.log(err);
@@ -69,7 +109,7 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
 
         });
 
-        const imagem = await Imagem.find({ guid: guid });
+        /*const imagem = await Imagem.find({ guid: guid });
 
         var imagemPrimariaObjct = {};
         var imagemSecundariaArray = new Array();
@@ -94,6 +134,22 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
         console.log(produto);
 
         const produtoUpdateOne = await Produto.findByIdAndUpdate({ _id: Object(guid)}, produto, { new: true })
+
+        if (produtoUpdateOne == null) {
+            res.status(422).json({
+                success: false,
+                message: 'O Produto não foi encontrado!',
+                data: null,
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Atualização realizada com sucesso!',
+                data: produtoUpdateOne,
+            })
+        }*/
+
+        const produtoUpdateOne = await Produto.findOne({ _id: Object(guid)})
 
         if (produtoUpdateOne == null) {
             res.status(422).json({
