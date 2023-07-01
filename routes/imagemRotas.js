@@ -80,7 +80,7 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
         imagem.forEach(async (imagem, index) => {
 
             if (imagem.ordem === '0') {
-                imagemPrimaria = { imagem };
+                imagemPrimaria = imagem;
             } else {
                 imagemSecundariaArray.push(imagem);
             }
