@@ -62,45 +62,22 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
 
                 const imagemCreate = await Imagem.create(imagem)
 
-                //const imagem = await Imagem.find({ guid: guid });
-
                 var imagemPrimariaObject = {};
                 var imagemSecundariaArray = new Array();
 
-                console.log('Imagem.find for GUID', imagem);
-
-                //imagem.forEach(async (imagem, index) => {
-
-                    if (imagemCreate.ordem === '0') {
-                        imagemPrimariaObject = imagemCreate;
-                    } else {
-                        imagemSecundariaArray.push(imagemCreate);
-                    }
-
-                //});
+                if (imagemCreate.ordem === '0') {
+                    imagemPrimariaObject = imagemCreate;
+                } else {
+                    imagemSecundariaArray.push(imagemCreate);
+                }
 
                 const produto = {
                     imagemPrimaria: imagemPrimariaObject,
                     imagemSecundaria: imagemSecundariaArray
                 }
 
-                console.log(produto);
-
-                const produtoUpdateOne = await Produto.findByIdAndUpdate({ _id: Object(guid) }, produto, { new: true })
-
-                /*if (produtoUpdateOne == null) {
-                    res.status(422).json({
-                        success: false,
-                        message: 'O Produto não foi encontrado!',
-                        data: null,
-                    })
-                } else {
-                    res.status(200).json({
-                        success: true,
-                        message: 'Atualização realizada com sucesso!',
-                        data: produtoUpdateOne,
-                    })
-                }*/
+                const produtoUpdateOne = await Produto.updateOne({ _id: Object(guid) }, produto, { new: true })
+                console.log(produtoUpdateOne);
 
             });
             src.on('error', function (err) {
@@ -109,47 +86,7 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
 
         });
 
-        /*const imagem = await Imagem.find({ guid: guid });
-
-        var imagemPrimariaObjct = {};
-        var imagemSecundariaArray = new Array();
-        
-        console.log('Imagem.find for GUID', imagem);
-
-        imagem.forEach(async (imagem, index) => {
-
-            if (imagem.ordem === '0') {
-                imagemPrimariaObjct = imagem;
-            } else {
-                imagemSecundariaArray.push(imagem);
-            }
-
-        });
-
-        const produto = {
-            imagemPrimaria: imagemPrimariaObjct,
-            imagemSecundaria: imagemSecundariaArray
-        }
-
-        console.log(produto);
-
-        const produtoUpdateOne = await Produto.findByIdAndUpdate({ _id: Object(guid)}, produto, { new: true })
-
-        if (produtoUpdateOne == null) {
-            res.status(422).json({
-                success: false,
-                message: 'O Produto não foi encontrado!',
-                data: null,
-            })
-        } else {
-            res.status(200).json({
-                success: true,
-                message: 'Atualização realizada com sucesso!',
-                data: produtoUpdateOne,
-            })
-        }*/
-
-        const produtoUpdateOne = await Produto.findOne({ _id: Object(guid)})
+        const produtoUpdateOne = await Produto.findOne({ _id: Object(guid) })
 
         if (produtoUpdateOne == null) {
             res.status(422).json({
