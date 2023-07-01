@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 
         cb(null, dir)
     },
-    options: { useNewUrlParser: true, useUnifiedTopology: true },
+    //options: { useNewUrlParser: true, useUnifiedTopology: true },
     file: (req, file) => {
         cb(null, file.originalname);
     },
@@ -38,10 +38,10 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
         const {
             guid,
         } = req.body;
-
-        console.log(req.body)
-
+        
         req.files.forEach(async (file, index) => {
+
+            console.log('Glória a Deus --> ', index);
 
             var src = fileSystem.createReadStream(file.path);
             var dest = fileSystem.createWriteStream(dir + file.originalname);
@@ -60,8 +60,8 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
                     url: 'http://gappdelivery.com.br/' + dir + file.originalname
                 }
 
-                await Imagem.create(imagem)
-
+                const image = await Imagem.create(imagem)
+                console.log('Amém senhor Criou --> ', image);
             });
             src.on('error', function (err) {
                 console.log(err);
@@ -71,16 +71,15 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
 
         const imagem = await Imagem.find({ guid: guid });
 
-        var imagemPrimaria = {};
+        var imagemPrimariaObjct = {};
         var imagemSecundariaArray = new Array();
-
-        console.log(guid);
+        
         console.log('Imagem.find for GUID', imagem);
 
         imagem.forEach(async (imagem, index) => {
 
             if (imagem.ordem === '0') {
-                imagemPrimaria = imagem;
+                imagemPrimariaObjct = imagem;
             } else {
                 imagemSecundariaArray.push(imagem);
             }
@@ -88,13 +87,13 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
         });
 
         const produto = {
-            imagemPrimaria: imagemPrimaria,
+            imagemPrimaria: imagemPrimariaObjct,
             imagemSecundaria: imagemSecundariaArray
         }
 
         console.log(produto);
 
-        const produtoUpdateOne = await Produto.findByIdAndUpdate({ _id: Object(guid), ativo: true }, produto, { new: true })
+        const produtoUpdateOne = await Produto.findByIdAndUpdate({ _id: Object(guid)}, produto, { new: true })
 
         if (produtoUpdateOne == null) {
             res.status(422).json({
