@@ -12,8 +12,6 @@ const storage = multer.diskStorage({
 
         var dir = 'uploads/' + req.params.pasta + '/' + req.params.subpasta + '/';
 
-        console.log(dir)
-
         if (!fileSystem.existsSync(dir)) {
             fileSystem.mkdirSync(dir, { recursive: true, mode: 0o777, });
         }
@@ -39,7 +37,6 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
             guid,
         } = req.body;
 
-        var imagemPrimariaObject = {};
         var imagemSecundariaArray = new Array();
 
         req.files.forEach(async (file, index) => {
@@ -64,17 +61,13 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
                 }
 
                 const imagemCreate = await Imagem.create(imagem)
-                
+
                 if (imagemCreate.ordem === '0') {
-                    imagemPrimariaObject = imagemCreate;
-                    const produto = { imagemPrimaria: imagemPrimariaObject }
+                    const produto = { imagemPrimaria: imagemCreate }
                     const produtoUpdateOne = await Produto.updateOne({ _id: Object(guid) }, produto, { new: true })
                     console.log(produtoUpdateOne);
                 } else {
                     imagemSecundariaArray.push(imagemCreate);
-                    const produto = { imagemSecundaria: imagemSecundariaArray }
-                    const produtoUpdateOne = await Produto.updateOne({ _id: Object(guid) }, produto, { new: true })
-                    console.log(produtoUpdateOne);
                 }
 
             });
@@ -83,6 +76,12 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
             });
 
         });
+
+        console.log(imagemSecundariaArray);
+
+        const produto = { imagemSecundaria: imagemSecundariaArray }
+        const produtoUpdateSecundaria = await Produto.updateOne({ _id: Object(guid) }, produto, { new: true })
+        console.log(produtoUpdateSecundaria);
 
         const produtoUpdateOne = await Produto.findOne({ _id: Object(guid) })
 
