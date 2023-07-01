@@ -46,7 +46,7 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
             var src = fileSystem.createReadStream(file.path);
             var dest = fileSystem.createWriteStream(dir + file.originalname);
             src.pipe(dest);
-            src.on('end', async () => {
+            src.on('end', async function () {
 
                 fileSystem.unlinkSync(file.path);
 
