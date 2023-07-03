@@ -27,7 +27,11 @@ app.set('port', process.env.PORT || 3000);
 //app.use(logger('dev'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public-flutter')));
-app.use('/uploads', express.static(process.cwd() + '/uploads'))
+
+app.use(express.static(path.join(__dirname, 'uploads'))); 
+
+//app.use(express.static(__dirname + '/uploads'));
+//app.use('/uploads', express.static(process.cwd() + '/uploads'))
 
 //Rotas da API
 //const personRoutes = require('./routes/personRoutes')
