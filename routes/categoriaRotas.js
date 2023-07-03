@@ -128,12 +128,12 @@ router.post('/PostProduto/', async (req, res) => {
 router.get('/GetCategoriaProduto', async (req, res) => {
 
     // extrair o dado da requisição, pela url = req.params
-    const estabelecimentoId = req.query.IdEstabelecimento
+    const guid = req.query.guid
     const ativo = req.query.Ativo
 
     try {
 
-        const categoriasFind = await Categoria.find({ idEstabelecimento: estabelecimentoId, ativo: ativo }).sort({ ordem: 1 })
+        const categoriasFind = await Categoria.find({ 'estabelecimento.guid': guid, ativo: ativo }).sort({ ordem: 1 })
 
         if (categoriasFind == null) {
             res.status(422).json({
