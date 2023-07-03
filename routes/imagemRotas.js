@@ -94,7 +94,7 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
         } else {
             res.status(200).json({
                 success: true,
-                message: 'Atualização realizada com sucesso!',
+                message: 'Registro realizada com sucesso!',
                 data: produtoUpdateOne,
             })
         }
