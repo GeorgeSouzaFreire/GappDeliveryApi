@@ -27,7 +27,7 @@ app.set('port', process.env.PORT || 3000);
 //app.use(logger('dev'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public-flutter')));
-app.use(express.static(path.join(__dirname, 'uploads'))); 
+app.use(express.static(path.join(__dirname, '/uploads'))); 
 
 //Rotas da API
 //const personRoutes = require('./routes/personRoutes')
@@ -79,7 +79,7 @@ app.get('/api', (req, res) => {
                 success: true,
                 message: "Acesso a API realizado com sucesso! Todos os direitos reservados",
                 data: {
-                   Version : "Version 2.0.10",
+                   Version : "Version 3.0.0",
                    Info: "Contact: application.gapp@gmail.com" 
                 },
             })
