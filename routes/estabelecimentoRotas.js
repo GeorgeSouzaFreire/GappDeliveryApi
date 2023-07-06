@@ -120,14 +120,14 @@ router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
 
         const estabelecimentos = await Estabelecimento.find({ "empresa.idEmpresa": Number.parseInt(empresaId) })
 
-        estabelecimentos.forEach(async function(estabelecimento) {
+        estabelecimentos.forEach(async function (estabelecimento) {
 
             try {
 
                 const empresa = await Empresa.findOne({ idEmpresa: Number.parseInt(empresaId) })
 
                 estabelecimento.empresa = empresa
-    
+
                 const estabelecimentoUpdateOne = await Estabelecimento.updateOne({ _id: estabelecimento._id }, estabelecimento, { new: true })
 
             } catch (error) {
@@ -164,37 +164,27 @@ router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
 router.get('/GetFormaPagamento', async (req, res) => {
 
     const estabelecimentoId = req.query.IdEstabelecimento
-    const ativoId = req.query.Ativo
+    const ativo = req.query.Ativo
 
     try {
 
         console.log('Id do Estabelecimento!', estabelecimentoId)
 
-        const estabelecimentoFormaPagamentoFind = await EstabelecimentoFormaPagamento.find({ idEstabelecimento: estabelecimentoId, ativo: ativoId })
+        const formaDePagamentoFind = await FormaPagamento.find({ idEstabelecimento: estabelecimentoId, ativo: ativo })
 
-        if (estabelecimentoFormaPagamentoFind == null) {
+        if (formaDePagamentoFind.length === 0) {
             res.status(422).json({
                 success: false,
-                message: 'O Estabelecimento não foi encontrado!',
-                data: {},
+                message: 'Não há Forma de Pagamento cadastrado!',
+                data: formaDePagamentoFind,
             })
         } else {
-
-            var lista = await Promise.all(estabelecimentoFormaPagamentoFind.map(async (estabelecimentoFormaPagamento) => {
-
-                const formaDePagamentoFind = await FormaPagamento.findOne({ _id: estabelecimentoFormaPagamento.idFormaPagamento }).sort({ ordem: 1 })
-
-                return formaDePagamentoFind;
-            }));
-
             res.status(200).json({
                 success: true,
-                message: 'Foram encontrado ' + lista.length + ' resultado(s) cadastrado!',
-                data: { lista },
+                message: 'Foram encontradas ' + formaDePagamentoFind.length + ' formas de pagamentos cadastradas!',
+                data: formaDePagamentoFind,
             })
         }
-
-
 
     } catch (error) {
         res.status(500).json({
@@ -215,6 +205,7 @@ router.post('/PostFormaPagamento', async (req, res) => {
 
             const {
                 guid,
+                idEstabelecimento,
                 tipo,
                 idTipo,
                 ordem,
@@ -225,6 +216,7 @@ router.post('/PostFormaPagamento', async (req, res) => {
 
             const formaPagamento = {
                 guid,
+                idEstabelecimento,
                 tipo,
                 idTipo,
                 ordem,
