@@ -482,11 +482,17 @@ router.patch('/FinalizarPedido', async (req, res) => {
     const pedidoId = req.query.IdPedido
 
     const {
+        statusPedido,
+        idStatusPedido,
         formaPagamento,
+        dataAtualizacao
     } = req.body
 
     const pedido = {
+        statusPedido,
+        idStatusPedido,
         formaPagamento,
+        dataAtualizacao
     }
 
     console.log('Patch - FinalizarPedido', pedido)
