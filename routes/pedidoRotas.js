@@ -422,10 +422,12 @@ router.patch('/AtualizaFormaPagamento', async (req, res) => {
     const pedidoId = req.query.IdPedido
 
     const {
+        observacao,
         formaPagamento,
     } = req.body
 
     const pedido = {
+        observacao,
         formaPagamento,
     }
 
@@ -438,13 +440,13 @@ router.patch('/AtualizaFormaPagamento', async (req, res) => {
         if (pedidoUpdate == null) {
             res.status(422).json({
                 success: false,
-                message: 'Pedido não pode ser atualizado!',
+                message: 'Pedido não pode ser realizado!',
                 data: [],
             })
         } else {
             res.status(200).json({
                 success: true,
-                message: 'Atualização realizada com sucesso!',
+                message: 'Pedido realizado com sucesso, acompanhe seu pedido no menu Meus Pedidos.',
                 data: pedidoUpdate,
             })
         }
@@ -460,7 +462,7 @@ router.patch('/AtualizaFormaPagamento', async (req, res) => {
 
 })
 
-// Patch AtualizaFormaPagamento
+// Patch AtualizaObservacaoPedido
 router.patch('/AtualizaObservacaoPedido', async (req, res) => {
 
     const pedidoId = req.query.IdPedido
@@ -503,6 +505,7 @@ router.patch('/AtualizaObservacaoPedido', async (req, res) => {
     }
 
 })
+
 
 // Patch AtualizaQuantidadePedido
 router.patch('/AtualizaQuantidadeProdutoPedido', async (req, res) => {
@@ -727,7 +730,7 @@ router.get('/GetStatusPedido', async (req, res) => {
 
     try {
 
-        const statusPedidoFind = await StatusPedido.find({ idEmpresa: empresaId })
+        const statusPedidoFind = await StatusPedido.find({ idEmpresa: empresaId }).sort({ ordem: 1 })
 
         if (statusPedidoFind == null) {
             res.status(205).json({

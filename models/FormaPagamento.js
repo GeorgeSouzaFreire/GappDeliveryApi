@@ -6,6 +6,7 @@ const FormaPagamento = mongoose.model('FormaPagamento', {
     tipo: String,      
     idTipo: Number,  
     ordem: Number,
+    observacao: String,
     ativo: Boolean,
     dataCriacao: String,
     dataAtualizacao: String
