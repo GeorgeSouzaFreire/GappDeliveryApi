@@ -197,16 +197,16 @@ router.get('/GetPedidoApp', async (req, res) => {
                 //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
             });
 
-            console.log(formatter.format(2500)); /* $2,500.00 */
+            console.log(formatter.format(quantidadeTotal * valorTotal)); /* $2,500.00 */
 
-            console.log('Calculo do Pedido ', 'Quantidade = ' + quantidadeTotal + ' * ' + valorTotal + ' = R$ ' + ((quantidadeTotal * valorTotal) * 100 / 100).toFixed(2))
+            //console.log('Calculo do Pedido ', 'Quantidade = ' + quantidadeTotal + ' * ' + valorTotal + ' = R$ ' + ((quantidadeTotal * valorTotal) * 100 / 100).toFixed(2))
 
             res.status(200).json({
                 success: true,
                 message: 'Foram encontrado ' + pedidoFindOne.length + ' resultado!',
                 data: {
                     quantidadeTotal: quantidadeTotal,
-                    valorTotal: ((quantidadeTotal * valorTotal) * 100 / 100).toFixed(2),
+                    valorTotal: formatter.format(quantidadeTotal * valorTotal),
                     pedido: pedidoFindOne
                 },
             })
