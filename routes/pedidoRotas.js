@@ -65,9 +65,9 @@ router.post('/PostPedido/', async (req, res) => {
         // Create
         try {
 
-            const pedidoFindOne = await Pedido.findOne({ idUsuario: idUsuario, idEmpresa: idEmpresa, idStatusPedido: idStatusPedido})
+            const pedidoFindOne = await Pedido.findOne({ idUsuario: idUsuario, idEmpresa: idEmpresa, idStatusPedido: Number.parseInt(idStatusPedido)})
 
-            if (pedidoFindOne == null) {
+            if (pedidoFindOne === null) {
 
                 const pedidoCreate = await Pedido.create(pedido)
 
