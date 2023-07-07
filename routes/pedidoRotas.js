@@ -154,12 +154,14 @@ router.get('/GetPedidoApp', async (req, res) => {
 
     const empresaId = req.query.IdEmpresa
     const usuarioId = req.query.IdUsuario
-
+    const statusPedidoId = req.query.IdStatusPedido
+    
     try {
 
         const pedidoFindOne = await Pedido.findOne({
             idEmpresa: Number.parseInt(empresaId),
-            idUsuario: usuarioId
+            idUsuario: usuarioId,
+            idStatusPedido: statusPedidoId
         })
 
         if (pedidoFindOne == null) {
@@ -184,6 +186,18 @@ router.get('/GetPedidoApp', async (req, res) => {
                 }
 
             }
+
+            // Create our number formatter.
+            const formatter = new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+
+                // These options are needed to round to whole numbers if that's what you want.
+                //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+                //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+            });
+
+            console.log(formatter.format(2500)); /* $2,500.00 */
 
             console.log('Calculo do Pedido ', 'Quantidade = ' + quantidadeTotal + ' * ' + valorTotal + ' = R$ ' + ((quantidadeTotal * valorTotal) * 100 / 100).toFixed(2))
 
@@ -432,6 +446,50 @@ router.patch('/AtualizaFormaPagamento', async (req, res) => {
     }
 
     console.log('Patch - AtualizaFormaPagamento', pedido)
+
+    try {
+
+        const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoId }, pedido, { new: true })
+
+        if (pedidoUpdate == null) {
+            res.status(422).json({
+                success: false,
+                message: 'Pedido não pode ser realizado!',
+                data: [],
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Pedido realizado com sucesso, acompanhe seu pedido no menu Meus Pedidos.',
+                data: pedidoUpdate,
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Ops, Algo de errado por aqui...' + error,
+            error: error
+        })
+    }
+
+})
+
+// Patch AtualizaFormaPagamento
+router.patch('/FinalizarPedido', async (req, res) => {
+
+    const pedidoId = req.query.IdPedido
+
+    const {
+        formaPagamento,
+    } = req.body
+
+    const pedido = {
+        formaPagamento,
+    }
+
+    console.log('Patch - FinalizarPedido', pedido)
 
     try {
 
