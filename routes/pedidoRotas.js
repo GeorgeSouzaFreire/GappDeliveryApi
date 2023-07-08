@@ -165,7 +165,7 @@ router.get('/GetPedidoApp', async (req, res) => {
         })
 
         if (pedidoFindOne == null) {
-            res.status(205).json({
+            res.status(422).json({
                 success: false,
                 message: 'Você ainda não adicionou nenhum item no carrinho!',
                 data: {},
