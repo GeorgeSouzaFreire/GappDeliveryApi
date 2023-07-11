@@ -474,7 +474,7 @@ router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
 
     try {
 
-        const usuarioFindOne = await Usuario.findByIdAndUpdate({ _id: usuarioId }, usuario, { new: true });
+        const usuarioFindOne = await Usuario.findByIdAndUpdate({ _id: ObjectId(usuarioId) }, usuario, { new: true });
 
         if (usuarioFindOne == null) {
             console.log(usuarioFindOne)
