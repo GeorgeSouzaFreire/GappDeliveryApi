@@ -10,6 +10,10 @@ const Endereco  = mongoose.model('Endereco', {
     cidade: String,
     latitude: Number,
     longitude: Number,
+    principal: Boolean,
+    ativo: Boolean,
+    dataCriacao: String,
+    dataAtualizacao: String
 })
 
 module.exports = Endereco

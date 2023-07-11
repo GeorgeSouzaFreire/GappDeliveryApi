@@ -460,39 +460,33 @@ router.patch('/:id', async (req, res) => {
 })
 
 // Update - Atualização de dados Usuario Endereço (PUT, PATCH)
-router.patch('/AtualizaUsuarioEndereco/:IdUsuarioEndereco', async (req, res) => {
+router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
 
-    const usuarioEnderecoId = req.params.IdUsuarioEndereco
-
-    const {
-        usuario,
-        endereco,
-        entrega
+    const usuarioId = req.query.IdUsuario;
+    
+    const {        
+        endereco,        
     } = req.body
 
-    const usuarioEndereco = {
-        usuario,
-        endereco,
-        entrega
+    const usuario = {     
+        endereco,       
     }
-
-    console.log(usuarioEndereco)
 
     try {
 
-        const usuarioFindOne = await UsuarioEndereco.findByIdAndUpdate({ _id: usuarioEnderecoId }, usuarioEndereco, { new: true });
+        const usuarioFindOne = await Usuario.findByIdAndUpdate({ _id: usuarioId }, usuario, { new: true });
 
         if (usuarioFindOne == null) {
             console.log(usuarioFindOne)
             res.status(201).json({
                 success: true,
-                message: 'Não foi possivel localizar Usuário.',
+                message: 'Não foi possivel localizar usuário, para criação do endereço, tente novamente.',
                 data: usuarioFindOne,
             })
         } else {
             res.status(200).json({
                 success: true,
-                message: 'Busca do Usuário Endereco realizada com sucesso!',
+                message: 'Enredeço criado com sucesso!',
                 data: usuarioFindOne,
             })
         }
