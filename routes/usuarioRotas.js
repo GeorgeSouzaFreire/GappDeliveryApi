@@ -111,95 +111,70 @@ router.post('/PostUsuario/', async (req, res) => {
 // Create - POST Usuario
 router.post('/PostUsuarioEndereco/', async (req, res) => {
 
-    // req.body   
+    const usuarioId = req.query.IdUsuario;
+
     const {
-        usuario,
-        endereco,
-        entrega,
+        guid,
+        logradouro,
+        numero,
+        complemento,
+        bairro,
+        cep,
+        cidade,
+        latitude,
+        longitude,
+        principal,
+        ativo,
+        dataCriacao,
+        dataAtualizacao
     } = req.body
 
-    const errors = {};
 
-    if (!String(usuario).trim()) {
-        errors.nome = ['O Usuário é obrigatório'];
+    
+    const endereco = {
+        guid,
+        logradouro,
+        numero,
+        complemento,
+        bairro,
+        cep,
+        cidade,
+        latitude,
+        longitude,
+        principal,
+        ativo,
+        dataCriacao,
+        dataAtualizacao
     }
 
-    if (!String(entrega.logradouro).trim()) {
-        errors.logradouro = ['Logradouro é obrigatório'];
-    }
+    console.log(req.body)
 
-    if (!String(entrega.numero).trim()) {
-        errors.numero = ['Número é obrigatório'];
-    }
+    try {
 
-    if (!String(entrega.bairro).trim()) {
-        errors.bairro = ['Bairro é obrigatório'];
-    }
+        const usuarioFindOne = await Usuario.findByIdAndUpdate({ _id: mongoose.Types.ObjectId(usuarioId) }, { $push: { 'endereco': endereco } }, { new: true });
 
-    if (!String(entrega.bairro).trim()) {
-        errors.complemento = ['Complemento é obrigatório'];
-    }
-
-    if (Object.keys(errors).length) {
-        res.status(422).json({ error: errors })
-    } else {
-
-        const usuarioEndereco = {
-            usuario,
-            endereco,
-            entrega
-        }
-
-        //console.log(usuarioEndereco)
-
-        try {
-
-            const usuarioFindOne = await UsuarioEndereco.findOne({ idUsuario: usuario });
-
-            if (usuarioFindOne == null) {
-
-                // Criando dados
-                const usuarioEnderecoCreate = await UsuarioEndereco.create(usuarioEndereco)
-
-                if (usuarioEnderecoCreate == null) {
-                    res.status(201).json({
-                        success: true,
-                        message: "Não foi possível registrar o endereço informado!",
-                        data: usuarioEnderecoCreate,
-                    })
-                } else {
-                    res.status(200).json({
-                        success: true,
-                        message: "Seu endereço foi registrado com sucesso!",
-                        data: usuarioEnderecoCreate,
-                    })
-                }
-
-            } else {
-
-                usuarioFindOne.entrega = entrega
-
-                for (let k = 0; k < endereco.length; k++) {
-                    usuarioFindOne.endereco.push(endereco[k])
-                }
-
-                const usuarioEnderecoFindOneAndUpdate = await UsuarioEndereco.findOneAndUpdate({ _id: usuarioFindOne._id }, usuarioFindOne, { new: true })
-
-                res.status(200).json({
-                    success: true,
-                    message: "Seu endereço foi registrado com sucesso!",
-                    data: usuarioEnderecoFindOneAndUpdate,
-                })
-            }
-
-        } catch (error) {
-            res.status(500).json({
-                success: false,
-                message: "Não foi possível realizar a operação!",
-                error: error
+        if (usuarioFindOne == null) {
+            console.log(usuarioFindOne)
+            res.status(201).json({
+                success: true,
+                message: 'Não foi possivel localizar usuário, para criação do endereço, tente novamente.',
+                data: usuarioFindOne,
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Enredeço criado com sucesso!',
+                data: usuarioFindOne,
             })
         }
 
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível realizar a operação!",
+            error: error
+        })
     }
 
 })
@@ -463,13 +438,13 @@ router.patch('/:id', async (req, res) => {
 router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
 
     const usuarioId = req.body.IdUsuario;
-    
-    const {        
-        endereco,        
+
+    const {
+        endereco,
     } = req.body
 
-    const usuario = {     
-        endereco,       
+    const usuario = {
+        endereco,
     }
 
     try {
