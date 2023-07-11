@@ -462,7 +462,7 @@ router.patch('/:id', async (req, res) => {
 // Update - Atualização de dados Usuario Endereço (PUT, PATCH)
 router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
 
-    const usuarioId = req.query.IdUsuario;
+    const usuarioId = req.body.IdUsuario;
     
     const {        
         endereco,        
