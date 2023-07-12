@@ -179,67 +179,6 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
 
 })
 
-// Create - POST Usuario
-router.post('/PostUsuarioFormaPagamento/', async (req, res) => {
-
-    // req.body   
-    const {
-        usuario,
-        endereco,
-        entrega,
-    } = req.body
-
-    const errors = {};
-
-    if (!String(usuario).trim()) {
-        errors.nome = ['O Usuário é obrigatório'];
-    }
-
-    if (Object.keys(errors).length) {
-        res.status(422).json({ error: errors })
-    } else {
-
-        const usuarioEndereco = {
-            usuario,
-            endereco,
-            entrega
-        }
-
-        console.log(usuarioEndereco)
-
-        try {
-
-            // Criando dados
-            const usuarioEnderecoCreate = await UsuarioEndereco.create(usuarioEndereco)
-
-            if (usuarioEnderecoCreate == null) {
-                res.status(201).json({
-                    success: true,
-                    message: "Não foi possível registrar o endereço informado!",
-                    data: usuarioEnderecoCreate,
-                })
-            } else {
-                res.status(200).json({
-                    success: true,
-                    message: "Seu endereço foi registrado com sucesso!",
-                    data: usuarioEnderecoCreate,
-                })
-            }
-
-        } catch (error) {
-            res.status(500).json({
-                success: false,
-                message: "Não foi possível realizar a operação!",
-                error: error
-            })
-        }
-
-    }
-
-})
-
-
-
 // GET Usuario - Leitura de dados
 router.get('/GetUsuario', async (req, res) => {
 
