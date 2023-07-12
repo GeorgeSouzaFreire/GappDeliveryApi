@@ -8,7 +8,61 @@ const UsuarioEndereco = require('../models/UsuarioEndereco')
 const { ObjectId } = require('mongodb')
 const Empresa = require('../models/Empresa')
 
+// Update - Atualização de dados Usuario Endereço (PUT, PATCH)
+router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
 
+    const usuarioId = req.query.IdUsuario;
+    const enderecoId = req.query.IdEndereco;
+
+    try {
+
+        const usuario = await Usuario.findById({ _id: mongoose.Types.ObjectId(usuarioId)});
+
+        if (usuario === null) {            
+            res.status(201).json({
+                success: true,
+                message: 'Não foi possivel localizar usuário, para atualização do endereço, tente novamente.',
+                data: usuario,
+            })
+        } else {
+
+            console.log(usuario.endereco)
+
+            usuario.endereco.forEach(async (endereco) => {
+
+                try {
+
+                    if (endereco.guid === enderecoId) {
+                        endereco.principal = true
+                    } else {
+                        endereco.principal = false
+                    }
+
+                    await Usuario.updateOne({ _id: mongoose.Types.ObjectId(usuarioId) }, usuario, { new: true });
+
+                } catch (error) {
+                    console.log('Array Horario', error);
+                }
+
+            });
+
+            res.status(200).json({
+                success: true,
+                message: 'Enredeço atualizado criado com sucesso!',
+                data: {'lista' : usuario.endereco},
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível realizar a operação!",
+            error: error
+        })
+    }
+
+})
 
 // Create - POST Usuario
 router.post('/PostUsuario/', async (req, res) => {
@@ -130,7 +184,7 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
     } = req.body
 
 
-    
+
     const endereco = {
         guid,
         logradouro,
@@ -377,31 +431,53 @@ router.patch('/:id', async (req, res) => {
 router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
 
     const usuarioId = req.body.IdUsuario;
+    const enderecoId = req.body.IdEndereco;
 
     const {
-        endereco,
+        principal,
     } = req.body
 
     const usuario = {
-        endereco,
+        principal,
     }
 
     try {
 
-        const usuarioFindOne = await Usuario.findByIdAndUpdate({ _id: mongoose.Types.ObjectId(usuarioId) }, usuario, { new: true });
+        const usuario = await Usuario.findByIdAndUpdate({ _id: mongoose.Types.ObjectId(usuarioId) }, usuario, { new: true });
 
-        if (usuarioFindOne == null) {
-            console.log(usuarioFindOne)
+        if (usuario == null) {
+            console.log(usuario)
             res.status(201).json({
                 success: true,
                 message: 'Não foi possivel localizar usuário, para criação do endereço, tente novamente.',
-                data: usuarioFindOne,
+                data: usuario,
             })
         } else {
+
+            console.log(usuario.endereco)
+
+            usuario.endereco.forEach(async (endereco) => {
+
+                try {
+
+                    if (endereco._id === mongoose.Types.ObjectId(enderecoId)) {
+                        endereco.principal = true
+                    } else {
+                        endereco.principal = false
+                    }
+
+                    usuario = await Usuario.findByIdAndUpdate({ _id: mongoose.Types.ObjectId(usuarioId) }, usuario, { new: true });
+
+                } catch (error) {
+                    console.log('Array Horario', error);
+                }
+
+            });
+
             res.status(200).json({
                 success: true,
-                message: 'Enredeço criado com sucesso!',
-                data: usuarioFindOne,
+                message: 'Enredeço atualizado criado com sucesso!',
+                data: usuario.endereco,
             })
         }
 

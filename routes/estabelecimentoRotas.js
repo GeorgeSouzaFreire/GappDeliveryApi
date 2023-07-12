@@ -12,6 +12,8 @@ const HorarioEstabelecimento = require('../models/HorarioEstabelecimento')
 const Horario = require('../models/Horario')
 const FormaPagamento = require('../models/FormaPagamento')
 const EstabelecimentoFormaPagamento = require('../models/EstabelecimentoFormaPagamento')
+const Usuario = require('../models/Usuario')
+const Mongoose = require('mongoose')
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostEstabelecimento/', async (req, res) => {
