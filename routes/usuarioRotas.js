@@ -16,7 +16,7 @@ router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
 
     try {
 
-        const usuario = await Usuario.findById({ _id: mongoose.Types.ObjectId(usuarioId)});
+        const usuario = await Usuario.findOne({ _id: usuarioId});
 
         if (usuario === null) {            
             res.status(201).json({
@@ -38,7 +38,7 @@ router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
                         endereco.principal = false
                     }
 
-                    await Usuario.updateOne({ _id: mongoose.Types.ObjectId(usuarioId) }, usuario, { new: true });
+                    await Usuario.updateOne({ _id: usuarioId }, usuario, { new: true });
 
                 } catch (error) {
                     console.log('Array Horario', error);
