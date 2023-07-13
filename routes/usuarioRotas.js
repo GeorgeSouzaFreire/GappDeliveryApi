@@ -217,7 +217,7 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
         } else {
             res.status(200).json({
                 success: true,
-                message: 'Enredeço criado com sucesso!',
+                message: 'Endereço criado com sucesso!',
                 data: usuarioFindOne,
             })
         }

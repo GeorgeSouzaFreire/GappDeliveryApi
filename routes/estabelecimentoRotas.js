@@ -12,6 +12,7 @@ const HorarioEstabelecimento = require('../models/HorarioEstabelecimento')
 const Horario = require('../models/Horario')
 const FormaPagamento = require('../models/FormaPagamento')
 const EstabelecimentoFormaPagamento = require('../models/EstabelecimentoFormaPagamento')
+const Cupom = require('../models/Cupom')
 const Usuario = require('../models/Usuario')
 const Mongoose = require('mongoose')
 
@@ -156,6 +157,43 @@ router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Não foi possivel registrar o Estabelecimento!",
+            error: error
+        })
+    }
+
+})
+
+// Get Cupom 
+router.get('/GetCupom', async (req, res) => {
+
+    const estabelecimentoId = req.query.IdEstabelecimento
+    const ativo = req.query.Ativo
+    const cupom = req.query.Cupom
+
+    try {
+
+        console.log('Id do Estabelecimento!', estabelecimentoId)
+
+        const cupomFindOne = await Cupom.findOne({ idEstabelecimento: estabelecimentoId, indenticador: cupom, ativo: ativo })
+
+        if (cupomFindOne.length === 0) {
+            res.status(422).json({
+                success: false,
+                message: 'Cupom Inválido ou expirado.',
+                data: cupomFindOne,
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: cupomFindOne.regras,
+                data: cupomFindOne,
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Não foi possivel realizar a busca do Cupom!",
             error: error
         })
     }
