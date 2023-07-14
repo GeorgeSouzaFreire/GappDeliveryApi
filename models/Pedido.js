@@ -10,6 +10,7 @@ const Pedido = mongoose.model('Pedido', {
     item: Object,
     formaPagamento: Object,
     cupom: Object,
+    taxaEntrega: Object,
     statusPedido: String,
     idStatusPedido: Number,
     total: Number,

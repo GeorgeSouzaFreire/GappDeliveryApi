@@ -15,6 +15,7 @@ const EstabelecimentoFormaPagamento = require('../models/EstabelecimentoFormaPag
 const Cupom = require('../models/Cupom')
 const Usuario = require('../models/Usuario')
 const Mongoose = require('mongoose')
+const TaxaEntrega = require('../models/TaxaEntrega')
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostEstabelecimento/', async (req, res) => {
@@ -200,7 +201,7 @@ router.get('/GetCupom', async (req, res) => {
 
 })
 
-// Create 
+// Resgatar Forma de Pagamento 
 router.get('/GetFormaPagamento', async (req, res) => {
 
     const estabelecimentoId = req.query.IdEstabelecimento
@@ -230,6 +231,41 @@ router.get('/GetFormaPagamento', async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Não foi possivel realizar a busca da Forma de Pagamento!",
+            error: error
+        })
+    }
+
+})
+
+// Resgatar Taxa de Entrega 
+router.get('/GetTaxaEntrega', async (req, res) => {
+
+    const estabelecimentoId = req.query.IdEstabelecimento
+
+    try {
+
+        console.log('Id do Estabelecimento!', estabelecimentoId)
+
+        const taxaEntregaFindOne = await TaxaEntrega.findOne({ 'estabelecimento._id': estabelecimentoId })
+
+        if (taxaEntregaFindOne === null) {
+            res.status(422).json({
+                success: false,
+                message: 'Não há Taxa de Entrega cadastrado!',
+                data: taxaEntregaFindOne,
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Taxa de Entrega encontrada com sucesso!',
+                data: taxaEntregaFindOne,
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Não foi possivel realizar a busca da Taxa de Entrega!",
             error: error
         })
     }
@@ -277,6 +313,57 @@ router.post('/PostFormaPagamento', async (req, res) => {
             success: true,
             message: 'Forma de Pagamento registrada com sucesso!',
             data: req.body,
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível registrar o Forma de Pagamento!",
+            error: error
+        })
+    }
+
+})
+
+// Post Post Taxa Entrega 
+router.post('/PostTaxaEntrega', async (req, res) => {
+
+    try {
+
+        const {            
+            guid,
+            empresa,
+            estabelecimento,
+            valor,
+            titulo,
+            descricao,
+            ativo,
+            dataCriacao,
+            dataAtualizacao,
+        } = req.body
+
+        const taxaEntrega = {
+            guid,
+            empresa,
+            estabelecimento,
+            valor,
+            titulo,
+            descricao,
+            ativo,
+            dataCriacao,
+            dataAtualizacao,
+        }
+
+        // Criando dados Forma de Pagamento
+        const taxaEntregaCreate = await TaxaEntrega.create(taxaEntrega)
+
+        console.log('Taxa de Entrega criada com sucesso!', taxaEntregaCreate)
+
+        res.status(200).json({
+            success: true,
+            message: 'Forma de Pagamento registrada com sucesso!',
+            data: taxaEntregaCreate,
         })
 
     } catch (error) {
