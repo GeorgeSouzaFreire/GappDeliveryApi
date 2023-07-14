@@ -362,7 +362,7 @@ router.post('/PostTaxaEntrega', async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'Forma de Pagamento registrada com sucesso!',
+            message: 'Taxa de Entrega registrada com sucesso!',
             data: taxaEntregaCreate,
         })
 
@@ -370,7 +370,7 @@ router.post('/PostTaxaEntrega', async (req, res) => {
         console.log(error)
         res.status(500).json({
             success: false,
-            message: "Não foi possível registrar o Forma de Pagamento!",
+            message: "Não foi possível registrar o Taxa de Entrega!",
             error: error
         })
     }
