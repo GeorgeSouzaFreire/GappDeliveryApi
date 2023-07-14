@@ -331,7 +331,7 @@ router.post('/PostTaxaEntrega', async (req, res) => {
 
     try {
 
-        const {            
+        const {
             guid,
             empresa,
             estabelecimento,
@@ -355,16 +355,33 @@ router.post('/PostTaxaEntrega', async (req, res) => {
             dataAtualizacao,
         }
 
-        // Criando dados Forma de Pagamento
-        const taxaEntregaCreate = await TaxaEntrega.create(taxaEntrega)
+        const taxaEntregaFind = await TaxaEntrega.find({ 'estabelecimento._id': estabelecimento._id })
 
-        console.log('Taxa de Entrega criada com sucesso!', taxaEntregaCreate)
+        if (taxaEntregaFind.length === 0) {
+            // Criando dados TaxaEntrega
+            const taxaEntregaCreate = await TaxaEntrega.create(taxaEntrega)
 
-        res.status(200).json({
-            success: true,
-            message: 'Taxa de Entrega registrada com sucesso!',
-            data: taxaEntregaCreate,
-        })
+            console.log('Taxa de Entrega criada com sucesso!', taxaEntregaCreate)
+
+            res.status(200).json({
+                success: true,
+                message: 'Taxa de Entrega registrada com sucesso!',
+                data: taxaEntregaCreate,
+            })
+        } else {
+            // Criando dados TaxaEntrega
+            const taxaEntregaCreate = await TaxaEntrega.updateOne({ _id: taxaEntregaCreate._id }, taxaEntrega, { new: true })
+
+            console.log('Taxa de Entrega criada com sucesso!', taxaEntregaCreate)
+
+            res.status(200).json({
+                success: true,
+                message: 'Taxa de Entrega registrada com sucesso!',
+                data: taxaEntregaCreate,
+            })
+        }
+
+
 
     } catch (error) {
         console.log(error)
