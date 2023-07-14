@@ -176,7 +176,7 @@ router.get('/GetCupom', async (req, res) => {
 
         const cupomFindOne = await Cupom.findOne({ idEstabelecimento: estabelecimentoId, indenticador: cupom, ativo: ativo })
 
-        if (cupomFindOne.length === 0) {
+        if (cupomFindOne === null) {
             res.status(422).json({
                 success: false,
                 message: 'Cupom Inválido ou expirado.',
