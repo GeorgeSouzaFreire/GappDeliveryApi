@@ -174,7 +174,7 @@ router.get('/GetCupom', async (req, res) => {
 
         console.log('Id do Estabelecimento!', estabelecimentoId)
 
-        const cupomFindOne = await Cupom.findOne({ idEstabelecimento: estabelecimentoId, indenticador: cupom, ativo: ativo })
+        const cupomFindOne = await Cupom.findOne({ 'estabelecimento._id': estabelecimentoId, indenticador: cupom, ativo: ativo })
 
         if (cupomFindOne === null) {
             res.status(422).json({
