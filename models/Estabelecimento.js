@@ -9,7 +9,7 @@ const Estabelecimento = mongoose.model('Estabelecimento', {
     tipoEstabelecimento: String,
     cnpj: String,    
     endereco: Object,
-    taxaEntrega: Object,
+    taxa: Object,
     horario: Object,
     telefone1: String,
     telefone2: String,
