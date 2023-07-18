@@ -15,6 +15,7 @@ const EstabelecimentoFormaPagamento = require('../models/EstabelecimentoFormaPag
 const Cupom = require('../models/Cupom')
 const Usuario = require('../models/Usuario')
 const Mongoose = require('mongoose')
+const TaxaEntrega = require('../models/TaxaEntrega')
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostEstabelecimento/', async (req, res) => {
@@ -29,6 +30,7 @@ router.post('/PostEstabelecimento/', async (req, res) => {
         tipoEstabelecimento,
         cnpj,
         endereco,
+        taxaEntrega,
         horario,
         telefone1,
         telefone2,
@@ -64,6 +66,7 @@ router.post('/PostEstabelecimento/', async (req, res) => {
             tipoEstabelecimento,
             cnpj,
             endereco,
+            taxaEntrega,
             horario,
             telefone1,
             telefone2,
@@ -130,6 +133,10 @@ router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
                 const empresa = await Empresa.findOne({ idEmpresa: Number.parseInt(empresaId) })
 
                 estabelecimento.empresa = empresa
+
+                const taxaEntrega = await TaxaEntrega.findOne({ idEmpresa: Number.parseInt(empresaId), 'estabelecimento._id': estabelecimento._id })
+
+                estabelecimento.taxaEntrega = taxaEntrega
 
                 const estabelecimentoUpdateOne = await Estabelecimento.updateOne({ _id: estabelecimento._id }, estabelecimento, { new: true })
 
