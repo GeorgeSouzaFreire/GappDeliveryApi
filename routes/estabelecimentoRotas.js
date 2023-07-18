@@ -134,7 +134,7 @@ router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
 
                 estabelecimento.empresa = empresa
 
-                const taxaEntrega = await TaxaEntrega.findOne({ idEmpresa: Number.parseInt(empresaId), 'estabelecimento._id': estabelecimento._id })
+                const taxaEntrega = await TaxaEntrega.findOne({'estabelecimento._id': estabelecimento._id })
 
                 estabelecimento.taxaEntrega = taxaEntrega
 
