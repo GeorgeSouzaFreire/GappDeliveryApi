@@ -181,9 +181,9 @@ router.get('/GetCupom', async (req, res) => {
 
         console.log('Id do Estabelecimento!', estabelecimentoId)
 
-        const cupomFindOne = await Cupom.findOne({ idEstabelecimento: estabelecimentoId, indenticador: cupom, ativo: ativo })
+        const cupomFindOne = await Cupom.findOne({ 'estabelecimento._id': estabelecimentoId, indenticador: cupom, ativo: ativo })
 
-        if (cupomFindOne.length === 0) {
+        if (cupomFindOne === null) {
             res.status(422).json({
                 success: false,
                 message: 'Cupom Inválido ou expirado.',
@@ -207,7 +207,7 @@ router.get('/GetCupom', async (req, res) => {
 
 })
 
-// Create 
+// Resgatar Forma de Pagamento 
 router.get('/GetFormaPagamento', async (req, res) => {
 
     const estabelecimentoId = req.query.IdEstabelecimento
@@ -237,6 +237,41 @@ router.get('/GetFormaPagamento', async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Não foi possivel realizar a busca da Forma de Pagamento!",
+            error: error
+        })
+    }
+
+})
+
+// Resgatar Taxa de Entrega 
+router.get('/GetTaxaEntrega', async (req, res) => {
+
+    const estabelecimentoId = req.query.IdEstabelecimento
+
+    try {
+
+        console.log('Id do Estabelecimento!', estabelecimentoId)
+
+        const taxaEntregaFindOne = await TaxaEntrega.findOne({ 'estabelecimento._id': estabelecimentoId })
+
+        if (taxaEntregaFindOne === null) {
+            res.status(422).json({
+                success: false,
+                message: 'Não há Taxa de Entrega cadastrado!',
+                data: taxaEntregaFindOne,
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Taxa de Entrega encontrada com sucesso!',
+                data: taxaEntregaFindOne,
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Não foi possivel realizar a busca da Taxa de Entrega!",
             error: error
         })
     }
@@ -291,6 +326,74 @@ router.post('/PostFormaPagamento', async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Não foi possível registrar o Forma de Pagamento!",
+            error: error
+        })
+    }
+
+})
+
+// Post Post Taxa Entrega 
+router.post('/PostTaxaEntrega', async (req, res) => {
+
+    try {
+
+        const {
+            guid,
+            empresa,
+            estabelecimento,
+            valor,
+            titulo,
+            descricao,
+            ativo,
+            dataCriacao,
+            dataAtualizacao,
+        } = req.body
+
+        const taxaEntrega = {
+            guid,
+            empresa,
+            estabelecimento,
+            valor,
+            titulo,
+            descricao,
+            ativo,
+            dataCriacao,
+            dataAtualizacao,
+        }
+
+        const taxaEntregaFind = await TaxaEntrega.find({ 'estabelecimento._id': estabelecimento._id })
+
+        if (taxaEntregaFind.length === 0) {
+            // Criando dados TaxaEntrega
+            const taxaEntregaCreate = await TaxaEntrega.create(taxaEntrega)
+
+            console.log('Taxa de Entrega criada com sucesso!', taxaEntregaCreate)
+
+            res.status(200).json({
+                success: true,
+                message: 'Taxa de Entrega registrada com sucesso!',
+                data: taxaEntregaCreate,
+            })
+        } else {
+            // Criando dados TaxaEntrega
+            const taxaEntregaCreate = await TaxaEntrega.updateOne({ _id: taxaEntregaCreate._id }, taxaEntrega, { new: true })
+
+            console.log('Taxa de Entrega criada com sucesso!', taxaEntregaCreate)
+
+            res.status(200).json({
+                success: true,
+                message: 'Taxa de Entrega registrada com sucesso!',
+                data: taxaEntregaCreate,
+            })
+        }
+
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível registrar o Taxa de Entrega!",
             error: error
         })
     }
