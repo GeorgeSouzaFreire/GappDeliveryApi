@@ -363,9 +363,9 @@ router.post('/PostTaxaEntrega', async (req, res) => {
             dataAtualizacao,
         }
 
-        const taxaEntregaFind = await TaxaEntrega.find({ 'estabelecimento._id': estabelecimento._id })
+        const taxaEntregaFindOne = await TaxaEntrega.findOne({ 'estabelecimento._id': estabelecimento._id })
 
-        if (taxaEntregaFind.length === 0) {
+        if (taxaEntregaFindOne === null) {
             // Criando dados TaxaEntrega
             const taxaEntregaCreate = await TaxaEntrega.create(taxaEntrega)
 
@@ -378,14 +378,12 @@ router.post('/PostTaxaEntrega', async (req, res) => {
             })
         } else {
             // Criando dados TaxaEntrega
-            const taxaEntregaCreate = await TaxaEntrega.updateOne({ _id: taxaEntregaCreate._id }, taxaEntrega, { new: true })
-
-            console.log('Taxa de Entrega atualizada com sucesso!', taxaEntregaCreate)
+            const taxaEntregaUpdateOne = await TaxaEntrega.updateOne({ _id: taxaEntregaFindOne._id }, taxaEntrega, { new: true })
 
             res.status(200).json({
                 success: true,
                 message: 'Taxa de Entrega registrada com sucesso!',
-                data: taxaEntregaCreate,
+                data: taxaEntregaUpdateOne,
             })
         }
 
