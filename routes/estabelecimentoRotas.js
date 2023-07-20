@@ -369,11 +369,11 @@ router.post('/PostTaxaEntrega', async (req, res) => {
             // Criando dados TaxaEntrega
             const taxaEntregaCreate = await TaxaEntrega.create(taxaEntrega)
 
-            console.log('Taxa de Entrega criada com sucesso!', taxaEntregaCreate)
+            console.log('Taxa de entrega criada com sucesso!', taxaEntregaCreate)
 
             res.status(200).json({
                 success: true,
-                message: 'Taxa de Entrega registrada com sucesso!',
+                message: 'Taxa de entrega registrada com sucesso!',
                 data: taxaEntregaCreate,
             })
         } else {
@@ -382,7 +382,7 @@ router.post('/PostTaxaEntrega', async (req, res) => {
 
             res.status(200).json({
                 success: true,
-                message: 'Taxa de Entrega atualizada com sucesso!',
+                message: 'Taxa de entrega atualizada com sucesso!',
                 data: taxaEntregaUpdateOne,
             })
         }
