@@ -380,7 +380,7 @@ router.post('/PostTaxaEntrega', async (req, res) => {
             // Criando dados TaxaEntrega
             const taxaEntregaCreate = await TaxaEntrega.updateOne({ _id: taxaEntregaCreate._id }, taxaEntrega, { new: true })
 
-            console.log('Taxa de Entrega criada com sucesso!', taxaEntregaCreate)
+            console.log('Taxa de Entrega atualizada com sucesso!', taxaEntregaCreate)
 
             res.status(200).json({
                 success: true,
