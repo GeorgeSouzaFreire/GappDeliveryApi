@@ -37,11 +37,9 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
             guid,
         } = req.body;
 
-        var imagemSecundariaArray = new Array();
+        var imagemSecundariaArray = [];
 
         req.files.forEach(async (file, index) => {
-
-            console.log('Glória a Deus --> ', index);
 
             var src = fileSystem.createReadStream(file.path);
             var dest = fileSystem.createWriteStream(dir + file.originalname);
@@ -51,6 +49,8 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
                 fileSystem.unlinkSync(file.path);
 
                 var key = req.body['key-' + index]
+
+                console.log('Key-', index);
 
                 const imagem = {
                     guid: guid,
@@ -65,9 +65,16 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
                 if (imagemCreate.ordem === '0') {
                     const produto = { imagemPrimaria: imagemCreate }
                     const produtoUpdateOne = await Produto.updateOne({ _id: Object(guid) }, produto, { new: true })
-                    console.log(produtoUpdateOne);
+                    console.log('Primaria --> ' + imagemCreate.ordem);
                 } else {
+                    console.log('Secundaria --> ' + imagemCreate.ordem);
                     imagemSecundariaArray.push(imagemCreate);
+
+                    console.log('SecundariaArray ---> ' + imagemSecundariaArray);
+
+                    const produto = { imagemSecundaria: imagemSecundariaArray }
+                    const produtoUpdateSecundaria = await Produto.updateOne({ _id: Object(guid) }, produto, { new: true })
+                    console.log(produtoUpdateSecundaria);
                 }
 
             });
@@ -76,12 +83,6 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
             });
 
         });
-
-        console.log(imagemSecundariaArray);
-
-        const produto = { imagemSecundaria: imagemSecundariaArray }
-        const produtoUpdateSecundaria = await Produto.updateOne({ _id: Object(guid) }, produto, { new: true })
-        console.log(produtoUpdateSecundaria);
 
         const produtoUpdateOne = await Produto.findOne({ _id: Object(guid) })
 
