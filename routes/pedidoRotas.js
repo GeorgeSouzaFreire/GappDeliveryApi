@@ -182,7 +182,7 @@ router.get('/GetPedidoApp', async (req, res) => {
                 if (pedidoFindOne.item[j].produto == null) {
                     valorTotal = 0.0
                 } else {
-                    valorTotal += pedidoFindOne.item[j].produto.precoAtual;
+                    valorTotal += pedidoFindOne.item[j].produto.precoAtual * quantidadeTotal;
                 }
 
             }
@@ -197,7 +197,7 @@ router.get('/GetPedidoApp', async (req, res) => {
                 //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
             });
 
-            console.log(formatter.format(quantidadeTotal * valorTotal)); /* $2,500.00 */
+            console.log(formatter.format(valorTotal)); /* $2,500.00 */
 
             //console.log('Calculo do Pedido ', 'Quantidade = ' + quantidadeTotal + ' * ' + valorTotal + ' = R$ ' + ((quantidadeTotal * valorTotal) * 100 / 100).toFixed(2))
 
@@ -206,7 +206,7 @@ router.get('/GetPedidoApp', async (req, res) => {
                 message: 'Foram encontrado ' + pedidoFindOne.length + ' resultado!',
                 data: {
                     quantidadeTotal: quantidadeTotal,
-                    valorTotal: formatter.format(quantidadeTotal * valorTotal),
+                    valorTotal: formatter.format(valorTotal),
                     pedido: pedidoFindOne
                 },
             })
