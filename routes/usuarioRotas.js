@@ -8,6 +8,43 @@ const UsuarioEndereco = require('../models/UsuarioEndereco')
 const { ObjectId } = require('mongodb')
 const Empresa = require('../models/Empresa')
 
+
+// GET UsuarioId - Leitura de dados
+router.get('/GetUsuarioId', async (req, res) => {
+
+    const userId = req.query.Id;
+
+    try {
+
+        const usuario = await Usuario.findOne({ _id: userId})
+
+        const empresa = await Empresa.findOne({ idEmpresa: usuario.empresa.idEmpresa })
+
+        usuario.empresa = empresa
+
+        const usuarioUpdateOne = await Usuario.updateOne({ _id: usuario._id }, usuario, { new: true })
+
+        if (usuario != null) {
+            res.status(200).json({
+                success: true,
+                message: 'Usuário encontrado com sucesso!',
+                data: usuario,
+            })
+        } else {
+            res.status(201).json({
+                success: false,
+                message: 'Não foi possível localizar informações de usuário, tente novamente.',
+                data: usuario,
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error })
+    }
+
+})
+
 // Update - Atualização de dados Usuario Endereço (PUT, PATCH)
 router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
 
@@ -232,44 +269,6 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
     }
 
 })
-
-// GET UsuarioId - Leitura de dados
-router.get('/GetUsuarioId', async (req, res) => {
-
-    const userId = req.query.Id;
-
-    try {
-
-        const usuario = await Usuario.findOne({ _id: userId})
-
-        const empresa = await Empresa.findOne({ idEmpresa: usuario.empresa.idEmpresa })
-
-        usuario.empresa = empresa
-
-        const usuarioUpdateOne = await Usuario.updateOne({ _id: usuario._id }, usuario, { new: true })
-
-        if (usuario != null) {
-            res.status(200).json({
-                success: true,
-                message: 'Usuário encontrado com sucesso!',
-                data: usuario,
-            })
-        } else {
-            res.status(201).json({
-                success: false,
-                message: 'Não foi possível localizar informações de usuário, tente novamente.',
-                data: usuario,
-            })
-        }
-
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({ error: error })
-    }
-
-
-})
-
 
 // GET Usuario - Leitura de dados
 router.get('/GetUsuario', async (req, res) => {
