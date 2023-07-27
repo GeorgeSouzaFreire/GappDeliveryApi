@@ -65,7 +65,7 @@ router.post('/PostPedido/', async (req, res) => {
         // Create
         try {
 
-            const pedidoFindOne = await Pedido.findOne({ idUsuario: idUsuario, idEmpresa: idEmpresa, idStatusPedido: Number.parseInt(idStatusPedido)})
+            const pedidoFindOne = await Pedido.findOne({ idUsuario: idUsuario, idEmpresa: idEmpresa, idStatusPedido: Number.parseInt(idStatusPedido) })
 
             if (pedidoFindOne === null) {
 
@@ -155,7 +155,7 @@ router.get('/GetPedidoApp', async (req, res) => {
     const empresaId = req.query.IdEmpresa
     const usuarioId = req.query.IdUsuario
     const statusPedidoId = req.query.IdStatusPedido
-    
+
     try {
 
         const pedidoFindOne = await Pedido.findOne({
@@ -280,6 +280,44 @@ router.get('/GetMeusPedido', async (req, res) => {
                 success: true,
                 message: 'Foram encontrado ' + pedidoFindOne.length + ' resultado!',
                 data: pedidoFindOne,
+            })
+        }
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível realizar a buscar do Pedido.',
+            error: error
+        })
+    }
+})
+
+// Get Pedido App
+router.get('/GetPedidosPorUsuario', async (req, res) => {
+
+    const empresaId = req.query.IdEmpresa    
+    const usuarioId = req.query.IdUsuario
+
+    try {
+
+        const pedidoFind = await Pedido.find({
+            idEmpresa: empresaId,
+            idUsuario: usuarioId           
+        })
+
+        if (pedidoFind.length == 0) {
+            res.status(200).json({
+                success: false,
+                message: 'Pedidos há pedidos!',
+                data: pedidoFind,
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontrado ' + pedidoFind.length + ' resultado!',
+                data: pedidoFind,
             })
         }
 
