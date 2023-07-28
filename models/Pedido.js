@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const Pedido = mongoose.model('Pedido', {
     guid: String,
+    numero: String,
     idEmpresa: Number,  
     idEstabelecimento: String, 
     idUsuario: String,

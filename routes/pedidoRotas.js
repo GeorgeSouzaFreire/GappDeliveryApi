@@ -1,10 +1,11 @@
 const router = require('express').Router()
-
+const mongoose = require('mongoose')
 const { response } = require('express')
 const { get } = require('express/lib/response')
 const Pedido = require('../models/Pedido')
 const Produto = require('../models/Produto')
 const StatusPedido = require('../models/StatusPedido')
+const Usuario = require('../models/Usuario')
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostPedido/', async (req, res) => {
@@ -65,9 +66,14 @@ router.post('/PostPedido/', async (req, res) => {
         // Create
         try {
 
+            const usuarioFindOne = await Usuario.findOne({ _id: mongoose.Types.ObjectId(idUsuario) })
+
             const pedidoFindOne = await Pedido.findOne({ idUsuario: idUsuario, idEmpresa: idEmpresa, idStatusPedido: Number.parseInt(idStatusPedido) })
 
             if (pedidoFindOne === null) {
+
+                // Numero do Pedido
+                pedido.numero = gerarIdentificadorPedidoSimples(idEmpresa, idUsuario, 1);
 
                 const pedidoCreate = await Pedido.create(pedido)
 
@@ -125,6 +131,8 @@ router.post('/PostPedido/', async (req, res) => {
                 console.log('New Contains Mongo ---- > ', newContainsMongo)
 
                 pedidoFindOne.item = newArray
+                // Numero do Pedido
+                pedidoFindOne.numero = gerarIdentificadorPedidoSimples(idEmpresa, usuarioFindOne.codigo, pedidoFindOne.numero);
 
                 const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoFindOne._id }, pedidoFindOne, { new: true })
 
@@ -148,6 +156,23 @@ router.post('/PostPedido/', async (req, res) => {
     }
 
 })
+
+function gerarIdentificadorPedidoSimples(idEmpresa, codigo, numeroPedido) {
+
+    //
+    numeroPedido++;
+    // Obter a data atual
+    const dataAtual = new Date();
+
+    // Formatando a data como YYYYMMDD
+    const dataFormatada = dataAtual.toISOString().slice(4, 10).replace(/-/g, '');
+
+    // Combinar os elementos para formar o identificador do pedido
+    const identificador = `${String(idEmpresa)}-${String(codigo)}-${String(numeroPedido)}-${dataFormatada}`;
+
+    // Retornar o identificador gerado
+    return identificador;
+}
 
 // Get Pedido App
 router.get('/GetPedidoApp', async (req, res) => {
@@ -297,20 +322,20 @@ router.get('/GetMeusPedido', async (req, res) => {
 // Get Pedido App
 router.get('/GetPedidosPorUsuario', async (req, res) => {
 
-    const empresaId = req.query.IdEmpresa    
+    const empresaId = req.query.IdEmpresa
     const usuarioId = req.query.IdUsuario
 
     try {
 
         const pedidoFind = await Pedido.find({
             idEmpresa: empresaId,
-            idUsuario: usuarioId           
+            idUsuario: usuarioId
         })
 
         if (pedidoFind.length == 0) {
             res.status(200).json({
                 success: false,
-                message: 'Pedidos há pedidos!',
+                message: 'Não há pedidos!',
                 data: pedidoFind,
             })
         } else {
