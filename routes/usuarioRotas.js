@@ -224,7 +224,7 @@ router.post('/PostUsuario/', async (req, res) => {
 
                 res.status(200).json({
                     success: false,
-                    message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
+                    message: "Já existe cadastro com email informado!",
                     data: checkEmail,
                 })
 
@@ -234,7 +234,7 @@ router.post('/PostUsuario/', async (req, res) => {
             console.log(error)
             res.status(500).json({
                 success: false,
-                message: "Já existe cadastro com email informado!",
+                message: "Ops, Algo aconteceu de errado, tente novamente.",
                 error: error
             })
         }
