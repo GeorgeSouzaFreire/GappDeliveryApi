@@ -206,8 +206,6 @@ router.post('/PostUsuario/', async (req, res) => {
 
                 } else {
 
-                    console.log(usuario)
-
                     // Adiciona .+1 no Codigo Usuario  
                     usuario.codigo = (usuariofindOne.codigo + 1)
 
