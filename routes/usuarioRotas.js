@@ -225,7 +225,7 @@ router.post('/PostUsuario/', async (req, res) => {
                 res.status(200).json({
                     success: false,
                     message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
-                    data: usuarioCreate,
+                    data: checkEmail,
                 })
 
             }
