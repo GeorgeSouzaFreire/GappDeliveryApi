@@ -187,13 +187,12 @@ router.post('/PostUsuario/', async (req, res) => {
 
             const checkEmail = await Usuario.find({ email: email })
 
-            if (checkEmail === 0) {
+            if (checkEmail.length === 0) {
 
                 const usuariofindOne = await Usuario.findOne({ 'empresa.idEmpresa': empresa.idEmpresa }).sort({ _id: -1 }).limit(1)
-
+                
                 if (usuariofindOne === null) {
 
-                  
                     // Adiciona = 1 
                     usuario.codigo = 1
                     // Criando dados do Usuário.
@@ -206,6 +205,8 @@ router.post('/PostUsuario/', async (req, res) => {
                     })
 
                 } else {
+
+                    console.log(usuario)
 
                     // Adiciona .+1 no Codigo Usuario  
                     usuario.codigo = (usuariofindOne.codigo + 1)
