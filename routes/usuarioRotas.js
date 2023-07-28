@@ -186,7 +186,8 @@ router.post('/PostUsuario/', async (req, res) => {
             }
 
             const checkEmail = await Usuario.find({ email: email })
-
+            console.log(email)
+            console.log(checkEmail.length === 0)
             if (checkEmail.length === 0) {
 
                 const usuariofindOne = await Usuario.findOne({ 'empresa.idEmpresa': empresa.idEmpresa }).sort({ _id: -1 }).limit(1)
