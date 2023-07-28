@@ -185,32 +185,45 @@ router.post('/PostUsuario/', async (req, res) => {
                 dataAtualizacao
             }
 
+            const checkEmail = await Usuario.findOne({ email: email })
 
-            const usuariofindOne = await Usuario.findOne({ 'empresa.idEmpresa': empresa.idEmpresa }).sort({ _id: -1 }).limit(1)
+            if (checkEmail === null) {
 
-            if (usuariofindOne === null) {
+                const usuariofindOne = await Usuario.findOne({ 'empresa.idEmpresa': empresa.idEmpresa }).sort({ _id: -1 }).limit(1)
 
-                // Adiciona = 1 
-                usuario.codigo = 1
-                // Criando dados do Usuário.
-                const usuarioCreate = await Usuario.create(usuario)
+                if (usuariofindOne === null) {
 
-                res.status(200).json({
-                    success: true,
-                    message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
-                    data: usuarioCreate,
-                })
+                    // Adiciona = 1 
+                    usuario.codigo = 1
+                    // Criando dados do Usuário.
+                    const usuarioCreate = await Usuario.create(usuario)
+
+                    res.status(200).json({
+                        success: true,
+                        message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
+                        data: usuarioCreate,
+                    })
+
+                } else {
+
+                    // Adiciona .+1 no Codigo Usuario  
+                    usuario.codigo = (usuariofindOne.codigo + 1)
+
+                    // Criando dados do Usuário.
+                    const usuarioCreate = await Usuario.create(usuario)
+
+                    res.status(200).json({
+                        success: true,
+                        message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
+                        data: usuarioCreate,
+                    })
+
+                }
 
             } else {
 
-                // Adiciona .+1 no Codigo Usuario  
-                usuario.codigo = (usuariofindOne.codigo + 1)
-
-                // Criando dados do Usuário.
-                const usuarioCreate = await Usuario.create(usuario)
-
                 res.status(200).json({
-                    success: true,
+                    success: false,
                     message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
                     data: usuarioCreate,
                 })
@@ -218,7 +231,12 @@ router.post('/PostUsuario/', async (req, res) => {
             }
 
         } catch (error) {
-            res.status(500).json({ success: false, error: error })
+            console.log(error)
+            res.status(500).json({
+                success: false,
+                message: "Já existe cadastro com email informado!",
+                error: error
+            })
         }
 
     }
