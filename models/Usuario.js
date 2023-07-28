@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const Usuario  = mongoose.model('Usuario', {
     id: String,
     guid: String,
+    codigo: Number,
     empresa: Object,
     estabelecimento: Object,
     endereco: Object,

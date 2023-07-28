@@ -16,7 +16,7 @@ router.get('/GetUsuarioId', async (req, res) => {
 
     try {
 
-        const usuario = await Usuario.findOne({ _id: userId})
+        const usuario = await Usuario.findOne({ _id: userId })
 
         const empresa = await Empresa.findOne({ idEmpresa: usuario.empresa.idEmpresa })
 
@@ -108,6 +108,7 @@ router.post('/PostUsuario/', async (req, res) => {
     const {
         id,
         guid,
+        codigo,
         empresa,
         estabelecimento,
         endereco,
@@ -162,6 +163,7 @@ router.post('/PostUsuario/', async (req, res) => {
             const usuario = {
                 id,
                 guid,
+                codigo,
                 empresa,
                 estabelecimento,
                 endereco,
@@ -182,14 +184,38 @@ router.post('/PostUsuario/', async (req, res) => {
                 dataCriacao,
                 dataAtualizacao
             }
-            // Criando dados do Usuário.
-            const usuarioCreate = await Usuario.create(usuario)
 
-            res.status(200).json({
-                success: true,
-                message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
-                data: usuarioCreate,
-            })
+
+            const usuariofindOne = await Usuario.findOne({ 'empresa.idEmpresa': empresa.idEmpresa }).sort({ _id: -1 }).limit(1)
+
+            if (usuariofindOne === null) {
+
+                // Adiciona = 1 
+                usuario.codigo = 1
+                // Criando dados do Usuário.
+                const usuarioCreate = await Usuario.create(usuario)
+
+                res.status(200).json({
+                    success: true,
+                    message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
+                    data: usuarioCreate,
+                })
+
+            } else {
+
+                // Adiciona .+1 no Codigo Usuario  
+                usuario.codigo = (usuariofindOne.codigo + 1)
+
+                // Criando dados do Usuário.
+                const usuarioCreate = await Usuario.create(usuario)
+
+                res.status(200).json({
+                    success: true,
+                    message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
+                    data: usuarioCreate,
+                })
+
+            }
 
         } catch (error) {
             res.status(500).json({ success: false, error: error })
