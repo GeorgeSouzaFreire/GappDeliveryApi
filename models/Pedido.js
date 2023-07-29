@@ -14,6 +14,7 @@ const Pedido = mongoose.model('Pedido', {
     taxaEntrega: Object,
     statusPedido: String,
     idStatusPedido: Number,
+    progresso: Object,
     total: Number,
     observacao: String,
     ativo: Boolean,

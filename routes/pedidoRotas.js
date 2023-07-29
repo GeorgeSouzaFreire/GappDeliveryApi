@@ -466,6 +466,11 @@ router.patch('/AtualizaStatusPedido', async (req, res) => {
 
     try {
 
+        pedido.progresso = [{
+            statusPedido : statusPedido,
+            idStatusPedido : idStatusPedido
+        }]
+
         const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoId }, pedido, { new: true })
 
         if (pedidoUpdate == null) {
