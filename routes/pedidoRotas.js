@@ -72,8 +72,24 @@ router.post('/PostPedido/', async (req, res) => {
 
             if (pedidoFindOne === null) {
 
+                // Resgata ultimo numero
+                const pedidoFind = await Pedido.find({ idUsuario: idUsuario, idEmpresa: idEmpresa }).sort({ _id: -1 }).limit(1)
+
+                var lastNumber;
+
                 // Numero do Pedido
-                pedido.numero = gerarIdentificadorPedidoSimples(idEmpresa, idUsuario, 1);
+                if (pedidoFind.length === 0) {
+                    lastNumber = '1';
+                } else {
+                    const pedidoLast = pedidoFind[pedidoFind.length - 1];
+
+                    lastNumber = String(pedidoLast.numero.substring(pedidoLast.numero.lastIndexOf('N') + 1, pedidoLast.numero.length));
+                    lastNumber++;
+                }
+
+                console.log(lastNumber)
+                // Numero do Pedido
+                pedido.numero = gerarIdentificadorPedidoSimples(idEmpresa, usuarioFindOne.codigo, lastNumber, true);
 
                 const pedidoCreate = await Pedido.create(pedido)
 
@@ -131,8 +147,6 @@ router.post('/PostPedido/', async (req, res) => {
                 console.log('New Contains Mongo ---- > ', newContainsMongo)
 
                 pedidoFindOne.item = newArray
-                // Numero do Pedido
-                pedidoFindOne.numero = gerarIdentificadorPedidoSimples(idEmpresa, usuarioFindOne.codigo, pedidoFindOne.numero);
 
                 const pedidoUpdate = await Pedido.findOneAndUpdate({ _id: pedidoFindOne._id }, pedidoFindOne, { new: true })
 
@@ -157,21 +171,31 @@ router.post('/PostPedido/', async (req, res) => {
 
 })
 
-function gerarIdentificadorPedidoSimples(idEmpresa, codigo, numeroPedido) {
+function gerarIdentificadorPedidoSimples(idEmpresa, usuario, numero, isNew) {
+    // Numero do Pedido
+    if (isNew) {
+        // Formatando a data como DDMMYYYY
+        const dataFormatada = dataAtualFormatada();
 
-    //
-    numeroPedido++;
-    // Obter a data atual
-    const dataAtual = new Date();
+        // Combinar os elementos para formar o identificador do pedido
+        var identificador = `${dataFormatada}${String(idEmpresa)}${String(usuario)}N${String(numero)}`;
 
-    // Formatando a data como YYYYMMDD
-    const dataFormatada = dataAtual.toISOString().slice(4, 10).replace(/-/g, '');
+        return identificador;
+    }
+    return numero;
+}
 
-    // Combinar os elementos para formar o identificador do pedido
-    const identificador = `${String(idEmpresa)}-${String(codigo)}-${String(numeroPedido)}-${dataFormatada}`;
+// Retornar o identificador gerado
 
-    // Retornar o identificador gerado
-    return identificador;
+
+function dataAtualFormatada() {
+    var data = new Date(),
+        dia = data.getDate().toString(),
+        diaF = (dia.length == 1) ? '0' + dia : dia,
+        mes = (data.getMonth() + 1).toString(), //+1 pois no getMonth Janeiro começa com zero.
+        mesF = (mes.length == 1) ? '0' + mes : mes,
+        anoF = data.getFullYear();
+    return diaF + mesF;
 }
 
 // Get Pedido App
