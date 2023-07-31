@@ -86,8 +86,6 @@ router.post('/PostPedido/', async (req, res) => {
                     lastNumber = String(pedidoLast.numero.substring(pedidoLast.numero.lastIndexOf('N') + 1, pedidoLast.numero.length));
                     lastNumber++;
                 }
-
-                console.log(lastNumber)
                 // Numero do Pedido
                 pedido.numero = gerarIdentificadorPedidoSimples(idEmpresa, usuarioFindOne.codigo, lastNumber, true);
 
