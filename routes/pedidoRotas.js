@@ -486,6 +486,7 @@ router.patch('/AtualizaStatusPedido', async (req, res) => {
             'progresso': {
                 statusPedido: statusPedido,
                 idStatusPedido: idStatusPedido,
+                ativo: true,
                 dataCriacao: new Date().toISOString(),
                 dataAtualizacao: new Date().toISOString(),
             }
