@@ -485,7 +485,9 @@ router.patch('/AtualizaStatusPedido', async (req, res) => {
         $push: {
             'progresso': {
                 statusPedido: statusPedido,
-                idStatusPedido: idStatusPedido
+                idStatusPedido: idStatusPedido,
+                dataCriacao: new Date().toISOString(),
+                dataAtualizacao: new Date().toISOString(),
             }
         }
     }
@@ -589,7 +591,10 @@ router.patch('/FinalizarPedido', async (req, res) => {
         $push: {
             'progresso': {
                 statusPedido: statusPedido,
-                idStatusPedido: idStatusPedido
+                idStatusPedido: idStatusPedido,
+                ativo: true,
+                dataCriacao: new Date().toISOString(),
+                dataAtualizacao: new Date().toISOString(),
             }
         },
         formaPagamento,
