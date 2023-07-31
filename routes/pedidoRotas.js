@@ -586,6 +586,12 @@ router.patch('/FinalizarPedido', async (req, res) => {
         endereco,
         statusPedido,
         idStatusPedido,
+        $push: {
+            'progresso': {
+                statusPedido: statusPedido,
+                idStatusPedido: idStatusPedido
+            }
+        },
         formaPagamento,
         dataAtualizacao
     }
