@@ -58,6 +58,15 @@ router.post('/PostPedido/', async (req, res) => {
             formaPagamento,
             statusPedido,
             idStatusPedido,
+            $push: {
+                'progresso': {
+                    statusPedido: statusPedido,
+                    idStatusPedido: idStatusPedido,
+                    ativo: true,
+                    dataCriacao: new Date().toISOString(),
+                    dataAtualizacao: new Date().toISOString(),
+                }
+            },
             ativo,
             dataCriacao,
             dataAtualizacao,
