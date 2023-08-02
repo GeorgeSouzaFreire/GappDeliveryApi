@@ -4,6 +4,10 @@ const express = require('express')
 const req = require('express/lib/request')
 const res = require('express/lib/response')
 
+const staticHandler = require('serve-handler')
+const { createServer } = require('http')
+const { WebSocketServer } = require('ws')
+
 const path = require('path');
 const cookieParser = require('cookie-parser');
 //const logger = require('morgan');
@@ -44,6 +48,7 @@ const pedidoRotas                   = require('./routes/pedidoRotas')
 const funcionarioRotas              = require('./routes/funcionarioRotas')
 const planoEmpresaRotas             = require('./routes/planoEmpresaRotas')
 
+
 //app.use('/person', personRoutes)
 // Rota Usuario
 app.use('/Util', utilRotas)
@@ -68,6 +73,7 @@ app.use('/Web/V1/Produto', categoriaRotas)
 app.use('/Web/V1/Funcionario', funcionarioRotas)
 app.use('/Web/V1/Pedido', pedidoRotas)
 app.use('/Web/V1/Imagem', imagemRotas)
+
 
 
 app.get('/api', (req, res) => {
@@ -104,6 +110,28 @@ app.get('/api', (req, res) => {
         console.log('Error: ', err.message);
     }
 })
+
+
+//serve static folder
+const server = createServer((req, res) => {   // (1)
+    return staticHandler(req, res, { public: 'public' })
+});
+const wss = new WebSocketServer({ server }) // (2)
+wss.on('connection', (client) => {
+    console.log('Client connected !')
+    client.on('message', (msg) => {    // (3)
+        console.log(`Message:${msg}`);
+        broadcast(msg)
+    })
+})
+function broadcast(msg) {       // (4)
+    for (const client of wss.clients) {
+        if (client.readyState === ws.OPEN) {
+            client.send(msg)
+        }
+    }
+}
+
 
 
 // Entregar uma porta
