@@ -4,9 +4,6 @@ const express = require('express')
 const req = require('express/lib/request')
 const res = require('express/lib/response')
 
-const staticHandler = require('serve-handler')
-const { createServer } = require('http')
-const { WebSocketServer } = require('ws')
 
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -15,7 +12,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors')
 const { default: mongoose } = require('mongoose')
 const app = express()
-  
+
 app.use(cors());
 
 // forma de ler JSON / middlewares
@@ -35,18 +32,18 @@ app.use('/uploads', express.static(process.cwd() + '/uploads'))
 
 //Rotas da API
 //const personRoutes = require('./routes/personRoutes')
-const utilRotas         = require('./routes/utilRotas')
-const usuarioRotas         = require('./routes/usuarioRotas')
-const enderecoRotas        = require('./routes/enderecoRotas')
-const empresaRotas         = require('./routes/empresaRotas')
+const utilRotas = require('./routes/utilRotas')
+const usuarioRotas = require('./routes/usuarioRotas')
+const enderecoRotas = require('./routes/enderecoRotas')
+const empresaRotas = require('./routes/empresaRotas')
 const empresaDesignerRotas = require('./routes/empresaDesignerRotas')
 const estabelecimentoRotas = require('./routes/estabelecimentoRotas')
 const categoriaEstabelecimentoRotas = require('./routes/categoriaEstabelecimentoRotas')
-const categoriaRotas         = require('./routes/categoriaRotas')
-const imagemRotas                   = require('./routes/imagemRotas')
-const pedidoRotas                   = require('./routes/pedidoRotas')
-const funcionarioRotas              = require('./routes/funcionarioRotas')
-const planoEmpresaRotas             = require('./routes/planoEmpresaRotas')
+const categoriaRotas = require('./routes/categoriaRotas')
+const imagemRotas = require('./routes/imagemRotas')
+const pedidoRotas = require('./routes/pedidoRotas')
+const funcionarioRotas = require('./routes/funcionarioRotas')
+const planoEmpresaRotas = require('./routes/planoEmpresaRotas')
 
 
 //app.use('/person', personRoutes)
@@ -85,9 +82,9 @@ app.get('/api', (req, res) => {
                 success: true,
                 message: "Acesso a API realizado com sucesso! Todos os direitos reservados",
                 data: {
-                   Version : "Version 4.0.9",
-                   Info: "Contact: application.gapp@gmail.com",
-                   Update: 'Usuário Por Id'
+                    Version: "Version 4.0.10",
+                    Info: "Contact: application.gapp@gmail.com",
+                    Update: 'Usuário Por Id'
                 },
             })
         } else {
@@ -111,29 +108,6 @@ app.get('/api', (req, res) => {
     }
 })
 
-
-//serve static folder
-const server = createServer((req, res) => {   // (1)
-    return staticHandler(req, res, { public: 'public' })
-});
-const wss = new WebSocketServer({ server }) // (2)
-wss.on('connection', (client) => {
-    console.log('Client connected !')
-    client.on('message', (msg) => {    // (3)
-        console.log(`Message:${msg}`);
-        broadcast(msg)
-    })
-})
-function broadcast(msg) {       // (4)
-    for (const client of wss.clients) {
-        if (client.readyState === ws.OPEN) {
-            client.send(msg)
-        }
-    }
-}
-
-
-
 // Entregar uma porta
 const DB_USER = process.env.DB_USER
 const DB_PASSWORD = encodeURIComponent(process.env.DB_PASSWORD)
@@ -141,11 +115,30 @@ const DB_PASSWORD = encodeURIComponent(process.env.DB_PASSWORD)
 mongoose.connect(
     `mongodb+srv://${DB_USER}:${DB_PASSWORD}@apicluster.dxszc.mongodb.net/GappDeliveryApiDatabase?retryWrites=true&w=majority`
 )
-.then(() =>{
-    console.log('Conectamos ao MongoDB')
-    app.listen(process.env.PORT)
-})
-.catch((err) =>{
-    console.log(err)
-})
+    .then(() => {
+        console.log('Conectamos ao MongoDB')
+        app.listen(process.env.PORT)
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+
+const WebSocket = require('ws');
+// start the server and specify the port number
+const wss = new WebSocket.Server({ port: process.env.PORT_SOCKET });
+console.log(`[WebSocket] Starting WebSocket server on localhost:${process.env.PORT_SOCKET}`);
+wss.on('connection', (ws, request) => {
+    const clientIp = request.connection.remoteAddress;
+    console.log(`[WebSocket] Client with IP ${clientIp} has connected`);
+    ws.send('Thanks for connecting to this nodejs websocket server');
+    // Broadcast aka send messages to all connected clients 
+    ws.on('message', (message) => {
+        wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(message);
+            }
+        });
+        console.log(`[WebSocket] Message ${message} was received`);
+    });
+});
 
