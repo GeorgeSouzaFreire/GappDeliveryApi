@@ -149,6 +149,12 @@ wss.on('connection', (ws, request) => {
     console.log(`[WebSocket] Client with IP ${clientIp} has connected`);
     ws.send('Thanks for connecting to this nodejs websocket server');
     // Broadcast aka send messages to all connected clients 
+    ws.on('open', function open() {
+        ws.send(JSON.stringify({
+            "jsonrpc": "2.0", "method": "subscribe", "params": ["tm.event='NewBlock'"], "id": 1
+        }));
+        console.log(`[WebSocket] open`);
+    });
     ws.on('message', (message) => {
         wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
