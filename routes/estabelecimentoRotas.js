@@ -13,6 +13,7 @@ const Horario = require('../models/Horario')
 const FormaPagamento = require('../models/FormaPagamento')
 const EstabelecimentoFormaPagamento = require('../models/EstabelecimentoFormaPagamento')
 const Cupom = require('../models/Cupom')
+const Imagem = require('../models/Imagem')
 const Usuario = require('../models/Usuario')
 const Mongoose = require('mongoose')
 const TaxaEntrega = require('../models/TaxaEntrega')
@@ -135,6 +136,12 @@ router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
                 estabelecimento.empresa = empresa
 
                 console.log(estabelecimento._id)
+
+                const imagem = await Imagem.findOne({ guid: estabelecimento._id })
+
+                estabelecimento.imagem = imagem
+
+                console.log(imagem._id)
 
                 const taxa = await TaxaEntrega.findOne({'estabelecimento._id': estabelecimento._id })
 
