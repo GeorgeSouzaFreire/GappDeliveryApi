@@ -141,7 +141,7 @@ router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
 
                 estabelecimento.imagem = imagem
 
-                console.log(imagem._id)
+                //console.log(imagem._id)
 
                 const taxa = await TaxaEntrega.findOne({'estabelecimento._id': estabelecimento._id })
 
