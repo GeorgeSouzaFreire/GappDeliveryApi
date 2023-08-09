@@ -47,11 +47,19 @@ router.post('/PostEstabelecimento/', async (req, res) => {
     const errors = {};
 
     if (!String(nome).trim()) {
-        errors.nome = ['O nome é obrigatório'];
+        errors.nome = ['Nome obrigatório'];
+    }
+
+    if (!String(endereco.cep).trim()) {
+        errors.cep = ['CEP obrigatório'];
+    }
+
+    if (!String(cnpj).trim()) {
+        errors.cnpj = ['CNPJ obrigatório'];
     }
 
     if (!String(telefone1).trim()) {
-        errors.telefone = ['O Telefone é obrigatório'];
+        errors.telefone = ['Telefone obrigatório'];
     }
 
     if (Object.keys(errors).length) {
