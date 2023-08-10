@@ -217,17 +217,17 @@ router.delete('/DeleteImagemPorGuid', async (req, res) => {
 
     try {
 
-        const imagens = await Imagem.find({ guid: { $in: guid } })
+        const imagensDelete = await Imagem.find({ guid: { $in: guid } })
 
-        if (imagens.length == 0) {
+        if (imagensDelete.length == 0) {
             res.status(422).json({
                 success: false,
-                message: 'Não há imagem(s) cadastrada(s) para esse Produto.',
+                message: 'Não há imagem(s) cadastrada(s).',
                 data: {},
             })
         } else {
 
-            imagens.forEach(async (imagem) => {
+            imagensDelete.forEach(async (imagem) => {
                 try {
                     console.log('Caminho', imagem.caminho);
                     if (fileSystem.existsSync(imagem.caminho)) {
@@ -240,6 +240,8 @@ router.delete('/DeleteImagemPorGuid', async (req, res) => {
                                 await Imagem.deleteOne({ _id: imagem._id })
                             }
                         });
+                    } else {
+                        console.log('File existsSync!');
                     }
 
                 } catch (error) {
@@ -247,11 +249,21 @@ router.delete('/DeleteImagemPorGuid', async (req, res) => {
                 }
             });
 
-            res.status(200).json({
-                success: true,
-                message: 'Imagens excluida com sucesso!',
-                data: imagens,
-            })
+            const imagensFind = await Imagem.find({ guid: { $in: guid } })
+
+            if(imagensFind.length == 0){
+                res.status(200).json({
+                    success: true,
+                    message: 'Imagens excluida com sucesso!',
+                    data: imagensFind,
+                })
+            }else{
+                res.status(200).json({
+                    success: true,
+                    message: 'Não foi possível excluir imagens!',
+                    data: imagensFind,
+                })
+            }           
         }
 
     } catch (error) {
