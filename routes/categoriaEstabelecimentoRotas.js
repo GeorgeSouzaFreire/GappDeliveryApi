@@ -84,7 +84,7 @@ router.get('/GetCategoriaPorIdEstabelecimento', async (req, res) => {
         if (categoria.length == 0) {
             res.status(422).json({
                 success: false,
-                message: 'Não há categoria para o estabelecimento, cadastre uma nova categoria.',
+                message: 'Cadastre uma categoria.',
                 data: [],
             })
         } else {

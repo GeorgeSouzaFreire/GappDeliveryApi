@@ -174,11 +174,9 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
             res.status(200).json({
                 success: true,
                 message: 'Atualização realizada com sucesso!',
-                data: {},
+                data: imagens,
             })
         }
-
-       
 
     } catch (error) {
         console.log(error);
