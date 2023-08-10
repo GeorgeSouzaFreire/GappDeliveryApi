@@ -175,4 +175,39 @@ router.get('/GetImagemPorIdProduto', async (req, res) => {
 
 })
 
+// GetImagem por GUID
+router.get('/GetImagemPorGuid', async (req, res) => {
+
+    // extrair o dado da requisição, pela url = req.params
+    const guid = req.query.GUID
+
+    try {
+
+        const imagens = await Imagem.find({ guid: { $in: guid } })
+
+        if (imagens.length == 0) {
+            res.status(422).json({
+                success: false,
+                message: 'Não há imagem(s) cadastrada(s) para esse Produto.' + err,
+                data: [],
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontrado(s) ' + imagens.length + ' imagen(s)!',
+                data: imagens,
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar as imagens.',
+            error: error
+        })
+    }
+
+
+})
+
 module.exports = router
