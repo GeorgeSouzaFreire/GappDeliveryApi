@@ -210,4 +210,58 @@ router.get('/GetImagemPorGuid', async (req, res) => {
 
 })
 
+router.delete('/DeleteImagemPorGuid', async (req, res) => {
+
+    // extrair o dado da requisição, pela url = req.params
+    const guid = req.query.GUID
+
+    try {
+
+        const imagens = await Imagem.find({ guid: { $in: guid } })
+
+        if (imagens.length == 0) {
+            res.status(422).json({
+                success: false,
+                message: 'Não há imagem(s) cadastrada(s) para esse Produto.',
+                data: {},
+            })
+        } else {
+
+            imagens.forEach(async (imagem) => {
+                try {
+                    console.log('Caminho', imagem.caminho);
+                    if (fileSystem.existsSync(imagem.caminho)) {
+                        fileSystem.unlinkSync(imagem.caminho, async function (err) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                // if no error, file has been deleted successfully
+                                console.log('File deleted!');
+                                await Imagem.deleteOne({ _id: imagem._id })
+                            }
+                        });
+                    }
+
+                } catch (error) {
+                    console.log('Imagem', error);
+                }
+            });
+
+            res.status(200).json({
+                success: true,
+                message: 'Imagens excluida com sucesso!',
+                data: imagens,
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar as imagens.',
+            error: error
+        })
+    }
+
+})
+
 module.exports = router
