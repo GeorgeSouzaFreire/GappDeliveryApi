@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Post - Criação de uma Nova Empresa
-router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (req, res) => {
+router.post('/PostArraysImagem/:pasta/:subpasta', upload.array("picture", 5), async (req, res) => {
 
     // Create PostImagem
     try {
@@ -99,6 +99,86 @@ router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (r
                 data: produtoUpdateOne,
             })
         }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar as imagens.',
+            error: error
+        })
+    }
+
+})
+
+// Post - Criação de uma Nova Empresa
+router.post('/PostImagem/:pasta/:subpasta', upload.array("picture", 5), async (req, res) => {
+
+    // Create PostImagem
+    try {
+        var dir = 'uploads/' + req.params.pasta + '/' + req.params.subpasta + '/'
+
+        const {
+            guid,
+        } = req.body;
+
+        var imagemSecundariaArray = [];
+
+        req.files.forEach(async (file, index) => {
+
+            var src = fileSystem.createReadStream(file.path);
+            var dest = fileSystem.createWriteStream(dir + file.originalname);
+            src.pipe(dest);
+            src.on('end', async function () {
+
+                fileSystem.unlinkSync(file.path);
+
+                var key = req.body['key-' + index]
+
+                console.log('Key-', index);
+
+                const imagem = {
+                    guid: guid,
+                    ordem: key,
+                    caminho: dir + file.originalname,
+                    nome: file.originalname,
+                    url: 'http://gappdelivery.com.br/' + dir + file.originalname
+                }
+
+                const imagemCreate = await Imagem.create(imagem)
+
+                if (imagemCreate.ordem === '0') {
+                    console.log('Primaria --> ' + imagemCreate.ordem);
+                } else {
+                    console.log('Secundaria --> ' + imagemCreate.ordem);
+                    imagemSecundariaArray.push(imagemCreate);
+                    console.log('SecundariaArray ---> ' + imagemSecundariaArray);
+                }
+
+            });
+            src.on('error', function (err) {
+                console.log(err);
+            });
+
+        });
+
+        const imagens = await Imagem.find({ guid: { $in: guid } })
+
+        if (imagens.length == 0) {
+            res.status(422).json({
+                success: true,
+                message: 'Atualização não realizada!',
+                data: {},
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Atualização realizada com sucesso!',
+                data: {},
+            })
+        }
+
+       
 
     } catch (error) {
         console.log(error);
@@ -251,19 +331,19 @@ router.delete('/DeleteImagemPorGuid', async (req, res) => {
 
             const imagensFind = await Imagem.find({ guid: { $in: guid } })
 
-            if(imagensFind.length == 0){
+            if (imagensFind.length == 0) {
                 res.status(200).json({
                     success: true,
                     message: 'Imagens excluida com sucesso!',
                     data: imagensFind,
                 })
-            }else{
+            } else {
                 res.status(200).json({
                     success: true,
                     message: 'Não foi possível excluir imagens!',
                     data: imagensFind,
                 })
-            }           
+            }
         }
 
     } catch (error) {
