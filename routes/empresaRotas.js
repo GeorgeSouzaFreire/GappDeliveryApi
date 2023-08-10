@@ -11,6 +11,7 @@ const Plano = require('../models/Plano')
 const Registro = require('../models/Registro')
 const Funcionario = require('../models/Funcionario')
 const Cargo = require('../models/Cargo')
+const Imagem = require('../models/Imagem')
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostEmpresa/', async (req, res) => {
@@ -208,6 +209,11 @@ router.get('/GetEmpresaPackage', async (req, res) => {
                 data: [],
             })
         } else {
+
+            const imagem = await Imagem.findOne({ guid: empresaFindOne._id })
+
+            empresaFindOne.imagem = imagem
+
             res.status(200).json({
                 success: true,
                 message: 'Empresa encontrada com sucesso!',
@@ -246,6 +252,10 @@ router.get('/GetEmpresaPorId', async (req, res) => {
             const empresaDesigner = await EmpresaDesigner.findOne({ idEmpresa: Number.parseInt(empresaFindOne.idEmpresa) })
 
             empresaFindOne.designer = empresaDesigner
+
+            const imagem = await Imagem.findOne({ guid: empresaFindOne._id })
+
+            empresaFindOne.imagem = imagem
 
             res.status(200).json({
                 success: true,
