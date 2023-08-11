@@ -224,6 +224,39 @@ router.get('/GetCupom', async (req, res) => {
 
 })
 
+// Resgatar Forma de Pagamento Ativa
+router.get('/GetFormaPagamentoAtiva', async (req, res) => {
+
+    const ativo = req.query.Ativo
+
+    try {
+
+        const formaDePagamentoFind = await FormaPagamento.find({ativo: ativo })
+
+        if (formaDePagamentoFind.length === 0) {
+            res.status(422).json({
+                success: false,
+                message: 'Não há Forma de Pagamento cadastrado!',
+                data: formaDePagamentoFind,
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Foram encontradas ' + formaDePagamentoFind.length + ' formas de pagamentos cadastradas!',
+                data: formaDePagamentoFind,
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Não foi possivel realizar a busca da Forma de Pagamento!",
+            error: error
+        })
+    }
+
+})
+
 // Resgatar Forma de Pagamento 
 router.get('/GetFormaPagamento', async (req, res) => {
 
