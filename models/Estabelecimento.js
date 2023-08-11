@@ -9,6 +9,7 @@ const Estabelecimento = mongoose.model('Estabelecimento', {
     tipoEstabelecimento: String,
     cnpj: String,    
     endereco: Object,
+    formaPagamento: Object,
     taxa: Object,
     horario: Object,
     telefone1: String,
