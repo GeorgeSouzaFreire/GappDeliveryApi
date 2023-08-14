@@ -457,12 +457,12 @@ router.patch('/AtualizarFormaPagamentoEstabelecimento', async (req, res) => {
 
         console.log(estabelecimentoId)
 
-        req.body.forEach(async function (item) {
+        Promise.all(req.body.forEach(async function (item) {
 
             console.log(item)
 
             const {
-                guid,            
+                guid,
                 tipo,
                 idTipo,
                 ordem,
@@ -473,7 +473,7 @@ router.patch('/AtualizarFormaPagamentoEstabelecimento', async (req, res) => {
             } = item
 
             const formaPagamento = {
-                guid,                
+                guid,
                 tipo,
                 idTipo,
                 ordem,
@@ -485,18 +485,25 @@ router.patch('/AtualizarFormaPagamentoEstabelecimento', async (req, res) => {
 
             const estabelecimento = await Estabelecimento.updateOne({ _id: estabelecimentoId }, { $push: { 'formaPagamento': formaPagamento } }, { new: true })
 
-            console.log('Está no loop' , estabelecimento)
+            console.log(' Promise.all Está no loop', estabelecimento)
 
-        })
+        })).then(async () => {
+            const estabelecimento = await Estabelecimento.findOne({ _id: estabelecimentoId });
 
-        const estabelecimento = await Estabelecimento.findOne({ _id: estabelecimentoId});
+            console.log('Then Saiu do loop', estabelecimento)
 
-        console.log('Saiu do loop' , estabelecimento)
-
-        res.status(200).json({
-            success: true,
-            message: 'Estabelcimento atualizado com sucesso!',
-            data: estabelecimento,
+            res.status(200).json({
+                success: true,
+                message: 'Estabelecimento atualizado com sucesso!',
+                data: estabelecimento,
+            })
+        }).catch((error) => {
+            console.log(error)
+            res.status(500).json({
+                success: false,
+                message: "Não foi possível atualizar a Forma de Pagamento!",
+                error: error
+            })
         })
 
     } catch (error) {
