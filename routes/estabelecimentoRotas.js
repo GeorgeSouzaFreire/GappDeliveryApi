@@ -455,9 +455,9 @@ router.patch('/AtualizarFormaPagamentoEstabelecimento', async (req, res) => {
 
         const estabelecimentoId = req.query.IdEstabelecimento
 
-        console.log(estabelecimentoId)
+        const formaPagamentos = req.body
 
-        Promise.all(req.body.forEach(async function (item) {
+        var updates = await Promise.all(formaPagamentos.map(async (item) => {
 
             console.log(item)
 
@@ -487,24 +487,26 @@ router.patch('/AtualizarFormaPagamentoEstabelecimento', async (req, res) => {
 
             console.log(' Promise.all Está no loop', estabelecimento)
 
-        })).then(async () => {
+            return estabelecimento;
+        }));
+
+        if (updates == null) {
+            res.status(422).json({
+                success: false,
+                message: 'Não há atualização para o estabelecimento!',
+                data: {},
+            })
+        } else {
             const estabelecimento = await Estabelecimento.findOne({ _id: estabelecimentoId });
 
             console.log('Then Saiu do loop', estabelecimento)
-
+    
             res.status(200).json({
                 success: true,
                 message: 'Estabelecimento atualizado com sucesso!',
                 data: estabelecimento,
             })
-        }).catch((error) => {
-            console.log(error)
-            res.status(500).json({
-                success: false,
-                message: "Não foi possível atualizar a Forma de Pagamento!",
-                error: error
-            })
-        })
+        }
 
     } catch (error) {
         console.log(error)
