@@ -151,7 +151,7 @@ router.get('/GetEstabelecimentoPorIdEmpresa', async (req, res) => {
 
                 //console.log(imagem._id)
 
-                const taxa = await TaxaEntrega.findOne({'estabelecimento._id': estabelecimento._id })
+                const taxa = await TaxaEntrega.findOne({ 'estabelecimento._id': estabelecimento._id })
 
                 estabelecimento.taxa = taxa
 
@@ -231,7 +231,7 @@ router.get('/GetFormaPagamentoAtiva', async (req, res) => {
 
     try {
 
-        const formaDePagamentoFind = await FormaPagamento.find({ativo: ativo })
+        const formaDePagamentoFind = await FormaPagamento.find({ ativo: ativo })
 
         if (formaDePagamentoFind.length === 0) {
             res.status(422).json({
@@ -457,64 +457,39 @@ router.patch('/AtualizarFormaPagamentoEstabelecimento', async (req, res) => {
 
         req.body.forEach(async function (item) {
 
-
             console.log(item)
 
             const {
-                id,
+                guid,
+                idEstabelecimento,
+                tipo,
+                idTipo,
+                ordem,
+                observacao,
                 ativo,
-                dataAtualizacao,
+                dataCriacao,
+                dataAtualizacao
             } = item
 
             const formaPagamento = {
-                id,
+                guid,
+                idEstabelecimento,
+                tipo,
+                idTipo,
+                ordem,
+                observacao,
                 ativo,
-                dataAtualizacao,
+                dataCriacao,
+                dataAtualizacao
             }
 
-            // Criando dados Forma de Pagamento
-            const formaPagamentoFindOne = await FormaPagamento.findOne({ _id: formaPagamento.id })
+            await Estabelecimento.updateOne({ _id: estabelecimentoId }, { $push: { 'formaPagamento': formaPagamento } }, { new: true })
 
-            console.log(formaPagamentoFindOne)
-
-            console.log('Busca de Forma de Pagamento realizada com sucesso!', formaPagamentoFindOne)
-
-            if (formaPagamentoFindOne == null) {
-                res.status(422).json({
-                    success: true,
-                    message: 'Não foi possível registrar Forma de Pagamento!',
-                    data: req.body,
-                })
-            } else {
-
-                const estabelecimentoFormaPagamentoUpdateOrCreate = await EstabelecimentoFormaPagamento.findOne({ idFormaPagamento: formaPagamentoFindOne._id })
-
-                console.log('Busca EstabelecimentoFormaPagamento para ver ser atualizamos!', estabelecimentoFormaPagamentoUpdateOrCreate)
-
-                if (estabelecimentoFormaPagamentoUpdateOrCreate == null) {
-
-                    const estabelecimentoFormaPagamento = {
-                        idEstabelecimento: estabelecimentoId,
-                        idFormaPagamento: formaPagamentoFindOne._id,
-                        ativo: formaPagamento.ativo,
-                    };
-
-                    const estabelecimentoFormaPagamentoCreate = await EstabelecimentoFormaPagamento.create(estabelecimentoFormaPagamento)
-
-                    console.log('Relacionamento Estabelecimento x Forma de Pagamento criado com sucesso!', estabelecimentoFormaPagamentoCreate)
-
-                } else {
-                    const estabelecimentoFormaPagamentoCreate = await EstabelecimentoFormaPagamento.updateOne({ _id: estabelecimentoFormaPagamentoUpdateOrCreate._id }, estabelecimentoFormaPagamentoUpdateOrCreate)
-
-                    console.log('Relacionamento Estabelecimento x Forma de Pagamento atualizado com sucesso!', estabelecimentoFormaPagamentoCreate)
-                }
-
-            }
         })
 
         res.status(200).json({
             success: true,
-            message: 'Forma de Pagamento Por Estabelcimento atualizado com sucesso!',
+            message: 'Estabelcimento atualizado com sucesso!',
             data: req.body,
         })
 
