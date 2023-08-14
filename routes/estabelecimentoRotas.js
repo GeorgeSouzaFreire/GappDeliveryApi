@@ -455,13 +455,14 @@ router.patch('/AtualizarFormaPagamentoEstabelecimento', async (req, res) => {
 
         const estabelecimentoId = req.query.IdEstabelecimento
 
+        console.log(estabelecimentoId)
+
         req.body.forEach(async function (item) {
 
             console.log(item)
 
             const {
-                guid,
-                idEstabelecimento,
+                guid,            
                 tipo,
                 idTipo,
                 ordem,
@@ -472,8 +473,7 @@ router.patch('/AtualizarFormaPagamentoEstabelecimento', async (req, res) => {
             } = item
 
             const formaPagamento = {
-                guid,
-                idEstabelecimento,
+                guid,                
                 tipo,
                 idTipo,
                 ordem,
@@ -483,11 +483,15 @@ router.patch('/AtualizarFormaPagamentoEstabelecimento', async (req, res) => {
                 dataAtualizacao
             }
 
-            await Estabelecimento.updateOne({ _id: estabelecimentoId }, { $push: { 'formaPagamento': formaPagamento } }, { new: true })
+            const estabelecimento = await Estabelecimento.updateOne({ _id: estabelecimentoId }, { $push: { 'formaPagamento': formaPagamento } }, { new: true })
+
+            console.log('Está no loop' , estabelecimento)
 
         })
 
         const estabelecimento = await Estabelecimento.findOne({ _id: estabelecimentoId});
+
+        console.log('Saiu do loop' , estabelecimento)
 
         res.status(200).json({
             success: true,

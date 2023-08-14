@@ -1,8 +1,7 @@
 const mongoose = require('mongoose')
 
 const FormaPagamento = mongoose.model('FormaPagamento', {    
-    guid: String,
-    idEstabelecimento: String,    
+    guid: String,      
     tipo: String,      
     idTipo: Number,  
     ordem: Number,
