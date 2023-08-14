@@ -487,7 +487,7 @@ router.patch('/AtualizarFormaPagamentoEstabelecimento', async (req, res) => {
 
         })
 
-        const estabelecimento = await Estabelecimento.find({ _id: estabelecimentoId});
+        const estabelecimento = await Estabelecimento.findOne({ _id: estabelecimentoId});
 
         res.status(200).json({
             success: true,
