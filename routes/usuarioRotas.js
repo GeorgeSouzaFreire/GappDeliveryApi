@@ -344,7 +344,7 @@ router.post('/PostCliente/', async (req, res) => {
 
                     res.status(200).json({
                         success: true,
-                        message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
+                        message: "Cliente cadastrado com sucesso!",
                         data: usuarioCreate,
                     })
 
@@ -358,7 +358,7 @@ router.post('/PostCliente/', async (req, res) => {
 
                     res.status(200).json({
                         success: true,
-                        message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
+                        message: "Cliente cadastrado com sucesso!",
                         data: usuarioCreate,
                     })
 
