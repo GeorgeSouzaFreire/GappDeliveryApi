@@ -244,6 +244,149 @@ router.post('/PostUsuario/', async (req, res) => {
 
 })
 
+// Create - POST Cadastro Cliente
+router.post('/PostCliente/', async (req, res) => {
+
+    // req.body   
+    const {
+        id,
+        guid,
+        codigo,
+        empresa,
+        estabelecimento,
+        endereco,
+        imagem,
+        nome,
+        sobrenome,
+        telefone,
+        email,
+        senha,
+        package,
+        facebookId,
+        googleId,
+        web,
+        adminEmpresa,
+        adminMaster,
+        aceitaReceberInfo,
+        ativo,
+        dataCriacao,
+        dataAtualizacao
+    } = req.body
+
+    const errors = {};
+
+    if (!String(nome).trim()) {
+        errors.nome = ['O nome é obrigatório'];
+    }
+
+    if (!String(telefone).trim()) {
+        errors.telefone = ['O telefone é obrigatório'];
+    }
+
+    if (!String(senha).trim()) {
+        errors.senha = ['Sua senha é fundamental, Anote para não esquecer.'];
+    }
+
+    if (!String(email).trim()) {
+        errors.email = ['O email é obrigatório'];
+    } else if (!(/^[\-0-9a-zA-Z\.\+_]+@[\-0-9a-zA-Z\.\+_]+\.[a-zA-Z]{2,}$/).test(String(email))) {
+        errors.email = ['E-mail não é válido.'];
+    }
+
+    if (Object.keys(errors).length) {
+        res.status(422).json({ error: errors })
+    } else {
+
+        // Update and Create Usuario
+        try {
+
+            // Empresa Package
+            const empresa = await Empresa.findOne({ package: package })
+           
+            const usuario = {
+                id,
+                guid,
+                codigo,
+                empresa,
+                estabelecimento,
+                endereco,
+                imagem,
+                nome,
+                sobrenome,
+                telefone,
+                email,
+                senha,
+                package,
+                facebookId,
+                googleId,
+                web,
+                adminEmpresa,
+                adminMaster,
+                aceitaReceberInfo,
+                ativo,
+                dataCriacao,
+                dataAtualizacao
+            }
+
+            const checkEmail = await Usuario.find({ email: email })
+            console.log(email)
+            console.log(checkEmail.length === 0)
+            if (checkEmail.length === 0) {
+
+                const usuariofindOne = await Usuario.findOne({ 'empresa.idEmpresa': empresa.idEmpresa }).sort({ _id: -1 }).limit(1)
+                
+                if (usuariofindOne === null) {
+
+                    // Adiciona = 1 
+                    usuario.codigo = 1
+                    // Criando dados do Usuário.
+                    const usuarioCreate = await Usuario.create(usuario)
+
+                    res.status(200).json({
+                        success: true,
+                        message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
+                        data: usuarioCreate,
+                    })
+
+                } else {
+
+                    // Adiciona .+1 no Codigo Usuario  
+                    usuario.codigo = (usuariofindOne.codigo + 1)
+
+                    // Criando dados do Usuário.
+                    const usuarioCreate = await Usuario.create(usuario)
+
+                    res.status(200).json({
+                        success: true,
+                        message: "Pronto, agora você pode aproveitar todo conteúdo disponível!",
+                        data: usuarioCreate,
+                    })
+
+                }
+
+            } else {
+
+                res.status(200).json({
+                    success: false,
+                    message: "Já existe cadastro com email informado!",
+                    data: checkEmail,
+                })
+
+            }
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({
+                success: false,
+                message: "Ops, Algo aconteceu de errado, tente novamente.",
+                error: error
+            })
+        }
+
+    }
+
+})
+
 // Create - POST Usuario
 router.post('/PostUsuarioEndereco/', async (req, res) => {
 
