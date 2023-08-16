@@ -7,6 +7,7 @@ const Usuario = require('../models/Usuario')
 const UsuarioEndereco = require('../models/UsuarioEndereco')
 const { ObjectId } = require('mongodb')
 const Empresa = require('../models/Empresa')
+const Pedido = require('../models/Pedido')
 
 
 // GET UsuarioId - Leitura de dados
@@ -159,7 +160,7 @@ router.post('/PostUsuario/', async (req, res) => {
 
             // Empresa Package
             const empresa = await Empresa.findOne({ package: package })
-           
+
             const usuario = {
                 id,
                 guid,
@@ -191,7 +192,7 @@ router.post('/PostUsuario/', async (req, res) => {
             if (checkEmail.length === 0) {
 
                 const usuariofindOne = await Usuario.findOne({ 'empresa.idEmpresa': empresa.idEmpresa }).sort({ _id: -1 }).limit(1)
-                
+
                 if (usuariofindOne === null) {
 
                     // Adiciona = 1 
@@ -302,7 +303,7 @@ router.post('/PostCliente/', async (req, res) => {
 
             // Empresa Package
             const empresa = await Empresa.findOne({ package: package })
-           
+
             const usuario = {
                 id,
                 guid,
@@ -334,7 +335,7 @@ router.post('/PostCliente/', async (req, res) => {
             if (checkEmail.length === 0) {
 
                 const usuariofindOne = await Usuario.findOne({ 'empresa.idEmpresa': empresa.idEmpresa }).sort({ _id: -1 }).limit(1)
-                
+
                 if (usuariofindOne === null) {
 
                     // Adiciona = 1 
@@ -533,6 +534,49 @@ router.get('/GetUsuarios', async (req, res) => {
                 success: true,
                 message: 'Usuários encontrados com sucesso!',
                 data: usuario,
+            })
+        } else {
+            res.status(201).json({
+                success: true,
+                message: 'Não foi possivel obter os Usuários.',
+                data: usuario,
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível realizar a operação!",
+            error: error
+        })
+    }
+
+})
+
+// GET Usuario - Leitura de dados
+router.get('/GetCliente', async (req, res) => {
+
+    try {
+
+        const empresaId = req.query.IdEmpresa
+
+        const usuario = await Usuario.find({ idEmpresa: empresaId })
+
+        if (usuario.length != 0) {
+
+            const pedido = await Pedido.find({ idUsuario: usuario._id });
+
+            const resumo = {
+                'totatpedido': '',
+                'totatpedido': '',
+                'totatpedido': '',
+                'totatpedido': ''
+            }
+
+            res.status(200).json({
+                success: true,
+                message: 'Usuários encontrados com sucesso!',
+                data: { usuario, pedido, resumo},
             })
         } else {
             res.status(201).json({
