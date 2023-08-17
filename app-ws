@@ -35,6 +35,7 @@ function verifyClient(info, callback) {
 }
 
 function broadcast(jsonObject) {
+    console.log(jsonObject);
     if (!this.clients) return;
     this.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
