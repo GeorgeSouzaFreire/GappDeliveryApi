@@ -13,7 +13,7 @@ const cors = require('cors')
 const { default: mongoose } = require('mongoose')
 const app = express()
 
-app.use(cors());
+app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
 
 // forma de ler JSON / middlewares
 app.use(express.json({ limit: '50mb' }))
@@ -108,57 +108,19 @@ app.get('/api', (req, res) => {
     }
 })
 
+const appWs = require('./app-ws');
+
 // Entregar uma porta
 const DB_USER = process.env.DB_USER
 const DB_PASSWORD = encodeURIComponent(process.env.DB_PASSWORD)
 
 mongoose.connect(
     `mongodb+srv://${DB_USER}:${DB_PASSWORD}@apicluster.dxszc.mongodb.net/GappDeliveryApiDatabase?retryWrites=true&w=majority`
-)
-    .then(() => {
-        console.log('Conectamos ao MongoDB')
-        app.listen(process.env.PORT)
-    })
-    .catch((err) => {
-        console.log(err)
-    })
-
-const WebSocket = require('ws');
-const http = require('http')
-const url = require('url')
-
-const verifyClient = (info) => {
-    console.log('ding dong')
-    return true
-}
-
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server, verifyClient });
-
-// start the server and specify the port number
-//const wss = new WebSocket.Server({ port: process.env.PORT_SOCKET });
-console.log(`[WebSocket] Starting WebSocket server on localhost:${process.env.PORT_SOCKET}`);
-wss.on('connection', (ws, request) => {
-
-    const location = ws.url;
-    // You might use location.query.access_token to authenticate or share sessions
-    // or ws.upgradeReq.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
-    console.log(`[WebSocket] Client with IP ${location} has connected`);
-
-    const clientIp = request.connection.remoteAddress;
-    console.log(`[WebSocket] Client with IP ${clientIp} has connected`);
-    ws.send('Thanks for connecting to this nodejs websocket server');
-    // Broadcast aka send messages to all connected clients 
-    ws.on('message', (message) => {
-        wss.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(message);
-            }
-        });
-        console.log(`[WebSocket] Message ${message} was received`);
-    });
-});
-server.listen(process.env.PORT_SOCKET, function listening() {
-    console.log('Listening on %d', server.address().port);
-});
+).then(() => {
+    console.log('Conectamos ao MongoDB')
+    const server = app.listen(process.env.PORT)
+    appWs(server);
+}).catch((err) => {
+    console.log(err)
+})
 
