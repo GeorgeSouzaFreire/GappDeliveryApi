@@ -6,7 +6,7 @@ function onError(ws, err) {
 
 function onMessage(ws, data) {
     console.log(`onMessage: ${data}`);
-    ws.broadcast(`recebido: ${data}`);
+    ws.broadcast(`${data}`);
     ws.send(`recebido: ${data}`);
 }
 
