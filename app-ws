@@ -6,6 +6,13 @@ function onError(ws, err) {
 
 function onMessage(ws, data) {
     console.log(`onMessage: ${data}`);
+    console.log(ws.clients);
+    if (!ws.clients) return;
+    ws.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ data }));
+        }
+    });
     ws.send(`recebido!`);
 }
 
@@ -34,7 +41,18 @@ function verifyClient(info, callback) {
     return callback(false);
 }
 
-function broadcast(jsonObject) {
+const users = [];
+
+// Broadcast to all connected clients
+const broadcast = (data, ws) => {
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN && client !== ws) {
+            client.send(JSON.stringify(data));
+        }
+    });
+};
+
+/*function broadcast(jsonObject) {
     console.log(jsonObject);
     console.log(this.clients);
     if (!this.clients) return;
@@ -43,12 +61,47 @@ function broadcast(jsonObject) {
             client.send(JSON.stringify(jsonObject));
         }
     });
-}
+}*/
 
 module.exports = (server) => {
     const wss = new WebSocket.Server({ server, verifyClient });
-    wss.on('connection', onConnection);
-    wss.broadcast = broadcast;
-    console.log(`App Web Socket Server is running!`);
+
+    // When web socket forms a connections
+    wss.on("connection", ws => {
+        let index;
+        ws.on("message", message => {
+            const data = JSON.parse(message);
+            switch (data.type) {
+                case "ADD_USER":
+                    index = users.length;
+                    users.push({ name: data.name, id: index + 1 });
+                    ws.send(JSON.stringify({ type: "USERS_LIST", users }));
+                    broadcast({ type: "USERS_LIST", users }, ws);
+                    break;
+                case "ADD_MESSAGE":
+                    // Everybody connected to the server gets that message
+                    broadcast(
+                        {
+                            type: "ADD_MESSAGE",
+                            message: data.message,
+                            author: data.author
+                        },
+                        ws
+                    );
+                    break;
+                default:
+                    break;
+            }
+        });
+        // When websocket closes, it closes the user for that user list (splices to remove user).
+        wss.on("close", () => {
+            users.splice(index, 1);
+            broadcast({ type: "USERS_LIST", users }, ws);
+        });
+    });
+
+    //wss.on('connection', onConnection);
+    //wss.broadcast = broadcast;
+    //console.log(`App Web Socket Server is running!`);
     return wss;
 }
