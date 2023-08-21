@@ -6,7 +6,8 @@ function onError(ws, err) {
 
 function onMessage(ws, data) {
     console.log(`onMessage: ${data}`);    
-    ws.send(`recebido!`);
+    //ws.send(`recebido!`);
+    ws.broadcast(data);
 }
 
 function onConnection(ws, req) {
@@ -47,8 +48,14 @@ function broadcast(jsonObject) {
 
 module.exports = (server) => {
     const wss = new WebSocket.Server({ server, verifyClient }); 
-    wss.on('connection', onConnection);
+    //wss.on('connection', onConnection);
     //wss.broadcast = broadcast;
+    wss.on("connection", (ws) =>{
+        ws.on('message', function incoming(message){
+          console.log('received: ', message);
+          wss.broadcast(message);
+       });
+      });
     wss.broadcast = function broadcast(msg){
         wss.clients.forEach(function each(client){
           client.send(msg);
