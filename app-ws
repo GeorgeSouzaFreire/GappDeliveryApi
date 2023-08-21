@@ -56,12 +56,12 @@ module.exports = (server) => {
             wss.broadcast(message);
         });
     });
-    wss.broadcast = function broadcast(message) {
+    wss.broadcast = function broadcast(msg) {
         wss.clients.forEach(function each(client) {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(message);
-            }
-            //client.send(msg);
+            //if (client.readyState === WebSocket.OPEN) {
+            //    client.send(message);
+            //}
+            client.send(msg);
         });
     };
     console.log(`App Web Socket Server is running!`);
