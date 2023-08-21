@@ -56,10 +56,10 @@ module.exports = (server) => {
             wss.broadcast(message);
         });
     });
-    wss.broadcast = function broadcast(msg) {
+    wss.broadcast = function broadcast(message) {
         wss.clients.forEach(function each(client) {
             if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({msg}));
+                client.send(message);
             }
             //client.send(msg);
         });
