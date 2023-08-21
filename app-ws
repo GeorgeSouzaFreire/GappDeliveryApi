@@ -48,7 +48,12 @@ function broadcast(jsonObject) {
 module.exports = (server) => {
     const wss = new WebSocket.Server({ server, verifyClient }); 
     wss.on('connection', onConnection);
-    wss.broadcast = broadcast;
+    //wss.broadcast = broadcast;
+    wss.broadcast = function broadcast(msg){
+        wss.clients.forEach(function each(client){
+          client.send(msg);
+        });
+      };
     console.log(`App Web Socket Server is running!`);
     return wss;
 }
