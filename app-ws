@@ -40,8 +40,8 @@ module.exports = (server) => {
     };
     wss.on('connection', function (ws) {
         ws.on('message', function (data) {
-            ws.send('{}' + data);
-            wss.broadcast('Hi All');
+            ws.send(`${data}`);
+            wss.broadcast(`${data}`);
         });
         ws.on('close', function () {
             console.log('Connection closed!');
