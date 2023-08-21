@@ -51,6 +51,7 @@ module.exports = (server) => {
     //wss.on('connection', onConnection);
     //wss.broadcast = broadcast;
     wss.on("connection", (ws) => {
+        console.log(`onConnection`);
         ws.on('message', function incoming(message) {
             console.log('received: ', message);
             wss.broadcast(message);
