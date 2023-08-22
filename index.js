@@ -82,7 +82,7 @@ app.get('/api', (req, res) => {
                 success: true,
                 message: "Acesso a API realizado com sucesso! Todos os direitos reservados",
                 data: {
-                    Version: "Version 10.0.1",
+                    Version: "Version 10.0.2",
                     Info: "Contact: application.gapp@gmail.com",
                     Update: 'Usuário Por Id'
                 },
@@ -94,8 +94,7 @@ app.get('/api', (req, res) => {
                 data: {},
             })
         }
-        console.log('Api Solicitada: ', ' Status --- > ' + res.statusCode);
-
+        
     } catch (err) {
         console.log(err)
         res.status(500).json({

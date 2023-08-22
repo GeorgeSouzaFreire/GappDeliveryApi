@@ -253,10 +253,6 @@ router.get('/GetPedidoApp', async (req, res) => {
                 //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
             });
 
-            console.log(formatter.format(valorTotal)); /* $2,500.00 */
-
-            //console.log('Calculo do Pedido ', 'Quantidade = ' + quantidadeTotal + ' * ' + valorTotal + ' = R$ ' + ((quantidadeTotal * valorTotal) * 100 / 100).toFixed(2))
-
             res.status(200).json({
                 success: true,
                 message: 'Foram encontrado ' + pedidoFindOne.length + ' resultado!',
@@ -502,7 +498,6 @@ router.patch('/AtualizaStatusPedido', async (req, res) => {
         }
     }
 
-    console.log('Patch - AtualizaStatusPedido', pedidoId)
 
     try {
 
@@ -547,8 +542,7 @@ router.patch('/AtualizaFormaPagamento', async (req, res) => {
         observacao,
         formaPagamento,
     }
-
-    console.log('Patch - AtualizaFormaPagamento', pedido)
+   
 
     try {
 
@@ -611,7 +605,7 @@ router.patch('/FinalizarPedido', async (req, res) => {
         dataAtualizacao
     }
 
-    console.log('Patch - FinalizarPedido', pedido)
+    
 
     try {
 
@@ -654,8 +648,7 @@ router.patch('/AtualizaObservacaoPedido', async (req, res) => {
     const pedido = {
         observacao,
     }
-
-    console.log('Patch - AtualizaObservacaoPedido', pedido)
+    
 
     try {
 
