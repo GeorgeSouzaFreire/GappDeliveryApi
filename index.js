@@ -124,7 +124,10 @@ mongoose.connect(
     socketio.on("connection", (userSocket) => {
         console.log('connection')
         userSocket.on("send", (data) => {
+            console.log('send')
             userSocket.broadcast.emit("receive", data)
+            console.log('receive')
+            console.log(data)
         })
     })
 
