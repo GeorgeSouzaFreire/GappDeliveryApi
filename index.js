@@ -82,7 +82,7 @@ app.get('/api', (req, res) => {
                 success: true,
                 message: "Acesso a API realizado com sucesso! Todos os direitos reservados",
                 data: {
-                    Version: "Version 10.0.0",
+                    Version: "Version 10.0.1",
                     Info: "Contact: application.gapp@gmail.com",
                     Update: 'Usuário Por Id'
                 },
@@ -128,8 +128,6 @@ mongoose.connect(
             console.log('Usuário desconectado no Socket IO');
         });
     });
-
-    //appWs(server);
 }).catch((err) => {
     console.log(err)
 })
