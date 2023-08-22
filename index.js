@@ -123,8 +123,7 @@ mongoose.connect(
       console.log('Usuário conectado no Socket IO');
       socket.on('message', function(msg){
         console.log('message: ' + msg);
-      });
-      
+      });      
       socket.on('disconnect', function(){
         console.log('Usuário desconectado no Socket IO');
       });
