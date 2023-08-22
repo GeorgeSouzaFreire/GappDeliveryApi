@@ -118,15 +118,15 @@ mongoose.connect(
     console.log('Conectamos ao MongoDB')
     const server = app.listen(process.env.PORT)
 
-    var io = require('socket.io')(server);
-    io.on('connection', function(socket){
-      console.log('Usuário conectado no Socket IO');
-      socket.on('message', function(msg){
-        console.log('message: ' + msg);
-      });      
-      socket.on('disconnect', function(){
-        console.log('Usuário desconectado no Socket IO');
-      });
+    var io = require('socket.io')(server, { cors: { origin: '*' } });
+    io.on('connection', function (socket) {
+        console.log('Usuário conectado no Socket IO');
+        socket.on('message', function (msg) {
+            console.log('message: ' + msg);
+        });
+        socket.on('disconnect', function () {
+            console.log('Usuário desconectado no Socket IO');
+        });
     });
 
     //appWs(server);
