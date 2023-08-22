@@ -116,22 +116,19 @@ mongoose.connect(
     `mongodb+srv://${DB_USER}:${DB_PASSWORD}@apicluster.dxszc.mongodb.net/GappDeliveryApiDatabase?retryWrites=true&w=majority`
 ).then(() => {
     console.log('Conectamos ao MongoDB')
-    const server = app.listen(process.env.PORT)
 
-    var io = require('socket.io')(server, { pingTimeout: 0, pingInterval: 500, origins: '*:*' });
-    console.log('io' + server)
+    const http = require('http').createServer(app)
 
-    var socket = require('socket.io')(server, { transports: ['websocket'] })
-   
-    socket.on('connection', function (socket) {
-        console.log('Usuário conectado no Socket IO');
-        socket.on('message', function (msg) {
-            console.log('message: ' + msg);
-        });
-        socket.on('disconnect', function () {
-            console.log('Usuário desconectado no Socket IO');
-        });
-    });
+    const socketio = require('socket.io')(http)
+
+    socketio.on("connection", (userSocket) => {
+        userSocket.on("send_message", (data) => {
+            userSocket.broadcast.emit("receive_message", data)
+        })
+    })
+    
+    app.listen(process.env.PORT)
+    
 }).catch((err) => {
     console.log(err)
 })
