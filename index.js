@@ -125,7 +125,7 @@ mongoose.connect(
         console.log('connection')
         socket.on('message', (data) => {
             console.log('Message from client:', data);
-            socketio.emit('message', data); // Send the message to all connected clients
+            socket.emit('message', data); // Send the message to all connected clients
             //console.log('send')
             //socket.broadcast.emit("receive", data)
             //console.log('receive')
