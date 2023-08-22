@@ -121,14 +121,19 @@ mongoose.connect(
     //Socket Logic
     const socketio = require('socket.io')(server)
 
-    socketio.on("connection", (userSocket) => {
+    socketio.on("connection", (socket) => {
         console.log('connection')
-        userSocket.on("send", (data) => {
-            console.log('send')
-            userSocket.broadcast.emit("receive", data)
-            console.log('receive')
-            console.log(data)
+        socket.on('message', (data) => {
+            console.log('Message from client:', data);
+            socketio.emit('message', data); // Send the message to all connected clients
+            //console.log('send')
+            //socket.broadcast.emit("receive", data)
+            //console.log('receive')
+            //console.log(data)
         })
+        socket.on('disconnect', () => {
+            console.log('A user disconnected');
+        });
     })
 
 }).catch((err) => {
