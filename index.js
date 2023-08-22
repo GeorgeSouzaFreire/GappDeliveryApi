@@ -124,6 +124,17 @@ mongoose.connect(
             methods: ["GET", "POST"],
         },
     });
+    if (process.env.NODE_ENV === 'development') {
+        io.engine.on('initial_headers', (headers, req) => {
+            headers['Access-Control-Allow-Origin'] = 'http://localhost:8221';
+            headers['Access-Control-Allow-Credentials'] = true;
+        });
+
+        io.engine.on('headers', (headers, req) => {
+            headers['Access-Control-Allow-Origin'] = 'http://localhost:8221';
+            headers['Access-Control-Allow-Credentials'] = true;
+        });
+    }
     io.on('connection', function (socket) {
         console.log('Usuário conectado no Socket IO');
         socket.on('message', function (msg) {
