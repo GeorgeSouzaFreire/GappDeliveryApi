@@ -118,25 +118,12 @@ mongoose.connect(
     console.log('Conectamos ao MongoDB')
     const server = app.listen(process.env.PORT)
 
-    var io = require('socket.io')(server, {
-        cors: {
-            origin: "*",
-            methods: ["GET", "POST"],
-        },
-    });
-    console.log('io')
-    if (process.env.NODE_ENV === 'development') {
-        io.engine.on('initial_headers', (headers, req) => {
-            headers['Access-Control-Allow-Origin'] = 'https://gappdelivery.com.br:8221';
-            headers['Access-Control-Allow-Credentials'] = true;
-        });
+    var io = require('socket.io')(server, { pingTimeout: 0, pingInterval: 500, origins: '*:*' });
+    console.log('io' + server)
 
-        io.engine.on('headers', (headers, req) => {
-            headers['Access-Control-Allow-Origin'] = 'https://gappdelivery.com.br:8221';
-            headers['Access-Control-Allow-Credentials'] = true;
-        });
-    }
-    io.on('connection', function (socket) {
+    var socket = require('socket.io')(server, { transports: ['websocket'] })
+   
+    socket.on('connection', function (socket) {
         console.log('Usuário conectado no Socket IO');
         socket.on('message', function (msg) {
             console.log('message: ' + msg);
