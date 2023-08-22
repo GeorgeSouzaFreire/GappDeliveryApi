@@ -118,7 +118,12 @@ mongoose.connect(
     console.log('Conectamos ao MongoDB')
     const server = app.listen(process.env.PORT)
 
-    var io = require('socket.io')(server, { cors: { origin: '*' } });
+    var io = require('socket.io')(server, {
+        cors: {
+            origin: "*",
+            methods: ["GET", "POST"],
+        },
+    });
     io.on('connection', function (socket) {
         console.log('Usuário conectado no Socket IO');
         socket.on('message', function (msg) {
