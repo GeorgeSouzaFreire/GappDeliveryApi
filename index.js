@@ -108,8 +108,6 @@ app.get('/api', (req, res) => {
     }
 })
 
-const appWs = require('./app-ws');
-
 // Entregar uma porta
 const DB_USER = process.env.DB_USER
 const DB_PASSWORD = encodeURIComponent(process.env.DB_PASSWORD)
@@ -119,7 +117,20 @@ mongoose.connect(
 ).then(() => {
     console.log('Conectamos ao MongoDB')
     const server = app.listen(process.env.PORT)
-    appWs(server);
+
+    var io = require('socket.io')(server);
+    io.on('connection', function(socket){
+      console.log('Usuário conectado no Socket IO');
+      socket.on('message', function(msg){
+        console.log('message: ' + msg);
+      });
+      
+      socket.on('disconnect', function(){
+        console.log('Usuário desconectado no Socket IO');
+      });
+    });
+
+    //appWs(server);
 }).catch((err) => {
     console.log(err)
 })
