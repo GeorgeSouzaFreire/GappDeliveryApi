@@ -124,14 +124,15 @@ mongoose.connect(
             methods: ["GET", "POST"],
         },
     });
+    console.log('io')
     if (process.env.NODE_ENV === 'development') {
         io.engine.on('initial_headers', (headers, req) => {
-            headers['Access-Control-Allow-Origin'] = 'http://localhost:8221';
+            headers['Access-Control-Allow-Origin'] = 'https://gappdelivery.com.br:8221';
             headers['Access-Control-Allow-Credentials'] = true;
         });
 
         io.engine.on('headers', (headers, req) => {
-            headers['Access-Control-Allow-Origin'] = 'http://localhost:8221';
+            headers['Access-Control-Allow-Origin'] = 'https://gappdelivery.com.br:8221';
             headers['Access-Control-Allow-Credentials'] = true;
         });
     }
