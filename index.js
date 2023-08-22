@@ -108,24 +108,6 @@ app.get('/api', (req, res) => {
     }
 })
 
-const http = require('http');
-const socketIo = require('socket.io');
-const server = http.createServer(app);
-const io = socketIo(server);
-
-io.on('connection', (socket) => {
-  console.log('A user connected');
-
-  socket.on('message', (data) => {
-    console.log('Message from client:', data);
-    io.emit('message', data); // Send the message to all connected clients
-  });
-
-  socket.on('disconnect', () => {
-    console.log('A user disconnected');
-  });
-});
-
 // Entregar uma porta
 const DB_USER = process.env.DB_USER
 const DB_PASSWORD = encodeURIComponent(process.env.DB_PASSWORD)
@@ -134,7 +116,18 @@ mongoose.connect(
     `mongodb+srv://${DB_USER}:${DB_PASSWORD}@apicluster.dxszc.mongodb.net/GappDeliveryApiDatabase?retryWrites=true&w=majority`
 ).then(() => {
     console.log('Conectamos ao MongoDB')
-    app.listen(process.env.PORT)
+    const server = app.listen(process.env.PORT)
+
+    //Socket Logic
+    const socketio = require('socket.io')(server)
+
+    socketio.on("connection", (userSocket) => {
+        console.log('connection')
+        userSocket.on("send", (data) => {
+            userSocket.broadcast.emit("receive", data)
+        })
+    })
+
 }).catch((err) => {
     console.log(err)
 })
