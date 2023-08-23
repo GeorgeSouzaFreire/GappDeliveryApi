@@ -94,7 +94,7 @@ app.get('/api', (req, res) => {
                 data: {},
             })
         }
-        
+
     } catch (err) {
         console.log(err)
         res.status(500).json({
@@ -121,17 +121,14 @@ mongoose.connect(
     const socketio = require('socket.io')(server)
 
     socketio.on("connection", (socket) => {
-        console.log('connection')
+        console.log('conexão')
         socket.on('message', (data) => {
-            console.log('Message from client:', data);
-            socket.emit('message', data); // Send the message to all connected clients
-            //console.log('send')
-            //socket.broadcast.emit("receive", data)
-            //console.log('receive')
-            //console.log(data)
+            console.log('message:', data);
+            socket.emit('message', data); // Send the message to all connected clients            
+            socket.broadcast.emit("message", data)
         })
         socket.on('disconnect', () => {
-            console.log('A user disconnected');
+            console.log('desconectado');
         });
     })
 
