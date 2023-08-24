@@ -813,7 +813,7 @@ router.get('/GetClienteSintetico', async (req, res) => {
 
             const resumo = {
                 'cliente': usuario,
-                'totatpedido': totatpedido,
+                'totatPedido': totatpedido.toString,
                 'valorTotalPedido': valorTotalPedido.toString,
                 'pontosDisponivel': pontosDisponivel.toString
             }
