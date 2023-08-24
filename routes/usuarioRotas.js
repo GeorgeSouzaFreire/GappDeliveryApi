@@ -554,58 +554,6 @@ router.get('/GetUsuarios', async (req, res) => {
 })
 
 // GET Usuario - Leitura de dados
-router.get('/GetClienteSintetico', async (req, res) => {
-
-    try {
-
-        const empresaId = req.query.IdEmpresa
-
-        const usuario = await Usuario.find({ idEmpresa: empresaId })
-
-        if (usuario.length != 0) {
-
-            const pedido = await Pedido.find({ idUsuario: usuario._id });
-
-            var totatpedido = 0;
-            var valorTotalPedido = 0;
-            var pontosDisponivel = 0;
-
-            pedido.forEach((item) => {
-                valorTotalPedido += item.valorTotalPedido;
-            });
-
-            const resumo = {
-                'usuario': usuario,
-                'pedido': pedido,
-                'totatpedido': pedido.length.toString,
-                'valorTotalPedido': valorTotalPedido.toString,
-                'pontosDisponivel': pontosDisponivel.toString
-            }
-
-            res.status(200).json({
-                success: true,
-                message: 'Clientes encontrado com sucesso!',
-                data: resumo,
-            })
-        } else {
-            res.status(201).json({
-                success: true,
-                message: 'Não foi possivel obter os Clientes.',
-                data: usuario,
-            })
-        }
-
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Não foi possível realizar a operação!",
-            error: error
-        })
-    }
-
-})
-
-// GET Usuario - Leitura de dados
 router.get('/GetUsuarioEndereco', async (req, res) => {
 
     const usuarioId = req.query.IdUsuario;
@@ -834,6 +782,62 @@ router.delete('/ExcluirUsuarioEndereco', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Não foi possível realizar a buscar do Usuário Endereco.',
+            error: error
+        })
+    }
+
+})
+
+// GET Usuario - Leitura de dados
+router.get('/GetClienteSintetico', async (req, res) => {
+
+    try {
+
+        const empresaId = req.query.IdEmpresa
+
+        const usuario = await Usuario.find({ 'empresa.idEmpresa': Number.parseInt(empresaId) })
+
+        if (usuario.length != 0) {
+
+            var totatpedido = 0;
+            var valorTotalPedido = 0;
+            var pontosDisponivel = 0;
+
+            usuario.forEach(async (user) => {
+                const pedido = await Pedido.find({ idUsuario: user._id });
+                pedido.forEach((ped) => {
+                    valorTotalPedido += ped.valorTotalPedido;
+                });
+                totatpedido = pedido.length.toString;
+            });
+
+            const resumo = {
+                'cliente': usuario,
+                'totatpedido': totatpedido,
+                'valorTotalPedido': valorTotalPedido.toString,
+                'pontosDisponivel': pontosDisponivel.toString
+            }
+
+            res.status(200).json({
+                success: true,
+                message: 'Clientes encontrados com sucesso!',
+                data: resumo,
+            })
+        } else {
+            res.status(201).json({
+                success: true,
+                message: 'Não foi possivel obter os Clientes.',
+                data: usuario,
+            })
+        }
+
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível realizar a operação!",
             error: error
         })
     }
