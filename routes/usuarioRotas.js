@@ -799,29 +799,36 @@ router.get('/GetClienteSintetico', async (req, res) => {
 
         if (usuario.length != 0) {
 
-            var totatpedido = 0;
-            var valorTotalPedido = 0;
+            
             var pontosDisponivel = 0;
+
+            const resumoArray = {};
 
             usuario.forEach(async (user) => {
                 const pedido = await Pedido.find({ idUsuario: user._id });
+
+                var totatpedido = 0;
+                var valorTotalPedido = 0;
+
                 pedido.forEach((ped) => {
                     valorTotalPedido += ped.valorTotalPedido;
-                });
-                totatpedido = pedido.length.toString;
-            });
+                    totatpedido++;
+                });                
 
-            const resumo = {
-                'cliente': usuario,
-                'totatPedido': totatpedido.toString,
-                'valorTotalPedido': valorTotalPedido.toString,
-                'pontosDisponivel': pontosDisponivel.toString
-            }
+                const resumo = {
+                    'cliente': user,
+                    'totatPedido': totatpedido.toString,
+                    'valorTotalPedido': valorTotalPedido.toString,
+                    'pontosDisponivel': pontosDisponivel.toString
+                }
+                resumoArray.push(resumo);      
+            });
+           
 
             res.status(200).json({
                 success: true,
                 message: 'Clientes encontrados com sucesso!',
-                data: resumo,
+                data: resumoArray,
             })
         } else {
             res.status(201).json({
