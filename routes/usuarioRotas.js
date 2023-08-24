@@ -554,7 +554,7 @@ router.get('/GetUsuarios', async (req, res) => {
 })
 
 // GET Usuario - Leitura de dados
-router.get('/GetCliente', async (req, res) => {
+router.get('/GetClienteSintetico', async (req, res) => {
 
     try {
 
@@ -566,22 +566,31 @@ router.get('/GetCliente', async (req, res) => {
 
             const pedido = await Pedido.find({ idUsuario: usuario._id });
 
+            var totatpedido = 0;
+            var valorTotalPedido = 0;
+            var pontosDisponivel = 0;
+
+            pedido.forEach((item) => {
+                valorTotalPedido += item.valorTotalPedido;
+            });
+
             const resumo = {
-                'totatpedido': '',
-                'totatpedido': '',
-                'totatpedido': '',
-                'totatpedido': ''
+                'usuario': usuario,
+                'pedido': pedido,
+                'totatpedido': pedido.length.toString,
+                'valorTotalPedido': valorTotalPedido.toString,
+                'pontosDisponivel': pontosDisponivel.toString
             }
 
             res.status(200).json({
                 success: true,
-                message: 'Usuários encontrados com sucesso!',
-                data: { usuario, pedido, resumo},
+                message: 'Clientes encontrado com sucesso!',
+                data: resumo,
             })
         } else {
             res.status(201).json({
                 success: true,
-                message: 'Não foi possivel obter os Usuários.',
+                message: 'Não foi possivel obter os Clientes.',
                 data: usuario,
             })
         }
