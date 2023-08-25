@@ -799,36 +799,48 @@ router.get('/GetClienteSintetico', async (req, res) => {
 
         if (usuario.length != 0) {
 
-            
+
             var pontosDisponivel = 0;
 
-            const resumoArray = {};
+            var arrays = await Promise.all(usuario.map(async (user) => {
 
-            usuario.forEach(async (user) => {
-                const pedido = await Pedido.find({ idUsuario: user._id });
+                const pedido = await Pedido.find({ idUsuario: mongoose.Types.ObjectId(user._id) });
 
-                var totatpedido = 0;
-                var valorTotalPedido = 0;
+                let quantidadeTotal = 0
+                var valorTotal = 0.0
 
                 pedido.forEach((ped) => {
-                    valorTotalPedido += ped.valorTotalPedido;
-                    totatpedido++;
-                });                
 
-                const resumo = {
+                    for (let j = 0; j < ped.item.length; j++) {
+
+                        quantidadeTotal += ped.item[j].quantidade;
+
+                        if (ped.item[j].produto == null) {
+                            valorTotal = 0.0
+                        } else {
+                            valorTotal += ped.item[j].produto.precoAtual * quantidadeTotal;
+                        }
+
+                    }
+                });
+
+                const formatter = new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                });
+
+                return {
                     'cliente': user,
-                    'totatPedido': totatpedido.toString,
-                    'valorTotalPedido': valorTotalPedido.toString,
-                    'pontosDisponivel': pontosDisponivel.toString
-                }
-                resumoArray.push(resumo);      
-            });
-           
+                    'quantidadePedido': pedido.length,
+                    'valorTotalPedido': formatter.format(valorTotal),
+                    'pontosDisponivel': pontosDisponivel
+                };
+            }));
 
             res.status(200).json({
                 success: true,
                 message: 'Clientes encontrados com sucesso!',
-                data: resumoArray,
+                data: arrays,
             })
         } else {
             res.status(201).json({
