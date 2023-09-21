@@ -606,6 +606,10 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
         errors.email = ['Email'];
     }
 
+    if (!String(empresa.contato.telefone).trim()) {
+        errors.telefone = ['Telefone'];
+    }
+
     if (Object.keys(errors).length) {
 
         errors.itens = ['\nSão os ' + Object.keys(errors).length + ' itens obrigatórios!'];
