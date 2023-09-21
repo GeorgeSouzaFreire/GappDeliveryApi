@@ -12,7 +12,7 @@ const Registro = require('../models/Registro')
 const Funcionario = require('../models/Funcionario')
 const Cargo = require('../models/Cargo')
 const Imagem = require('../models/Imagem')
-const UtilRotas = require('../routes/utilRotas')
+
 
 // Post - Criação de uma Nova Empresa
 router.post('/PostEmpresa/', async (req, res) => {
