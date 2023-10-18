@@ -12,6 +12,7 @@ const Registro = require('../models/Registro')
 const Funcionario = require('../models/Funcionario')
 const Cargo = require('../models/Cargo')
 const Imagem = require('../models/Imagem')
+const Store = require('../models/Store')
 
 
 // Post - Criação de uma Nova Empresa
@@ -210,13 +211,13 @@ router.get('/GetEmpresaPackage', async (req, res) => {
                 data: [],
             })
         } else {
-            
+
             const empresaDesigner = await EmpresaDesigner.findOne({ idEmpresa: Number.parseInt(empresaFindOne.idEmpresa) })
 
             const imagem = await Imagem.findOne({ guid: empresaFindOne._id })
 
             empresaDesigner.imagem = imagem
-            empresaFindOne.designer = empresaDesigner           
+            empresaFindOne.designer = empresaDesigner
 
             res.status(200).json({
                 success: true,
@@ -449,10 +450,10 @@ router.patch('/AtualizaEmpresa', async (req, res) => {
 
             const {
                 idEmpresa,
-                guid,  
+                guid,
                 razaoSocial,
-                nomeFantasia,              
-                cnpj,     
+                nomeFantasia,
+                cnpj,
                 endereco,
                 contato,
                 designer,
@@ -465,10 +466,10 @@ router.patch('/AtualizaEmpresa', async (req, res) => {
 
             const empresa = {
                 idEmpresa,
-                guid,   
+                guid,
                 razaoSocial,
-                nomeFantasia,           
-                cnpj,                
+                nomeFantasia,
+                cnpj,
                 endereco,
                 contato,
                 designer,
@@ -568,6 +569,86 @@ router.post('/PostPlano', async (req, res) => {
             res.status(500).json({
                 success: false,
                 message: 'Não foi possível realizar a buscar do Plano.',
+                error: error
+            })
+        }
+
+    }
+
+})
+
+
+// Post Store 
+router.post('/PostStore', async (req, res) => {
+
+    const {
+        guid,
+        idEmpresa,
+        nomeApp,
+        breveDescricao,
+        descricaoCompleta,
+        imagem,
+        ativo,
+        dataCriacao,
+        dataAtualizacao
+    } = req.body
+
+    const errors = {};
+
+    if (!String(nomeApp).trim()) {
+        errors.nomeApp = ['Nome do Aplicativo'];
+    }
+
+    if (!String(breveDescricao).trim()) {
+        errors.breveDescricao = ['Breve descrição'];
+    }
+
+    if (!String(descricaoCompleta).trim()) {
+        errors.breveDescricao = ['Descrição completa'];
+    }
+
+
+    if (Object.keys(errors).length) {
+        errors.itens = ['\nSão os ' + Object.keys(errors).length + ' itens obrigatórios!'];
+
+        res.status(422).json({ error: errors })
+    } else {
+
+        const store = {
+            guid,
+            idEmpresa,
+            nomeApp,
+            breveDescricao,
+            descricaoCompleta,
+            imagem,
+            ativo,
+            dataCriacao,
+            dataAtualizacao
+        }
+
+        try {
+
+            const storeCreate = await Store.create(store)
+
+            if (storeCreate == null) {
+                res.status(201).json({
+                    success: false,
+                    message: "Não foi possível cadastrar o Store!",
+                    data: {},
+                })
+            } else {
+                res.status(200).json({
+                    success: true,
+                    message: "Plano cadastrado com sucesso!",
+                    data: storeCreate,
+                })
+            }
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({
+                success: false,
+                message: 'Não foi possível realizar a buscar do Store.',
                 error: error
             })
         }
@@ -730,122 +811,122 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
 
 function validaCpfCnpj(val) {
     if (val.length == 14) {
-      var cpf = val.trim();
-  
-      cpf = cpf.replace(/\./g, '');
-      cpf = cpf.replace('-', '');
-      cpf = cpf.split('');
-  
-      var v1 = 0;
-      var v2 = 0;
-      var aux = false;
-  
-      for (var i = 1; cpf.length > i; i++) {
-        if (cpf[i - 1] != cpf[i]) {
-          aux = true;
+        var cpf = val.trim();
+
+        cpf = cpf.replace(/\./g, '');
+        cpf = cpf.replace('-', '');
+        cpf = cpf.split('');
+
+        var v1 = 0;
+        var v2 = 0;
+        var aux = false;
+
+        for (var i = 1; cpf.length > i; i++) {
+            if (cpf[i - 1] != cpf[i]) {
+                aux = true;
+            }
         }
-      }
-  
-      if (aux == false) {
-        return false;
-      }
-  
-      for (var i = 0, p = 10; (cpf.length - 2) > i; i++, p--) {
-        v1 += cpf[i] * p;
-      }
-  
-      v1 = ((v1 * 10) % 11);
-  
-      if (v1 == 10) {
-        v1 = 0;
-      }
-  
-      if (v1 != cpf[9]) {
-        return false;
-      }
-  
-      for (var i = 0, p = 11; (cpf.length - 1) > i; i++, p--) {
-        v2 += cpf[i] * p;
-      }
-  
-      v2 = ((v2 * 10) % 11);
-  
-      if (v2 == 10) {
-        v2 = 0;
-      }
-  
-      if (v2 != cpf[10]) {
-        return false;
-      } else {
-        return true;
-      }
+
+        if (aux == false) {
+            return false;
+        }
+
+        for (var i = 0, p = 10; (cpf.length - 2) > i; i++, p--) {
+            v1 += cpf[i] * p;
+        }
+
+        v1 = ((v1 * 10) % 11);
+
+        if (v1 == 10) {
+            v1 = 0;
+        }
+
+        if (v1 != cpf[9]) {
+            return false;
+        }
+
+        for (var i = 0, p = 11; (cpf.length - 1) > i; i++, p--) {
+            v2 += cpf[i] * p;
+        }
+
+        v2 = ((v2 * 10) % 11);
+
+        if (v2 == 10) {
+            v2 = 0;
+        }
+
+        if (v2 != cpf[10]) {
+            return false;
+        } else {
+            return true;
+        }
     } else if (val.length == 18) {
-      var cnpj = val.trim();
-  
-      cnpj = cnpj.replace(/\./g, '');
-      cnpj = cnpj.replace('-', '');
-      cnpj = cnpj.replace('/', '');
-      cnpj = cnpj.split('');
-  
-      var v1 = 0;
-      var v2 = 0;
-      var aux = false;
-  
-      for (var i = 1; cnpj.length > i; i++) {
-        if (cnpj[i - 1] != cnpj[i]) {
-          aux = true;
+        var cnpj = val.trim();
+
+        cnpj = cnpj.replace(/\./g, '');
+        cnpj = cnpj.replace('-', '');
+        cnpj = cnpj.replace('/', '');
+        cnpj = cnpj.split('');
+
+        var v1 = 0;
+        var v2 = 0;
+        var aux = false;
+
+        for (var i = 1; cnpj.length > i; i++) {
+            if (cnpj[i - 1] != cnpj[i]) {
+                aux = true;
+            }
         }
-      }
-  
-      if (aux == false) {
-        return false;
-      }
-  
-      for (var i = 0, p1 = 5, p2 = 13; (cnpj.length - 2) > i; i++, p1--, p2--) {
-        if (p1 >= 2) {
-          v1 += cnpj[i] * p1;
+
+        if (aux == false) {
+            return false;
+        }
+
+        for (var i = 0, p1 = 5, p2 = 13; (cnpj.length - 2) > i; i++, p1--, p2--) {
+            if (p1 >= 2) {
+                v1 += cnpj[i] * p1;
+            } else {
+                v1 += cnpj[i] * p2;
+            }
+        }
+
+        v1 = (v1 % 11);
+
+        if (v1 < 2) {
+            v1 = 0;
         } else {
-          v1 += cnpj[i] * p2;
+            v1 = (11 - v1);
         }
-      }
-  
-      v1 = (v1 % 11);
-  
-      if (v1 < 2) {
-        v1 = 0;
-      } else {
-        v1 = (11 - v1);
-      }
-  
-      if (v1 != cnpj[12]) {
-        return false;
-      }
-  
-      for (var i = 0, p1 = 6, p2 = 14; (cnpj.length - 1) > i; i++, p1--, p2--) {
-        if (p1 >= 2) {
-          v2 += cnpj[i] * p1;
+
+        if (v1 != cnpj[12]) {
+            return false;
+        }
+
+        for (var i = 0, p1 = 6, p2 = 14; (cnpj.length - 1) > i; i++, p1--, p2--) {
+            if (p1 >= 2) {
+                v2 += cnpj[i] * p1;
+            } else {
+                v2 += cnpj[i] * p2;
+            }
+        }
+
+        v2 = (v2 % 11);
+
+        if (v2 < 2) {
+            v2 = 0;
         } else {
-          v2 += cnpj[i] * p2;
+            v2 = (11 - v2);
         }
-      }
-  
-      v2 = (v2 % 11);
-  
-      if (v2 < 2) {
-        v2 = 0;
-      } else {
-        v2 = (11 - v2);
-      }
-  
-      if (v2 != cnpj[13]) {
-        return false;
-      } else {
-        return true;
-      }
+
+        if (v2 != cnpj[13]) {
+            return false;
+        } else {
+            return true;
+        }
     } else {
-      return false;
+        return false;
     }
-  }
+}
 
 
 module.exports = router

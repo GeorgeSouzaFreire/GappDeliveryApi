@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
-const Store = mongoose.model('Store', {    
+const Store = mongoose.model('Store', {   
+    guid: String, 
     idEmpresa: Number,
     nomeApp: String,
     breveDescricao: String,
