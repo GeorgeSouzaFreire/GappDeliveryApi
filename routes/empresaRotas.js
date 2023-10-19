@@ -361,7 +361,7 @@ router.get('/GetStore', async (req, res) => {
 
         const storeFindOne = await Store.findOne({ idEmpresa: empresaId })
 
-        if (storeFindOne != null) {
+        if (storeFindOne == null) {
             res.status(201).json({
                 success: false,
                 message: 'Store não foi encontrado!',
