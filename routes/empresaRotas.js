@@ -317,7 +317,7 @@ router.get('/GetEmpresas', async (req, res) => {
 
 })
 
-// Get Empresa
+// Get Planos
 router.get('/GetPlanos', async (req, res) => {
 
 
@@ -346,6 +346,40 @@ router.get('/GetPlanos', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Não foi possível buscar a Plano.',
+            error: error
+        })
+    }
+
+})
+
+// Get Stote
+router.get('/GetStore', async (req, res) => {
+
+    const empresaId = req.query.IdEmpresa
+
+    try {
+
+        const storeFindOne = await Store.findOne({ idEmpresa: empresaId })
+
+        if (storeFindOne != null) {
+            res.status(201).json({
+                success: false,
+                message: 'Store não foi encontrado!',
+                data: [],
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Store encontrado com sucesso!',
+                data: storeFindOne,
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: 'Não foi possível buscar a Store.',
             error: error
         })
     }
