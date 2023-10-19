@@ -606,8 +606,6 @@ router.post('/PostStore', async (req, res) => {
     if (!String(descricaoCompleta).trim()) {
         errors.breveDescricao = ['Descrição completa'];
     }
-
-
     if (Object.keys(errors).length) {
         errors.itens = ['\nSão os ' + Object.keys(errors).length + ' itens obrigatórios!'];
 
@@ -639,7 +637,7 @@ router.post('/PostStore', async (req, res) => {
             } else {
                 res.status(200).json({
                     success: true,
-                    message: "Plano cadastrado com sucesso!",
+                    message: "Store cadastrado com sucesso!",
                     data: storeCreate,
                 })
             }
