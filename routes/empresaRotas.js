@@ -365,7 +365,7 @@ router.get('/GetStore', async (req, res) => {
             res.status(201).json({
                 success: false,
                 message: 'Store não foi encontrado!',
-                data: [],
+                data: {},
             })
         } else {
             res.status(200).json({
