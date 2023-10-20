@@ -368,6 +368,9 @@ router.get('/GetStore', async (req, res) => {
                 data: {},
             })
         } else {
+
+
+
             res.status(200).json({
                 success: true,
                 message: 'Store encontrado com sucesso!',
@@ -660,19 +663,22 @@ router.post('/PostStore', async (req, res) => {
 
         try {
 
-            const storeCreate = await Store.create(store)
+            const storeUpdateOne = await Store.findOneAndUpdate({ idEmpresa: idEmpresa }, store, { new: true })
 
-            if (storeCreate == null) {
+            if (storeUpdateOne == null) {
+
+                const storeCreate = await Store.create(store)
+
                 res.status(201).json({
                     success: false,
-                    message: "Não foi possível cadastrar o Store!",
-                    data: {},
+                    message: "Store cadastrado com sucesso!",
+                    data: storeCreate,
                 })
             } else {
                 res.status(200).json({
                     success: true,
-                    message: "Store cadastrado com sucesso!",
-                    data: storeCreate,
+                    message: "Store atualizado com sucesso!",
+                    data: storeUpdateOne,
                 })
             }
 
