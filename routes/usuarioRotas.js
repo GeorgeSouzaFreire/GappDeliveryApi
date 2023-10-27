@@ -498,8 +498,6 @@ router.get('/GetUsuario', async (req, res) => {
 
                 const usuarioUpdateOne = await Usuario.updateOne({ _id: usuario._id }, usuario, { new: true })
 
-                console.log(usuarioUpdateOne)
-
                 res.status(200).json({
                     success: true,
                     message: 'Usuário encontrado com sucesso!',
@@ -513,9 +511,12 @@ router.get('/GetUsuario', async (req, res) => {
                 })
             }
         }
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({ error: error })
+    } catch (error) {        
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível realizar a operação!",
+            error: error
+        })
     }
 
 
