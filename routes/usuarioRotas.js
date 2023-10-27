@@ -512,9 +512,7 @@ router.get('/GetUsuario', async (req, res) => {
                     data: {},
                 })
             }
-
         }
-
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error })
