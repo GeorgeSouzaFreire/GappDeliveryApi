@@ -490,13 +490,16 @@ router.get('/GetUsuario', async (req, res) => {
 
             const usuario = await Usuario.findOne({ email: emailId, senha: senhaId, idEmpresa: empresaId })
 
-            const empresa = await Empresa.findOne({ idEmpresa: Number.parseInt(empresaId) })
-
-            usuario.empresa = empresa
-
-            const usuarioUpdateOne = await Usuario.updateOne({ _id: usuario._id }, usuario, { new: true })
-
             if (usuario != null) {
+
+                const empresa = await Empresa.findOne({ idEmpresa: Number.parseInt(empresaId) })
+
+                usuario.empresa = empresa
+
+                const usuarioUpdateOne = await Usuario.updateOne({ _id: usuario._id }, usuario, { new: true })
+
+                console.log(usuarioUpdateOne)
+
                 res.status(200).json({
                     success: true,
                     message: 'Usuário encontrado com sucesso!',
@@ -505,8 +508,8 @@ router.get('/GetUsuario', async (req, res) => {
             } else {
                 res.status(201).json({
                     success: false,
-                    message: 'Não foi possível localizar informações de usuário, tente novamente.',
-                    data: usuario,
+                    message: 'Não foi possível localizar uma conta com esse nome de usuário. Tente outra ou obtenha uma nova conta.',
+                    data: {},
                 })
             }
 
