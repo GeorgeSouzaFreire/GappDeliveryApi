@@ -732,8 +732,8 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
         errors.email = ['Email'];
     }
 
-    if (!String(empresa.contato.telefone).trim()) {
-        errors.telefone = ['Telefone'];
+    if (!String(empresa.contato.celular).trim()) {
+        errors.celular = ['Celular'];
     }
 
     if (Object.keys(errors).length) {

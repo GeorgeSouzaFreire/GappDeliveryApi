@@ -263,7 +263,7 @@ router.get('/GetFuncionario', async (req, res) => {
         console.log(error)
         res.status(500).json({
             success: false,
-            message: 'Não foi possível realizar a buscar do cargo.',
+            message: 'Não foi possível realizar a buscar do Usuário.',
             error: error
         })
     }
