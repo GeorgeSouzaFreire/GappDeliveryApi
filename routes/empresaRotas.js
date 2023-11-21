@@ -714,7 +714,7 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
         errors.cnpj = ['CNPJ inválido'];
     }
 
-    if (!String(empresa.responsavel).trim()) {
+    if (!String(empresa.contato.responsavel).trim()) {
         errors.responsavel = ['Responsável'];
     }
 
