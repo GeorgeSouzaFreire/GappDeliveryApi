@@ -717,7 +717,11 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
     }
 
     if (!String(empresa.responsavel).trim()) {
-        errors.nome = ['Responsável'];
+        errors.responsavel = ['Responsável'];
+    }
+
+    if (!String(empresa.nomeFantasia).trim()) {
+        errors.nomeFantasia = ['Responsável'];
     }
 
     if (!String(empresa.endereco.cep).trim()) {
