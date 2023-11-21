@@ -719,7 +719,7 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
     }
 
     if (!String(empresa.nomeFantasia).trim()) {
-        errors.nomeFantasia = ['Responsável'];
+        errors.nomeFantasia = ['Nome Fantasia'];
     }
 
     if (!String(empresa.endereco.cep).trim()) {
@@ -964,7 +964,7 @@ function validaCpfCnpj(val) {
             return true;
         }
     } else {
-        return true;
+        return false;
     }
 }
 
