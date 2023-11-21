@@ -710,9 +710,7 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
 
     const errors = {};
 
-    console.log(empresa.cnpj)
-
-    if (validaCpfCnpj(empresa.cnpj)) {
+    if (!String(empresa.cnpj).trim() && validaCpfCnpj(empresa.cnpj)) {
         errors.nome = ['CNPJ inválido'];
     }
 
