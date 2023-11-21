@@ -827,7 +827,7 @@ router.post('/PostRegistroEmpresa/', async (req, res) => {
 
                         res.status(200).json({
                             success: true,
-                            message: "Parabéns sua empresa foi criada com sucesso no Gapp Delivery, \n Aproveite todas os benefícios de ser Gapp Delivery!",
+                            message: "Parabéns sua empresa foi criada com sucesso no Gapp Delivery, \nAproveite todas os benefícios de ser Gapp Delivery!",
                             data: { registro }
                         })
                     }
@@ -964,7 +964,7 @@ function validaCpfCnpj(val) {
             return true;
         }
     } else {
-        return false;
+        return true;
     }
 }
 
