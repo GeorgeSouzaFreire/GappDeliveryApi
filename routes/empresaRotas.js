@@ -213,14 +213,17 @@ router.get('/GetEmpresaPackage', async (req, res) => {
         } else {
 
             const empresaDesigner = await EmpresaDesigner.findOne({ idEmpresa: Number.parseInt(empresaFindOne.idEmpresa) })
-
+           
             const imagem = await Imagem.findOne({ guid: empresaFindOne._id })
 
             if (imagem != null) {
                 empresaDesigner.imagem = imagem
             }
 
-            empresaFindOne.designer = empresaDesigner
+            if (empresaDesigner != null) {
+                empresaFindOne.designer = empresaDesigner
+            }
+
 
             res.status(200).json({
                 success: true,
