@@ -427,7 +427,7 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
         dataAtualizacao
     }
 
-    console.log(req.body)
+    //console.log(req.body)
 
     try {
 
