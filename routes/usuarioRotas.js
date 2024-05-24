@@ -437,10 +437,11 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
 
         if (usuario.endereco != 0) {
             usuario.endereco.forEach(async (endereco) => {
-
+                console.log('Principal - Old', endereco.principal);
                 try {
                     endereco.principal = false
                     await Usuario.updateOne({ _id: usuarioId }, usuario, { new: true });
+                    console.log('Principal - Last', endereco.principal);
                 } catch (error) {
                     console.log('Endereço', error);
                 }
