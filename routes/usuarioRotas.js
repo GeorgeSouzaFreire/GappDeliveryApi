@@ -431,6 +431,21 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
 
     try {
 
+        const usuario = await Usuario.findOne({ _id: usuarioId });
+
+        console.log(usuario.endereco)
+
+        usuario.endereco.forEach(async (endereco) => {
+
+            try {
+                endereco.principal = false
+                await Usuario.updateOne({ _id: usuarioId }, usuario, { new: true });
+            } catch (error) {
+                console.log('Endereço', error);
+            }
+
+        });
+
         const usuarioFindOne = await Usuario.findOneAndUpdate({ _id: usuarioId }, { $push: { 'endereco': endereco } }, { new: true });
 
         if (usuarioFindOne == null) {
@@ -511,7 +526,7 @@ router.get('/GetUsuario', async (req, res) => {
                 })
             }
         }
-    } catch (error) {        
+    } catch (error) {
         res.status(500).json({
             success: false,
             message: "Não foi possível realizar a operação!",
