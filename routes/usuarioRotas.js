@@ -119,12 +119,12 @@ router.patch('/AtualizaUsuarioPerfil', async (req, res) => {
             telefone
         }
 
-        await Usuario.findOneAndUpdate({ _id: usuarioId }, usuario, { new: true });
+        const usuarioUpdate = await Usuario.findOneAndUpdate({ _id: usuarioId }, usuario, { new: true });
 
         res.status(200).json({
             success: true,
             message: 'Usuario atualizado com sucesso!',
-            data: usuario,
+            data: usuarioUpdate,
         })
 
     } catch (error) {
