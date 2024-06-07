@@ -102,6 +102,42 @@ router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
 
 })
 
+// Update - Atualização de dados Usuario Nome/Telefone (PUT, PATCH)
+router.patch('/AtualizaUsuarioPerfil', async (req, res) => {
+
+    const usuarioId = req.query.IdUsuario;
+
+    try {
+
+        const {
+            nome,
+            telefone
+        } = req.body
+
+        const usuario = {
+            nome,
+            telefone
+        }
+
+        await Usuario.findOneAndUpdate({ _id: usuarioId }, usuario, { new: true });
+
+        res.status(200).json({
+            success: true,
+            message: 'Usuario atualizado com sucesso!',
+            data: usuario,
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível realizar a operação!",
+            error: error
+        })
+    }
+
+})
+
 // Create - POST Usuario
 router.post('/PostUsuario/', async (req, res) => {
 
