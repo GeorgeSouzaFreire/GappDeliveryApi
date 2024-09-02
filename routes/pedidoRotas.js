@@ -362,7 +362,7 @@ router.get('/GetPedidosPorUsuario', async (req, res) => {
         if (pedidoFind.length == 0) {
             res.status(200).json({
                 success: false,
-                message: 'Não há pedidos!',
+                message: 'Ops! Você ainda não tem nenhum pedido.',
                 data: pedidoFind,
             })
         } else {
