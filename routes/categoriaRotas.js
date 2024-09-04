@@ -9,7 +9,6 @@ const Produto = require('../models/Produto')
 const CategoriaProduto = require('../models/CategoriaProduto')
 const Imagem = require('../models/Imagem')
 const fileSystem = require('fs');
-const multer = require('multer');
 
 require("dotenv/config")
 

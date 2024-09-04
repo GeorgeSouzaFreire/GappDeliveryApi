@@ -467,38 +467,49 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
 
     try {
 
-        const usuario = await Usuario.findOne({ _id: usuarioId });
+        const usuario = await Usuario.findOne({ _id: mongoose.Types.ObjectId(usuarioId) });
 
-        console.log(usuario.endereco)
+        if (usuario != null) {
 
-        if (usuario.endereco != 0) {
-            usuario.endereco.forEach(async (endereco) => {
-                console.log('Principal - Old', endereco.principal);
-                try {
-                    endereco.principal = false
-                    await Usuario.updateOne({ _id: usuarioId }, usuario, { new: true });
-                    console.log('Principal - Last', endereco.principal);
-                } catch (error) {
-                    console.log('Endereço', error);
-                }
+            console.log(usuario.endereco)
+            console.log(endereco)
 
-            });
-        }
+            if (usuario.endereco != null && usuario.endereco != 0) {
+                usuario.endereco.forEach(async (endereco) => {
+                    console.log('Principal - Old', endereco.principal);
+                    try {
+                        endereco.principal = false
+                        await Usuario.updateOne({ _id: usuarioId }, usuario, { new: true });
+                        console.log('Principal - Last', endereco.principal);
+                    } catch (error) {
+                        console.log('Endereço', error);
+                    }
 
-        const usuarioFindOne = await Usuario.findOneAndUpdate({ _id: usuarioId }, { $push: { 'endereco': endereco } }, { new: true });
+                });
+            }
 
-        if (usuarioFindOne == null) {
-            console.log(usuarioFindOne)
-            res.status(201).json({
-                success: true,
-                message: 'Não foi possivel localizar usuário, para criação do endereço, tente novamente.',
-                data: usuarioFindOne,
-            })
+            const usuarioFindOne = await Usuario.findOneAndUpdate({ _id: mongoose.Types.ObjectId(usuarioId) }, { $push: { 'endereco': endereco } }, { new: true });
+
+            if (usuarioFindOne == null) {
+                console.log(usuarioFindOne)
+                res.status(201).json({
+                    success: true,
+                    message: 'Não foi possivel localizar usuário, para criação do endereço, tente novamente.',
+                    data: usuarioFindOne,
+                })
+            } else {
+                res.status(200).json({
+                    success: true,
+                    message: 'Endereço criado com sucesso!',
+                    data: usuarioFindOne,
+                })
+            }
+
         } else {
             res.status(200).json({
-                success: true,
-                message: 'Endereço criado com sucesso!',
-                data: usuarioFindOne,
+                success: false,
+                message: 'Usuário não localizado!',
+                data: {},
             })
         }
 
