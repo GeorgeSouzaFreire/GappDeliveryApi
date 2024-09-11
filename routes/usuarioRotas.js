@@ -663,23 +663,25 @@ router.get('/GetUsuarioEnderecoPrincipal', async (req, res) => {
 
     try {
 
-        const usuario = await Usuario.findOne({ _id: mongoose.Types.ObjectId(usuarioId) , 'endereco.principal': true });
-
-        if (usuario != null) {
-
-            res.status(200).json({
-                success: true,
-                message: 'Endereço localizado com sucesso!',
-                data: usuario,
-            })
-
-        } else {
-            res.status(200).json({
-                success: false,
-                message: 'Usuário não localizado!',
-                data: {},
-            })
-        }
+        Usuario.findOne({ _id: mongoose.Types.ObjectId(usuarioId) }).exec(function (err, usuario) {
+            if (err) {
+                res.status(422).json({
+                    success: false,
+                    message: 'Não há endereços(s) cadastrada(s) para esse usuário.' + err,
+                    data: {},
+                })
+            } else {                
+                usuario.endereco.forEach(async (endereco) => {
+                    if (endereco.principal) {
+                        res.status(200).json({
+                            success: true,
+                            message: 'Endereço localizado com sucesso!',
+                            data: endereco,
+                        })
+                    }
+                });
+            }
+        });
 
     } catch (error) {
         console.log(error)
@@ -689,34 +691,6 @@ router.get('/GetUsuarioEnderecoPrincipal', async (req, res) => {
             error: error
         })
     }
-
-    /*try {
-
-        const usuarioFindOne = await Usuario.findOne({ idUsuario: usuarioId });
-
-        if (usuarioFindOne == null) {
-            res.status(201).json({
-                success: true,
-                message: 'Não há Endereço cadastrado!',
-                data: usuarioFindOne,
-            })
-        } else {
-            res.status(200).json({
-                success: true,
-                message: 'Busca do Usuário realizada com sucesso!',
-                data: usuarioFindOne,
-            })
-        }
-
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({
-            success: false,
-            message: "Não foi possível realizar a operação!",
-            error: error
-        })
-    }*/
-
 
 })
 
