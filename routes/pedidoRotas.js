@@ -58,15 +58,15 @@ router.post('/PostPedido/', async (req, res) => {
             formaPagamento,
             statusPedido,
             idStatusPedido,
-            $push: {
-                'progresso': {
+            progresso: [
+                {
                     statusPedido: statusPedido,
                     idStatusPedido: idStatusPedido,
                     ativo: true,
                     dataCriacao: new Date().toISOString(),
                     dataAtualizacao: new Date().toISOString(),
                 }
-            },
+            ],
             ativo,
             dataCriacao,
             dataAtualizacao,
@@ -99,6 +99,8 @@ router.post('/PostPedido/', async (req, res) => {
                 pedido.numero = gerarIdentificadorPedidoSimples(idEmpresa, usuarioFindOne.codigo, lastNumber, true);
 
                 const pedidoCreate = await Pedido.create(pedido)
+
+                console.log(pedido)
 
                 res.status(201).json({
                     success: true,
@@ -542,7 +544,7 @@ router.patch('/AtualizaFormaPagamento', async (req, res) => {
         observacao,
         formaPagamento,
     }
-   
+
 
     try {
 
@@ -605,7 +607,7 @@ router.patch('/FinalizarPedido', async (req, res) => {
         dataAtualizacao
     }
 
-    
+
 
     try {
 
@@ -648,7 +650,7 @@ router.patch('/AtualizaObservacaoPedido', async (req, res) => {
     const pedido = {
         observacao,
     }
-    
+
 
     try {
 
