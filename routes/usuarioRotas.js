@@ -660,7 +660,6 @@ router.get('/GetUsuarioEnderecoPrincipal', async (req, res) => {
 
     const usuarioId = req.query.IdUsuario;
 
-
     try {
 
         Usuario.findOne({ _id: mongoose.Types.ObjectId(usuarioId) }).exec(function (err, usuario) {
