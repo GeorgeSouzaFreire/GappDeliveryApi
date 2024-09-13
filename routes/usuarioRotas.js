@@ -662,25 +662,30 @@ router.get('/GetUsuarioEnderecoPrincipal', async (req, res) => {
 
     try {
 
-        Usuario.findOne({ _id: mongoose.Types.ObjectId(usuarioId) }).exec(function (err, usuario) {
-            if (err) {
-                res.status(422).json({
-                    success: false,
-                    message: 'Não há endereços(s) cadastrada(s) para esse usuário.' + err,
-                    data: {},
-                })
-            } else {                
-                usuario.endereco.forEach(async (endereco) => {
-                    if (endereco.principal) {
-                        res.status(200).json({
-                            success: true,
-                            message: 'Endereço localizado com sucesso!',
-                            data: endereco,
-                        })
-                    }
-                });
+        const usuarioFindOne = await Usuario.findOne({ _id: mongoose.Types.ObjectId(usuarioId) });
+
+        var endereco;
+
+        usuarioFindOne.endereco.forEach((end) => {
+            if (end.principal) {
+                endereco = end;
+                console.log(end);
             }
         });
+
+        if (endereco == null) {
+            res.status(422).json({
+                success: false,
+                message: 'Não há endereços(s) cadastrada(s) para esse usuário.',
+                data: {},
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Endereço localizado com sucesso!',
+                data: endereco,
+            })
+        }
 
     } catch (error) {
         console.log(error)
