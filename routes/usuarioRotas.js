@@ -64,28 +64,20 @@ router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
             })
         } else {
 
-            usuario.endereco.forEach(async (endereco) => {
-
-                try {
-
-                    if (endereco.guid === guid) {
-                        endereco.principal = true
-                    } else {
-                        endereco.principal = false
-                    }                    
-
-                    usuario = await Usuario.findByIdAndUpdate({ _id: mongoose.Types.ObjectId(usuarioId) }, usuario, { new: true });
-
-                } catch (error) {
-                    console.log('Endereço - forEach', error);
+            usuario.endereco.forEach((endereco) => {
+                if (endereco.guid === guid) {
+                    endereco.principal = true
+                } else {
+                    endereco.principal = false
                 }
-
             });
+
+            const usuarioFindByIdAndUpdate = await Usuario.findByIdAndUpdate({ _id: mongoose.Types.ObjectId(usuarioId) }, usuario, { new: true });
 
             res.status(200).json({
                 success: true,
                 message: 'Endereço atualizado criado com sucesso!',
-                data: { 'endereco': usuario.endereco },
+                data: { 'endereco': usuarioFindByIdAndUpdate.endereco },
             })
         }
 
