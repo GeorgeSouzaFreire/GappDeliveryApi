@@ -453,8 +453,6 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
         dataAtualizacao
     }
 
-    //console.log(req.body)
-
     try {
 
         const usuario = await Usuario.findOne({ _id: mongoose.Types.ObjectId(usuarioId) });
@@ -465,12 +463,14 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
             console.log(endereco)
 
             if (usuario.endereco != null && usuario.endereco != 0) {
-                usuario.endereco.forEach( (endereco) => {
+                usuario.endereco.forEach((endereco) => {
                     endereco.principal = false;
                 });
             }
 
-            const usuarioFindOne = await Usuario.findOneAndUpdate({ _id: mongoose.Types.ObjectId(usuarioId) }, { usuario, $push: { 'endereco': endereco } }, { new: true });
+            await Usuario.updateOne({ _id: mongoose.Types.ObjectId(usuarioId) }, usuario, { new: true });
+
+            const usuarioFindOne = await Usuario.findOneAndUpdate({ _id: mongoose.Types.ObjectId(usuarioId) }, { $push: { 'endereco': endereco } }, { new: true });
 
             if (usuarioFindOne == null) {
                 console.log(usuarioFindOne)
