@@ -479,7 +479,7 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
                     console.log('Principal - Old', endereco.principal);
                     try {
                         endereco.principal = false
-                        await Usuario.updateOne({ _id: usuarioId }, usuario, { new: true });
+                        await Usuario.updateOne({ _id: mongoose.Types.ObjectId(usuarioId) }, usuario, { new: true });
                         console.log('Principal - Last', endereco.principal);
                     } catch (error) {
                         console.log('Endereço', error);
