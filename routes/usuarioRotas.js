@@ -68,16 +68,13 @@ router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
 
                 try {
 
-                    console.log(endereco.principal);
-                    console.log(guid);
-
                     if (endereco.guid === guid) {
                         endereco.principal = true
                     } else {
                         endereco.principal = false
                     }                    
 
-                    await Usuario.updateOne({ _id: mongoose.Types.ObjectId(usuarioId) }, usuario, { new: true });
+                    usuario = await Usuario.findByIdAndUpdate({ _id: mongoose.Types.ObjectId(usuarioId) }, usuario, { new: true });
 
                 } catch (error) {
                     console.log('Endereço - forEach', error);
@@ -85,12 +82,10 @@ router.patch('/AtualizaUsuarioEndereco', async (req, res) => {
 
             });
 
-            const usuarioFindOne = await Usuario.findOne({ _id: mongoose.Types.ObjectId(usuarioId) });
-
             res.status(200).json({
                 success: true,
                 message: 'Endereço atualizado criado com sucesso!',
-                data: { 'endereco': usuarioFindOne.endereco },
+                data: { 'endereco': usuario.endereco },
             })
         }
 
