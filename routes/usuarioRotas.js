@@ -465,20 +465,12 @@ router.post('/PostUsuarioEndereco/', async (req, res) => {
             console.log(endereco)
 
             if (usuario.endereco != null && usuario.endereco != 0) {
-                usuario.endereco.forEach(async (endereco) => {
-                    console.log('Principal - Old', endereco.principal);
-                    try {
-                        endereco.principal = false
-                        await Usuario.updateOne({ _id: mongoose.Types.ObjectId(usuarioId) }, usuario, { new: true });
-                        console.log('Principal - Last', endereco.principal);
-                    } catch (error) {
-                        console.log('Endereço', error);
-                    }
-
+                usuario.endereco.forEach( (endereco) => {
+                    endereco.principal = false;
                 });
             }
 
-            const usuarioFindOne = await Usuario.findOneAndUpdate({ _id: mongoose.Types.ObjectId(usuarioId) }, { $push: { 'endereco': endereco } }, { new: true });
+            const usuarioFindOne = await Usuario.findOneAndUpdate({ _id: mongoose.Types.ObjectId(usuarioId) }, { usuario, $push: { 'endereco': endereco } }, { new: true });
 
             if (usuarioFindOne == null) {
                 console.log(usuarioFindOne)
