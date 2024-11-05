@@ -17,7 +17,7 @@ router.get('/GetUsuarioId', async (req, res) => {
 
     try {
 
-        const usuario = await Usuario.findOne({ _id: userId })
+        const usuario = await Usuario.findOne({ _id: mongoose.Types.ObjectId(userId) })
 
         const empresa = await Empresa.findOne({ idEmpresa: usuario.empresa.idEmpresa })
 
