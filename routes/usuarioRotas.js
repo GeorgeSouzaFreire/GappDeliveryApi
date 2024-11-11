@@ -13,7 +13,7 @@ const Pedido = require('../models/Pedido')
 // GET UsuarioId - Leitura de dados
 router.get('/GetUsuarioId', async (req, res) => {
 
-    const userId = req.query.Id;
+    const userId = req.query.IdUsuario;
 
     try {
 
@@ -41,7 +41,11 @@ router.get('/GetUsuarioId', async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        res.status(500).json({ error: error })
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível realizar a operação!",
+            error: error
+        })
     }
 
 })
